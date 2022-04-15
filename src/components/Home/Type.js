@@ -16,6 +16,7 @@ function Type() {
         deleteSpeed: 50,
       }}
     />
+    
   );
 }
 
