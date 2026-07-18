@@ -57,11 +57,18 @@ function AskShreyash() {
   return (
     <>
       <button
-        className="ask-shreyash-fab"
+        className={`ask-shreyash-fab ${open ? "ask-shreyash-fab-open" : ""}`}
         onClick={() => setOpen((o) => !o)}
         aria-label="Ask Shreyash AI"
       >
-        {open ? <BsX size={26} /> : <BsChatDotsFill size={22} />}
+        {open ? (
+          <BsX size={26} />
+        ) : (
+          <>
+            <BsChatDotsFill size={20} />
+            <span className="ask-shreyash-fab-label">Ask me anything</span>
+          </>
+        )}
       </button>
 
       {open && (
