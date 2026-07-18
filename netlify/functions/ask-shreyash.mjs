@@ -83,6 +83,7 @@ export default async (req) => {
         {
           answer:
             "The AI assistant hit a snag answering that — please try again in a moment.",
+          debug: { status: response.status, body: errText.slice(0, 500) },
         },
         { status: 502 }
       );
