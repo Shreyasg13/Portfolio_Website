@@ -87,7 +87,7 @@ function Techstack() {
             }}
           >
             {skillBar.map((s) => (
-              <p key={s.category} style={{ margin: "6px 0", fontSize: "0.88em", color: "#ccc" }}>
+              <p key={s.category} style={{ margin: "6px 0", fontSize: "0.88em", color: "#c2c2d2" }}>
                 <b style={{ color: "#c770f0" }}>{s.category}:</b>{" "}
                 <span>{s.items}</span>
               </p>

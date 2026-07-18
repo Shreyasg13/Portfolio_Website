@@ -29,7 +29,7 @@ function ResumeNew() {
               Shreyash Gondane —{" "}
               <span style={{ color: "#c770f0" }}>Platform AI Architect</span>
             </h2>
-            <p style={{ color: "#aaa", fontSize: "0.95em" }}>
+            <p style={{ color: "#c2c2d2", fontSize: "0.95em" }}>
               5+ yrs · 3,000+ commits · 700+ PRs · vLLM · MCP · Auth & Identity · Multi-Cloud
             </p>
           </div>

@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import ProjectCard from "./ProjectCards";
 import Particle from "../Particle";
+import Reveal from "../Reveal";
 import algo from "../../Assets/Projects/algo.png";
 import editor from "../../Assets/Projects/codeEditor.png";
 import chatify from "../../Assets/Projects/chatify.png";
@@ -93,13 +94,15 @@ function Projects() {
         <Row style={{ justifyContent: "center", paddingBottom: "10px" }}>
           {projects.map((p) => (
             <Col key={p.title} md={4} className="project-card">
-              <ProjectCard
-                imgPath={p.imgPath}
-                isBlog={p.isBlog}
-                title={p.title}
-                description={p.description}
-                link={p.link}
-              />
+              <Reveal>
+                <ProjectCard
+                  imgPath={p.imgPath}
+                  isBlog={p.isBlog}
+                  title={p.title}
+                  description={p.description}
+                  link={p.link}
+                />
+              </Reveal>
             </Col>
           ))}
         </Row>

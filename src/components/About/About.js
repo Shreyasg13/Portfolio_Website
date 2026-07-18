@@ -8,13 +8,16 @@ import laptopImg from "../../Assets/about.png";
 import Toolstack from "./Toolstack";
 import ExpertisePillars from "./ExpertisePillars";
 import ExperienceTimeline from "./ExperienceTimeline";
+import Reveal from "../Reveal";
 
 function About() {
   return (
     <Container fluid className="about-section">
       <Particle />
       <Container>
-        <ExpertisePillars />
+        <Reveal>
+          <ExpertisePillars />
+        </Reveal>
 
         <h1 className="project-heading">
           Professional <strong className="purple">Skillset</strong>
@@ -26,7 +29,9 @@ function About() {
         </h1>
         <Toolstack />
 
-        <ExperienceTimeline />
+        <Reveal>
+          <ExperienceTimeline />
+        </Reveal>
 
         <Row style={{ justifyContent: "center", padding: "10px" }}>
           <Col

@@ -5,6 +5,8 @@ import Particle from "../Particle";
 import Home2 from "./Home2";
 import Type from "./Type";
 import StatsBar from "./StatsBar";
+import SkillsRadar from "./SkillsRadar";
+import Reveal from "../Reveal";
 
 function Home() {
   return (
@@ -40,6 +42,9 @@ function Home() {
         </Container>
       </Container>
       <StatsBar />
+      <Reveal>
+        <SkillsRadar />
+      </Reveal>
       <Home2 />
     </section>
   );
