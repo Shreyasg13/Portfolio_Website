@@ -9,7 +9,13 @@ const CONTEXT = readFileSync(
   "utf-8"
 );
 
-const MODEL = "qwen/qwen3-next-80b-a3b-instruct:free";
+// Ordered by preference; free-tier models are shared/rate-limited upstream,
+// so fall through to the next one rather than failing the user's request.
+const MODELS = [
+  "qwen/qwen3-next-80b-a3b-instruct:free",
+  "qwen/qwen3-coder:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+];
 const MAX_TOKENS = 400;
 
 async function logConversation(question, answer) {
@@ -20,6 +26,31 @@ async function logConversation(question, answer) {
   } catch (err) {
     console.error("Failed to log conversation", err);
   }
+}
+
+function systemPrompt() {
+  return `You are Shreyash Gondane's personal AI assistant, answering recruiter and hiring-manager questions on his behalf. Always answer in first person, as Shreyash himself ("I built...", "I led..."), not in third person. Use STAR (Situation, Task, Action, Result) structure for behavioral questions. Answer only from the context below — do not invent employers, dates, or numbers.\n\n${CONTEXT}`;
+}
+
+async function callModel(model, apiKey, question) {
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": "https://shreyashportfolio.netlify.app",
+      "X-Title": "Ask Shreyash",
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: MAX_TOKENS,
+      messages: [
+        { role: "system", content: systemPrompt() },
+        { role: "user", content: question },
+      ],
+    }),
+  });
+  return response;
 }
 
 export default async (req) => {
@@ -51,57 +82,47 @@ export default async (req) => {
 
   const trimmedQuestion = question.trim().slice(0, 2000);
 
-  try {
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "https://shreyashportfolio.netlify.app",
-          "X-Title": "Ask Shreyash",
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          max_tokens: MAX_TOKENS,
-          messages: [
-            {
-              role: "system",
-              content: `You are Shreyash Gondane's personal AI assistant, answering recruiter and hiring-manager questions on his behalf. Always answer in first person, as Shreyash himself ("I built...", "I led..."), not in third person. Use STAR (Situation, Task, Action, Result) structure for behavioral questions. Answer only from the context below — do not invent employers, dates, or numbers.\n\n${CONTEXT}`,
-            },
-            { role: "user", content: trimmedQuestion },
-          ],
-        }),
+  let lastError = null;
+
+  for (const model of MODELS) {
+    try {
+      let response = await callModel(model, apiKey, trimmedQuestion);
+
+      if (response.status === 429) {
+        // Free-tier models share upstream rate limits — one short retry
+        // resolves most transient hits before falling through to the
+        // next model in the list.
+        await new Promise((r) => setTimeout(r, 1500));
+        response = await callModel(model, apiKey, trimmedQuestion);
       }
-    );
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("OpenRouter error", response.status, errText);
-      return Response.json(
-        {
-          answer:
-            "The AI assistant hit a snag answering that — please try again in a moment.",
-          debug: { status: response.status, body: errText.slice(0, 500) },
-        },
-        { status: 502 }
-      );
+      if (!response.ok) {
+        lastError = { status: response.status, body: (await response.text()).slice(0, 300) };
+        console.error("OpenRouter error", model, lastError.status, lastError.body);
+        continue;
+      }
+
+      const data = await response.json();
+      const answer = data?.choices?.[0]?.message?.content?.trim();
+      if (!answer) {
+        lastError = { status: response.status, body: "empty completion" };
+        continue;
+      }
+
+      await logConversation(trimmedQuestion, answer);
+      return Response.json({ answer });
+    } catch (err) {
+      console.error("ask-shreyash model attempt failed", model, err);
+      lastError = { status: 0, body: String(err) };
     }
-
-    const data = await response.json();
-    const answer =
-      data?.choices?.[0]?.message?.content?.trim() ||
-      "I couldn't come up with an answer to that — try rephrasing?";
-
-    await logConversation(trimmedQuestion, answer);
-
-    return Response.json({ answer });
-  } catch (err) {
-    console.error("ask-shreyash handler error", err);
-    return Response.json(
-      { answer: "Something went wrong answering that — please try again." },
-      { status: 500 }
-    );
   }
+
+  console.error("ask-shreyash: all models exhausted", lastError);
+  return Response.json(
+    {
+      answer:
+        "All the free AI models I use are rate-limited right now — please try again in a minute.",
+    },
+    { status: 502 }
+  );
 };
