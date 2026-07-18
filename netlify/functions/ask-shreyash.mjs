@@ -3,9 +3,9 @@ import { fileURLToPath } from "url";
 import path from "path";
 import { getStore } from "@netlify/blobs";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const CONTEXT = readFileSync(
-  path.join(__dirname, "_context", "shreyash-context.md"),
+  path.join(currentDir, "_context", "shreyash-context.md"),
   "utf-8"
 );
 
