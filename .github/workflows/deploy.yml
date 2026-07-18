@@ -27,7 +27,19 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          CI: false   # prevents React treating warnings as build errors
+          CI: false
+          REACT_APP_GIT_SHA: ${{ github.sha }}
+          REACT_APP_GA_MEASUREMENT_ID: ${{ secrets.REACT_APP_GA_MEASUREMENT_ID }}
+
+      - name: Confirm version is embedded
+        run: |
+          SHORT="${{ github.sha }}"
+          SHORT="${SHORT:0:7}"
+          if grep -r "$SHORT" build/; then
+            echo "✅ Git SHA $SHORT found in build"
+          else
+            echo "⚠️  Git SHA not found — GA_MEASUREMENT_ID may also be missing"
+          fi
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -59,7 +71,7 @@ jobs:
           production-branch: main
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Deploy ${{ github.sha }} — ${{ github.event.head_commit.message }}"
+          deploy-message: "🚀 ${{ github.sha }} — ${{ github.event.head_commit.message }}"
           enable-pull-request-comment: true
           enable-commit-comment: true
           overwrites-pull-request-comment: true
@@ -78,33 +90,45 @@ jobs:
       - name: Wait for CDN propagation
         run: sleep 20
 
-      - name: Check site is live
+      - name: Check site returns HTTP 200
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://shreyashportfolio.netlify.app/)
           echo "HTTP status: $STATUS"
-          if [ "$STATUS" != "200" ]; then
-            echo "ERROR: Site returned $STATUS"
-            exit 1
-          fi
-          echo "✅ Site is responding with 200"
+          [ "$STATUS" = "200" ] || (echo "❌ Site returned $STATUS" && exit 1)
+          echo "✅ Site is live"
 
-      - name: Verify new content is deployed
+      - name: Verify deploy version matches this commit
         run: |
+          SHORT="${{ github.sha }}"
+          SHORT="${SHORT:0:7}"
           BUNDLE=$(curl -s https://shreyashportfolio.netlify.app/ | grep -o 'main\.[a-f0-9]*\.js' | head -1)
           echo "Deployed bundle: $BUNDLE"
-
           CONTENT=$(curl -s "https://shreyashportfolio.netlify.app/static/js/$BUNDLE")
+          if echo "$CONTENT" | grep -q "$SHORT"; then
+            echo "✅ Commit $SHORT is live in the bundle"
+          else
+            echo "❌ Commit $SHORT not found — CDN may still be propagating"
+            exit 1
+          fi
 
-          for keyword in "Platform AI Architect" "EMC AI Core" "3,000" "vLLM" "DeepSeek"; do
-            if echo "$CONTENT" | grep -q "$keyword"; then
-              echo "✅ Found: $keyword"
+      - name: Verify key content strings are live
+        run: |
+          BUNDLE=$(curl -s https://shreyashportfolio.netlify.app/ | grep -o 'main\.[a-f0-9]*\.js' | head -1)
+          CONTENT=$(curl -s "https://shreyashportfolio.netlify.app/static/js/$BUNDLE")
+          PASS=true
+          for kw in "Platform AI Architect" "EMC AI Core" "3,000" "vLLM" "DeepSeek"; do
+            if echo "$CONTENT" | grep -q "$kw"; then
+              echo "✅ $kw"
             else
-              echo "❌ Missing: $keyword"
-              exit 1
+              echo "❌ $kw — missing from live bundle"
+              PASS=false
             fi
           done
+          $PASS || exit 1
+          echo "✅ All content checks passed"
 
-          echo "✅ All content checks passed — deployment verified"
-
-      - name: Print live URL
-        run: echo "🚀 Live at https://shreyashportfolio.netlify.app/"
+      - name: Summary
+        run: |
+          echo "🚀 Deployed: https://shreyashportfolio.netlify.app/"
+          echo "📦 Commit:   ${{ github.sha }}"
+          echo "👤 Visitor tracking: GA4 active (check Google Analytics Real-Time)"
