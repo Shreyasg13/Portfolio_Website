@@ -11,10 +11,13 @@ const CONTEXT = readFileSync(
 
 // Ordered by preference; free-tier models are shared/rate-limited upstream,
 // so fall through to the next one rather than failing the user's request.
+// Last entry is a paid model (fraction of a cent per request) as a guaranteed
+// fallback for when every free tier is saturated.
 const MODELS = [
   "qwen/qwen3-next-80b-a3b-instruct:free",
   "qwen/qwen3-coder:free",
   "meta-llama/llama-3.3-70b-instruct:free",
+  "mistralai/mistral-small-24b-instruct-2501",
 ];
 const MAX_TOKENS = 400;
 
