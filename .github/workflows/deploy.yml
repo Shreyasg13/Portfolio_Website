@@ -120,7 +120,7 @@ jobs:
           BUNDLE=$(curl -s https://shreyashportfolio.netlify.app/ | grep -o 'main\.[a-f0-9]*\.js' | head -1)
           CONTENT=$(curl -s "https://shreyashportfolio.netlify.app/static/js/$BUNDLE")
           PASS=true
-          for kw in "Platform AI Architect" "EMC AI Core" "3,000" "vLLM" "DeepSeek"; do
+          for kw in "Platform AI Architect" "Governed Multi-Tenant AI Platform" "3,000" "vLLM" "DeepSeek"; do
             if echo "$CONTENT" | grep -q "$kw"; then
               echo "✅ $kw"
             else
