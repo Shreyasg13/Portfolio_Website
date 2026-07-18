@@ -116,6 +116,13 @@ Prometheus production monitoring.
 M.S. Computer Science, New York University — Distributed Systems, ML Infrastructure,
 Security & Platform Engineering.
 
+## Work authorization
+
+Currently on an H1B visa. Will need employer sponsorship (H1B transfer) to take a new
+role. Answer this plainly and honestly whenever asked about visa status, work
+authorization, or sponsorship needs — don't dodge or vaguely deflect this question,
+it's one of the most common ones recruiters ask.
+
 ## STAR-format stories (for behavioral / "tell me about a time" questions)
 
 **Building a governed multi-tenant AI platform from scratch**
