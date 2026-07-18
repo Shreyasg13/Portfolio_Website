@@ -15,17 +15,18 @@ function AboutCard() {
             <div style={{ padding: 20, textAlign: "Left", fontSize: 14 }}>
               <Type1 />
             </div>
-            <b>Platform AI Architect</b> with <b>5+ years</b> shipping foundational platform primitives across{" "}
-            <span className="purple">Agentic AI</span>,{" "}
-            <span className="purple">Cloud Infrastructure (AWS/GCP/Azure)</span>,{" "}
-            <span className="purple">System Design & Distributed Systems</span>, and{" "}
-            <span className="purple">Auth & Identity</span>.
+            <b>Platform AI Architect</b> with <b>5+ years</b> and{" "}
+            <b>3,000+ commits · 700+ PRs · 10+ production repos</b>.
+            Principal architect of{" "}
+            <span className="purple">EMC AI Core</span> — governed multi-tenant AI platform with self-hosted{" "}
+            <span className="purple">vLLM (Qwen3-32B · DeepSeek-R1)</span> on GPU spot fleets, Bedrock fallback, Milvus RAG, and Langfuse LLM observability.
+            Built a complete{" "}
+            <span className="purple">multi-tenant IdP in Go/Echo</span> (zero CVEs, ≤5ms, 10K concurrent). Shipped{" "}
+            <span className="purple">MCP + A2A agentic infrastructure</span> and LangGraph HITL systems at{" "}
+            <span className="purple">1.2M conversations/month</span>. Led team of 21, 4 direct reports.
             <br />
             <br />
-            Built a complete <b>multi-tenant Identity Provider in Go/Echo</b> (Auth0-equivalent), deployed <b>MCP & A2A agentic connectivity</b> in production, authored <b>multi-cloud Terraform</b> modules, and led a team of 21 engineers. <b>1,519+ commits · 543+ PRs · 2 Springer publications.</b>
-            <br />
-            <br />
-            Beyond engineering, I enjoy:
+            Beyond engineering:
           </p>
           <ul>
             <li className="about-activity">

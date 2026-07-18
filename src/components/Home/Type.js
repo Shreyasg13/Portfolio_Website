@@ -7,11 +7,11 @@ function Type() {
       options={{
         strings: [
           "Platform AI Architect",
-          "Cloud & Scalable Infrastructure Engineer",
-          "System Design & Distributed Systems Lead",
+          "Self-Hosted LLM Inference Engineer",
           "Agentic AI & MCP Platform Builder",
+          "Cloud & Scalable Infrastructure Architect",
+          "System Design & Distributed Systems Lead",
           "Auth & Identity Platform Architect",
-          "Multi-Cloud Infrastructure Expert",
         ],
         autoStart: true,
         loop: true,

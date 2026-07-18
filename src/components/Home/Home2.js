@@ -16,20 +16,21 @@ function Home2() {
             </h1>
             <p className="home-about-body">
               <b className="purple">Platform AI Architect</b> with{" "}
-              <b className="purple">5+ years</b> of end-to-end technical ownership —{" "}
-              <b>1,519+ commits · 543+ PRs · 10+ production repos · 4 direct reports</b>.
+              <b className="purple">5+ years</b> of end-to-end ownership —{" "}
+              <b>3,000+ commits · 700+ PRs · 10+ production repos · 4 direct reports · team of 21</b>.
               <br />
               <br />
-              Built and deployed production{" "}
-              <i><b className="purple">MCP integrations and A2A Protocol infrastructure</b></i> connecting Classification, Extraction, Mapping, and Validation agents — the foundational connectivity layer of agentic AI platforms. Architected a{" "}
-              <i><b className="purple">complete multi-tenant Identity Provider from scratch in Go/Echo</b></i>{" "}
-              (JWT, SAML 2.0, RBAC, MFA, SSO, AI agent security registry) — an Auth0-equivalent platform, zero CVEs, ≤5ms token verification at 10K concurrent requests.
+              Principal architect of{" "}
+              <i><b className="purple">EMC AI Core</b></i> — a governed multi-tenant AI platform serving 4 product verticals (healthcare triage, financial advisor, workflow orchestration, data-quality) through a single endpoint. Self-hosted{" "}
+              <i><b className="purple">vLLM inference: Qwen3-32B INT4 AWQ · Qwen3-VL vision · DeepSeek-R1</b></i>{" "}
+              on GPU spot fleets with EKS Auto Mode + Karpenter + KEDA autoscaling and AWS Bedrock fallback routing.
               <br />
               <br />
-              Shipped the complete{" "}
-              <i><b className="purple">multi-cloud scalable infrastructure stack</b></i>: Terraform (AWS/GCP/Azure), EKS, Kubernetes, Helm, OTel distributed tracing, Prometheus + Grafana observability, and enterprise compliance (FINRA, SOC-2, SEC 17a-4). Designed{" "}
-              <b className="purple">LangGraph Agentic Intelligence</b> (HITL escalation) deployed across three production verticals. Contributed directly to{" "}
-              <b className="purple">Scale AI's LLM Engine</b>.
+              Built production{" "}
+              <i><b className="purple">MCP + A2A Protocol infrastructure</b></i> and a complete{" "}
+              <i><b className="purple">multi-tenant Identity Provider in Go/Echo</b></i>{" "}
+              (Auth0-equivalent — JWT, SAML 2.0, RBAC, MFA, SSO, AI agent security registry) — zero CVEs, sub-5ms token verification at 10K concurrent. Shipped{" "}
+              <b className="purple">LangGraph agentic systems</b> at 1.2M conversations/month, p95 &lt; 350ms. Authored multi-cloud Terraform (AWS/GCP/Azure).
               <br />
               <br />
               M.S. Computer Science,{" "}
