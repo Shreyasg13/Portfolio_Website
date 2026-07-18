@@ -740,3 +740,224 @@ button:focus {
 .fork-btn-inner::after {
   display: none !important;
 }
+
+/* --------- */
+/* Stats Bar */
+/* --------- */
+.stats-bar-section {
+  background: linear-gradient(90deg, rgba(107,0,168,0.15), rgba(0,0,0,0) 50%, rgba(107,0,168,0.15));
+  border-top: 1px solid rgba(199,112,240,0.2);
+  border-bottom: 1px solid rgba(199,112,240,0.2);
+  padding: 28px 0 !important;
+}
+
+.stats-bar-row {
+  justify-content: center;
+  text-align: center;
+}
+
+.stats-bar-item {
+  padding: 12px 8px !important;
+  position: relative;
+}
+
+.stats-bar-item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 20%;
+  height: 60%;
+  width: 1px;
+  background: rgba(199,112,240,0.3);
+}
+
+.stats-value {
+  font-size: 2em;
+  font-weight: 800;
+  color: #c770f0;
+  line-height: 1.1;
+}
+
+.stats-label {
+  font-size: 0.78em;
+  color: #bbb;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+@media (max-width: 767px) {
+  .stats-value { font-size: 1.5em; }
+  .stats-bar-item::after { display: none; }
+}
+
+/* --------- */
+/* Expertise Pillars */
+/* --------- */
+.pillar-card {
+  background: rgba(199,112,240,0.05);
+  border: 1px solid rgba(199,112,240,0.15);
+  border-radius: 12px;
+  padding: 24px 20px;
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pillar-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(199,112,240,0.2);
+}
+
+.pillar-icon {
+  margin-bottom: 14px;
+}
+
+.pillar-title {
+  color: white;
+  font-weight: 700;
+  font-size: 1em;
+  margin-bottom: 14px;
+}
+
+.pillar-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pillar-list li {
+  color: #ccc;
+  font-size: 0.82em;
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  line-height: 1.5;
+}
+
+.pillar-list li:last-child {
+  border-bottom: none;
+}
+
+/* --------- */
+/* Experience Timeline */
+/* --------- */
+.timeline {
+  position: relative;
+  padding-left: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, #c770f0, rgba(199,112,240,0.1));
+}
+
+.timeline-entry {
+  position: relative;
+  margin-bottom: 36px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -28px;
+  top: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #0c0513;
+  box-shadow: 0 0 8px rgba(199,112,240,0.5);
+}
+
+.timeline-content {
+  background: rgba(199,112,240,0.05);
+  border: 1px solid rgba(199,112,240,0.12);
+  border-radius: 10px;
+  padding: 16px 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.timeline-content:hover {
+  box-shadow: 0 4px 20px rgba(199,112,240,0.15);
+}
+
+.timeline-period {
+  font-size: 0.78em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 2px;
+}
+
+.timeline-role {
+  color: white;
+  font-size: 1.05em;
+  font-weight: 700;
+}
+
+.timeline-company {
+  color: #aaa;
+  font-size: 0.85em;
+  margin-bottom: 10px;
+}
+
+.timeline-items {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding-top: 10px;
+}
+
+.timeline-item {
+  font-size: 0.83em;
+  color: #ccc;
+  padding: 4px 0;
+  line-height: 1.5;
+}
+
+.timeline-item-name {
+  font-weight: 700;
+}
+
+.timeline-item-desc {
+  color: #bbb;
+}
+
+/* --------- */
+/* Project Cards — upgraded */
+/* --------- */
+.project-card-header {
+  position: relative;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px 4px 0 0;
+  overflow: hidden;
+}
+
+.project-card-img {
+  width: auto;
+  max-width: 80%;
+  max-height: 110px;
+  object-fit: contain;
+  opacity: 0.35;
+  filter: grayscale(30%);
+}
+
+.project-card-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 0.7em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Container, Row } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import Particle from "../Particle";
-import pdf from "../../Assets/../Assets/Shreyash.pdf";
-//import pdf from "../Projects/Shreyash.pdf";
 import { AiOutlineDownload } from "react-icons/ai";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import pdf from "../../Assets/Shreyash.pdf";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 const resumeLink =
@@ -23,6 +23,17 @@ function ResumeNew() {
     <div>
       <Container fluid className="resume-section">
         <Particle />
+        <Row style={{ justifyContent: "center", position: "relative", paddingBottom: "20px" }}>
+          <div style={{ textAlign: "center" }}>
+            <h2 style={{ color: "white", paddingBottom: "10px" }}>
+              Shreyash Gondane —{" "}
+              <span style={{ color: "#c770f0" }}>Platform AI Architect</span>
+            </h2>
+            <p style={{ color: "#aaa", fontSize: "0.95em" }}>
+              5+ yrs · 3,000+ commits · 700+ PRs · vLLM · MCP · Auth & Identity · Multi-Cloud
+            </p>
+          </div>
+        </Row>
         <Row style={{ justifyContent: "center", position: "relative" }}>
           <Button
             variant="primary"
@@ -31,7 +42,7 @@ function ResumeNew() {
             style={{ maxWidth: "250px" }}
           >
             <AiOutlineDownload />
-            &nbsp;Download CV
+            &nbsp;Download Resume
           </Button>
         </Row>
 
@@ -49,7 +60,7 @@ function ResumeNew() {
             style={{ maxWidth: "250px" }}
           >
             <AiOutlineDownload />
-            &nbsp;Download CV
+            &nbsp;Download Resume
           </Button>
         </Row>
       </Container>

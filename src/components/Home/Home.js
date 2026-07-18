@@ -4,6 +4,7 @@ import homeLogo from "../../Assets/home-main.svg";
 import Particle from "../Particle";
 import Home2 from "./Home2";
 import Type from "./Type";
+import StatsBar from "./StatsBar";
 
 function Home() {
   return (
@@ -19,18 +20,14 @@ function Home() {
                   👋🏻
                 </span>
               </h1>
-
               <h1 className="heading-name">
                 I'M
                 <strong className="main-name"> SHREYASH GONDANE</strong>
               </h1>
-
               <div style={{ padding: 50, textAlign: "left" }}>
                 <Type />
               </div>
-             
             </Col>
-
             <Col md={5} style={{ paddingBottom: 20 }}>
               <img
                 src={homeLogo}
@@ -42,6 +39,7 @@ function Home() {
           </Row>
         </Container>
       </Container>
+      <StatsBar />
       <Home2 />
     </section>
   );
