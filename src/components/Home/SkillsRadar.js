@@ -22,12 +22,10 @@ function pointOnAxis(index, total, fraction) {
 }
 
 function ringPath(total, fraction) {
-  return (
-    Array.from({ length: total }, (_, i) => {
-      const p = pointOnAxis(i, total, fraction);
-      return `${p.x},${p.y}`;
-    }).join(" ") + " Z"
-  );
+  return Array.from({ length: total }, (_, i) => {
+    const p = pointOnAxis(i, total, fraction);
+    return `${p.x},${p.y}`;
+  }).join(" ");
 }
 
 function SkillsRadar() {
