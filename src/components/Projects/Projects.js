@@ -2,13 +2,12 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import ProjectCard from "./ProjectCards";
 import Particle from "../Particle";
-import leaf from "../../Assets/Projects/leaf.png";
-import emotion from "../../Assets/Projects/emotion.jpeg";
+import algo from "../../Assets/Projects/algo.png";
 import editor from "../../Assets/Projects/codeEditor.png";
 import chatify from "../../Assets/Projects/chatify.png";
-import suicide from "../../Assets/Projects/suicide.png";
+import leaf from "../../Assets/Projects/leaf.png";
 import bitsOfCode from "../../Assets/Projects/blog.png";
-//import 3 from "../Assets/Projects/2.jpp";
+import emotion from "../../Assets/Projects/emotion.jpeg";
 
 function Projects() {
   return (
@@ -26,23 +25,9 @@ function Projects() {
             <ProjectCard
               imgPath={chatify}
               isBlog={false}
-              title="Flight Booking System"
-              description="• Prepared web application for flight booking system with web interface in PHP and back end database architecture
-              Implemented using Oracle data modeler with local database in MYSQL and Enabled security features by providing encryption of of password data to run-block 1st and 2nd order SQL injection attack."
-              //link="https://drive.google.com/file/d/1K7nZ0ckg5w1n8MGuVmejq3r5Dgog2ixo/view"
-            />
-          </Col>
-
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={bitsOfCode}
-              isBlog={false}
-              title="Advance Surveillance System in Image processing and IoT"
-              description="Introduced a Software hardware system for video surveillance, human machine interaction and security purposes using
-              Raspberry Pi, PyCharm with Keras, Pandas,Twillio and OpenCV usable across 10+ departments
-              and Executed Haar cascade with CNN over ANN approach achieved accuracy up to 96.7% for intruder detection with real time
-              image processing and IoT functionality."
-              link="https://drive.google.com/file/d/1suhKQzRmWqYoEnDm40BKSm487R7nbfOi/view"
+              title="PDFfillr.ai — MCP & A2A Platform"
+              description="Lead Platform Architect: Designed and deployed production MCP integrations and A2A communication layer connecting Classification, Extraction, Mapping, and Validation agents. Multi-cloud Terraform (AWS/GCP/Azure), RHFL fine-tuning loop (90% → 97% field accuracy), OTel + Prometheus observability, ~50% compute cost reduction. SDKs published to PyPI and npm."
+              link="https://pdffillr.ai/documentation"
             />
           </Col>
 
@@ -50,12 +35,27 @@ function Projects() {
             <ProjectCard
               imgPath={editor}
               isBlog={false}
-              title="Chabot for QnA and car classifier platform"
-              description="• Built chatbot application for automobile companies to address customer queires and car feature customised options as per
-              customer requirements, increases 40% productivity
-              and Implemented API tool with Chatterbot, NLTK library ,Cosine similarity, Naive Bayes Classifier to train dataset for reaches
-              more than 85% of accuracy of NLP text generation."
-              link="https://drive.google.com/file/d/1K7nZ0ckg5w1n8MGuVmejq3r5Dgog2ixo/view"
+              title="EMC-Auth-Server — Multi-Tenant IdP (Auth0 Replacement)"
+              description="Built a complete multi-tenant Identity Provider from scratch in Go/Echo across 8 phases: JWT, SAML 2.0 with JIT provisioning, RBAC, MFA, SSO, and an AI agent security registry with cryptographic agent IDs and anomaly detection. Sub-5ms token verification at 10K concurrent requests. Zero CVEs. Distroless Docker, k6 load testing."
+            />
+          </Col>
+
+          <Col md={4} className="project-card">
+            <ProjectCard
+              imgPath={bitsOfCode}
+              isBlog={false}
+              title="Scale AI LLM Engine — Platform Infrastructure"
+              description="Directly extended Scale AI's production LLM Engine: enterprise Prometheus metrics integration, priority-based batch job scheduler with exponential backoff retry, mock executor enabling CPU-only testing (zero GPU cost), and local-to-cloud portable deployment. 50× faster scheduling (5s → 0.1s); 100% test coverage, 85 tests, 37s CI runtime."
+              link="https://github.com/Shreyasg13"
+            />
+          </Col>
+
+          <Col md={4} className="project-card">
+            <ProjectCard
+              imgPath={algo}
+              isBlog={false}
+              title="Revi AI — Agentic Intelligence Center"
+              description="Standalone LangGraph agent graph with Human-in-the-Loop (HITL) escalation, confidence-threshold routing, per-conversation context, streaming AI response — deployed across TRCM Investor Relations, Fitness & GYM lead management, and Healthcare Portal. SQS fan-out engine for SMS + email broadcast at scale (18K events/hr). Auth0/Okta + Cognito identity platform at ≤3ms token latency."
             />
           </Col>
 
@@ -63,22 +63,9 @@ function Projects() {
             <ProjectCard
               imgPath={leaf}
               isBlog={false}
-              title="Speech Recognition Approach for Automated command based robots & Home Automation"
-              description="Used the plant disease dataset from Kaggle and trained a image classifer m• Created home automation system using speech recognition on MATLAB Audio Toolbox, Deep leaning Toolbox
-              and Applied Correlation and Convolution Algorithm for input pattern Recognition, waveform attains about 78% signals precision
-              correction setup in Signal Processing Toolbox for command mapping."
-             // link="https://github.com/soumyajit4419/Plant_AI"
-            />
-          </Col>
-
-          <Col md={4} className="project-card">
-            <ProjectCard
-              imgPath={suicide}
-              isBlog={false}
-              title="Ai For Hand gesture controlled PowerPoint Presentation"
-              description="• Designed script for controlling PowerPoint presentation on Hand gestures in PyCharm achieves about 92% accuracy
-               and Co-ordinated in python Gaussian blur algorithm, Haar cascading,CNN for image processing for various hand gesture signs."
-             // link="https://github.com/soumyajit4419/AI_For_Social_Good"
+              title="Multi-Agent Trading System"
+              description="7 specialized AI agents with consensus-based signal aggregation and multi-model orchestration. Backtested 15 symbols / 10 years with Monte Carlo simulation (10,000 paths). Demonstrates multi-agent platform architecture with confidence-weighted decision fusion and real-time risk management."
+              link="https://github.com/Shreyasg13"
             />
           </Col>
 
@@ -86,10 +73,9 @@ function Projects() {
             <ProjectCard
               imgPath={emotion}
               isBlog={false}
-              title="Face Recognition and Emotion Detection"
-              description="Trained a CNN classifier using Keras and tensorflow backened. The classifier sucessfully predicted the various types of emotions of human. And the highest accuracy obtained with the model was 60.1%.
-              Then used Open-CV to detect the face in an image and then pass the face to the classifer to predict the emotion of a person."
-              //link="https://github.com/soumyajit4419/Face_And_Emotion_Detection"
+              title="Open-DLA — ML Evaluation Platform (NYU)"
+              description="Unified ML benchmarking framework using Factory Method pattern for pluggable model evaluation. Open-sourced with integration tests, versioned releases, and full documentation. Supports multi-model evaluation harnesses with reproducible benchmarking — the developer experience layer for ML platform engineering at NYU."
+              link="https://github.com/Shreyasg13"
             />
           </Col>
         </Row>

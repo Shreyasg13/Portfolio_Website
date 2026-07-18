@@ -6,17 +6,17 @@ function Type() {
     <Typewriter
       options={{
         strings: [
-          "Software Developer",
-          "Machine Learning Engineer",
-          "Web Developer",
-          "Coding Enthusiast",
+          "Staff Platform Engineer",
+          "MCP & A2A Connectivity Architect",
+          "Auth & Identity Platform Lead",
+          "AI Infrastructure Engineer",
+          "Distributed Systems Engineer",
         ],
         autoStart: true,
         loop: true,
         deleteSpeed: 50,
       }}
     />
-    
   );
 }
 

@@ -1,10 +1,8 @@
 import React from "react";
-import { Container, Row, Col,  } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import myImg from "../../Assets/avatar.svg";
 import Tilt from "react-parallax-tilt";
-import {AiFillMail,
-  AiFillInstagram
-} from "react-icons/ai";
+import { AiFillMail, AiFillGithub } from "react-icons/ai";
 import { FaLinkedinIn } from "react-icons/fa";
 
 function Home2() {
@@ -17,38 +15,29 @@ function Home2() {
               LET ME <span className="purple"> INTRODUCE </span> MYSELF
             </h1>
             <p className="home-about-body">
-              I am a Software Developer, Currently pursuing MS in Computer Engineering💻 From NYU🎓              <br />
-              <br />I am fluent in classics like
-              <i>
-                <b className="purple"> C++, Java and Python. </b>
-              </i>
+              Platform engineer with <b className="purple">4+ years</b> of compounded scope — leading architecture, owning end-to-end technical vision, and shipping foundational platform primitives that other engineers depend on daily.
               <br />
               <br />
-              My field of Interest's are building new &nbsp;
+              Built and maintained production{" "}
               <i>
-                <b className="purple">Software Development, Web Technologies and Products </b> and
-                also in areas related to{" "}
-                <b className="purple">
-                  Machine Learning, Image Processing       
-                </b>
-                  <i> and</i> 
-                <b className="purple"> Natural Launguage Processing.</b>
-                
-              </i>
+                <b className="purple">MCP integrations and A2A Protocol infrastructure</b>
+              </i>{" "}
+              — the exact connectivity layer that powers agentic AI platforms. Designed enterprise-grade{" "}
+              <i>
+                <b className="purple">Auth & Identity systems</b>
+              </i>{" "}
+              (Auth0, Okta, Cognito — JWT, SAML, MFA, RBAC, SSO) at ≤3ms token latency with zero CVEs.
               <br />
               <br />
-              Whenever possible, I also apply my passion for developing products
-              with <b className="purple">Python,Java</b> and
+              Shipped the complete{" "}
               <i>
-                <b className="purple">
-                  {" "}
-                  Modern Python and Javascript Library and Frameworks
-                </b>
-              </i>
-              &nbsp; like
-              <i>
-                
-              </i>
+                <b className="purple">multi-cloud API infrastructure stack</b>
+              </i>: Terraform (AWS/GCP/Azure), cloud-agnostic deployment pipelines, OTel observability, and enterprise compliance (SOC-2, SEC 17a-4). Contributed directly to{" "}
+              <b className="purple">Scale AI's LLM Engine</b> — hands-on familiarity with AI platform architecture at production scale.
+              <br />
+              <br />
+              M.S. Computer Science,{" "}
+              <b className="purple">New York University</b>. 2 Springer AI publications.
             </p>
           </Col>
           <Col md={4} className="myAvtar">
@@ -69,39 +58,29 @@ function Home2() {
                   href="mailto:sg6874@nyu.edu"
                   target="_blank"
                   rel="noreferrer"
-                  className="icon-colour  home-social-icons"
+                  className="icon-colour home-social-icons"
                 >
                   <AiFillMail />
                 </a>
               </li>
-              {/* <li className="social-icons">
-                <a
-                  href="https://twitter.com/Soumyajit4419"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="icon-colour  home-social-icons"
-                >
-                  <AiOutlineTwitter />
-                </a>
-              </li> */}
               <li className="social-icons">
                 <a
                   href="https://www.linkedin.com/in/shreyash130197/"
                   target="_blank"
                   rel="noreferrer"
-                  className="icon-colour  home-social-icons"
+                  className="icon-colour home-social-icons"
                 >
                   <FaLinkedinIn />
                 </a>
               </li>
               <li className="social-icons">
                 <a
-                  href="https://www.instagram.com/shreyash_g13/"
+                  href="https://github.com/Shreyasg13"
                   target="_blank"
                   rel="noreferrer"
                   className="icon-colour home-social-icons"
                 >
-                  <AiFillInstagram />
+                  <AiFillGithub />
                 </a>
               </li>
             </ul>
