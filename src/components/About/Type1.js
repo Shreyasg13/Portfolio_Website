@@ -7,7 +7,7 @@ function Type1() {
       options={{
         strings: [
           "Platform AI Architect — 5+ Years",
-          "Principal Architect — EMC AI Core & pdffillr.ai",
+          "Principal Architect — Multi-Tenant AI Platform & pdffillr.ai",
           "Self-Hosted vLLM Inference (Qwen3-32B · DeepSeek-R1)",
           "Cloud & Scalable Infrastructure Expert",
           "M.S. Computer Science, NYU",

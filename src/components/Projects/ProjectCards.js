@@ -4,8 +4,8 @@ import Button from "react-bootstrap/Button";
 import { BiLinkExternal } from "react-icons/bi";
 
 const categoryMeta = {
-  "EMC AI Core":           { tag: "AI Platform",        gradient: "linear-gradient(135deg,#6a0dad,#c770f0)" },
-  "EMC-Auth-Server":       { tag: "Auth & Identity",    gradient: "linear-gradient(135deg,#7b1fa2,#e040fb)" },
+  "Governed Multi-Tenant AI Platform": { tag: "AI Platform",     gradient: "linear-gradient(135deg,#6a0dad,#c770f0)" },
+  "Multi-Tenant IdP":      { tag: "Auth & Identity",    gradient: "linear-gradient(135deg,#7b1fa2,#e040fb)" },
   "PDFfillr.ai":           { tag: "MCP & Agentic",      gradient: "linear-gradient(135deg,#4a148c,#ab47bc)" },
   "Revi AI":               { tag: "Agentic AI",         gradient: "linear-gradient(135deg,#1565c0,#42a5f5)" },
   "Scale AI LLM Engine":   { tag: "OSS · LLM Infra",   gradient: "linear-gradient(135deg,#1b5e20,#66bb6a)" },

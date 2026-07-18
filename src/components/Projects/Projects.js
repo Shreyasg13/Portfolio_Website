@@ -15,7 +15,7 @@ import codeEditor3 from "../../Assets/Projects/codeEditor3.png";
 const projects = [
   {
     imgPath: codeEditor3,
-    title: "EMC AI Core — Governed Multi-Tenant AI Platform",
+    title: "Governed Multi-Tenant AI Platform",
     description:
       "Principal Architect (2026–Present). Self-hosted vLLM: Qwen3-32B INT4 AWQ + Qwen3-VL vision + DeepSeek-R1 on GPU spot fleets (EKS Auto Mode, Karpenter, KEDA). AWS Bedrock fallback. Serves 4 verticals (healthcare triage, financial advisor risk, workflow orchestration, data-quality anomaly detection) via single ALB endpoint. Milvus multi-turn RAG, two-tier Valkey caching, Langfuse cost/quality tracking, OTEL→Jaeger tracing, Istio mTLS, Cognito M2M OAuth2, PHI masking, CloudTrail compliance.",
     link: "https://github.com/Shreyasg13",
@@ -23,7 +23,7 @@ const projects = [
   },
   {
     imgPath: editor,
-    title: "EMC-Auth-Server — Multi-Tenant IdP (Auth0 Replacement)",
+    title: "Multi-Tenant IdP (Auth0 Replacement)",
     description:
       "Principal Architect (May 2026–Present). Complete multi-tenant Identity Provider in Go/Echo across 8 phases: JWT, SAML 2.0+JIT provisioning, fine-grained RBAC, tenant isolation, MFA, SSO. AI agent security registry with cryptographic agent IDs, role-claim injection, lifecycle tracking & anomaly detection. React/Vite admin UI as single binary. Sub-5ms at 10K concurrent (k6). Distroless Docker. Zero CVEs.",
     link: "https://github.com/Shreyasg13",

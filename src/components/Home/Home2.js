@@ -21,7 +21,7 @@ function Home2() {
               <br />
               <br />
               Principal architect of{" "}
-              <i><b className="purple">EMC AI Core</b></i> — a governed multi-tenant AI platform serving 4 product verticals (healthcare triage, financial advisor, workflow orchestration, data-quality) through a single endpoint. Self-hosted{" "}
+              <i><b className="purple">a governed multi-tenant AI platform</b></i> serving 4 product verticals (healthcare triage, financial advisor, workflow orchestration, data-quality) through a single endpoint. Self-hosted{" "}
               <i><b className="purple">vLLM inference: Qwen3-32B INT4 AWQ · Qwen3-VL vision · DeepSeek-R1</b></i>{" "}
               on GPU spot fleets with EKS Auto Mode + Karpenter + KEDA autoscaling and AWS Bedrock fallback routing.
               <br />

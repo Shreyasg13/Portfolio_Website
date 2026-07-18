@@ -17,8 +17,8 @@ function AboutCard() {
             </div>
             <b>Platform AI Architect</b> with <b>5+ years</b> and{" "}
             <b>3,000+ commits · 700+ PRs · 10+ production repos</b>.
-            Principal architect of{" "}
-            <span className="purple">EMC AI Core</span> — governed multi-tenant AI platform with self-hosted{" "}
+            Principal architect of a{" "}
+            <span className="purple">governed multi-tenant AI platform</span> with self-hosted{" "}
             <span className="purple">vLLM (Qwen3-32B · DeepSeek-R1)</span> on GPU spot fleets, Bedrock fallback, Milvus RAG, and Langfuse LLM observability.
             Built a complete{" "}
             <span className="purple">multi-tenant IdP in Go/Echo</span> (zero CVEs, ≤5ms, 10K concurrent). Shipped{" "}
