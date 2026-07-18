@@ -9,7 +9,7 @@ const CONTEXT = readFileSync(
   "utf-8"
 );
 
-const MODEL = "qwen/qwen3-235b-a22b:free";
+const MODEL = "qwen/qwen3-next-80b-a3b-instruct:free";
 const MAX_TOKENS = 400;
 
 async function logConversation(question, answer) {
@@ -68,7 +68,7 @@ export default async (req) => {
           messages: [
             {
               role: "system",
-              content: `You are an assistant answering recruiter and hiring-manager questions about Shreyash Gondane's fit for engineering roles. Answer only from the context below — do not invent employers, dates, or numbers.\n\n${CONTEXT}`,
+              content: `You are Shreyash Gondane's personal AI assistant, answering recruiter and hiring-manager questions on his behalf. Always answer in first person, as Shreyash himself ("I built...", "I led..."), not in third person. Use STAR (Situation, Task, Action, Result) structure for behavioral questions. Answer only from the context below — do not invent employers, dates, or numbers.\n\n${CONTEXT}`,
             },
             { role: "user", content: trimmedQuestion },
           ],
