@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { BsChatDotsFill, BsX, BsSend } from "react-icons/bs";
+import avatarImg from "../../Assets/avatar.svg";
 
 const STARTERS = [
   "Is he a fit for a Staff Platform Engineer role?",
@@ -74,18 +75,28 @@ function AskShreyash() {
       {open && (
         <div className="ask-shreyash-panel">
           <div className="ask-shreyash-header">
-            <span>Ask Shreyash — AI Assistant</span>
+            <img src={avatarImg} alt="Shreyash" className="ask-shreyash-header-avatar" />
+            <div>
+              <span className="ask-shreyash-header-name">Shreyash Gondane</span>
+              <span className="ask-shreyash-header-sub">AI Assistant · usually replies instantly</span>
+            </div>
           </div>
 
           <div className="ask-shreyash-messages">
             {messages.map((m, i) => (
-              <div key={i} className={`ask-shreyash-msg ask-shreyash-msg-${m.role}`}>
-                {m.content}
+              <div key={i} className={`ask-shreyash-row ask-shreyash-row-${m.role}`}>
+                {m.role === "assistant" && (
+                  <img src={avatarImg} alt="" className="ask-shreyash-msg-avatar" />
+                )}
+                <div className={`ask-shreyash-msg ask-shreyash-msg-${m.role}`}>{m.content}</div>
               </div>
             ))}
             {loading && (
-              <div className="ask-shreyash-msg ask-shreyash-msg-assistant ask-shreyash-typing">
-                Thinking…
+              <div className="ask-shreyash-row ask-shreyash-row-assistant">
+                <img src={avatarImg} alt="" className="ask-shreyash-msg-avatar" />
+                <div className="ask-shreyash-msg ask-shreyash-msg-assistant ask-shreyash-typing">
+                  Thinking…
+                </div>
               </div>
             )}
             <div ref={bottomRef} />
