@@ -1,6 +1,5 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { SiOpenai, SiAmazonaws, SiAuth0, SiApachekafka } from "react-icons/si";
 import { GiBrain } from "react-icons/gi";
 import { MdOutlineDesignServices } from "react-icons/md";
 import { AiFillCloud } from "react-icons/ai";
