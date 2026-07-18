@@ -1,7 +1,6 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import ProjectCard from "./ProjectCards";
-import Particle from "../Particle";
 import Reveal from "../Reveal";
 import algo from "../../Assets/Projects/algo.png";
 import editor from "../../Assets/Projects/codeEditor.png";
@@ -83,7 +82,6 @@ const projects = [
 function Projects() {
   return (
     <Container fluid className="project-section">
-      <Particle />
       <Container>
         <h1 className="project-heading">
           Platform <strong className="purple">Projects</strong>
