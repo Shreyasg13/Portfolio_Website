@@ -1033,8 +1033,30 @@ button:focus {
   background: rgba(199, 112, 240, 0.1);
   border-bottom: 1px solid rgba(199, 112, 240, 0.2);
   color: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ask-shreyash-header-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.ask-shreyash-header-name {
+  display: block;
   font-weight: 700;
   font-size: 0.95em;
+}
+
+.ask-shreyash-header-sub {
+  display: block;
+  font-size: 0.72em;
+  color: var(--text-dim);
+  font-weight: 400;
 }
 
 .ask-shreyash-messages {
@@ -1046,22 +1068,38 @@ button:focus {
   gap: 10px;
 }
 
+.ask-shreyash-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.ask-shreyash-row-user {
+  justify-content: flex-end;
+}
+
+.ask-shreyash-msg-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
 .ask-shreyash-msg {
   font-size: 0.86em;
   line-height: 1.5;
   padding: 9px 12px;
   border-radius: 10px;
-  max-width: 88%;
+  max-width: 78%;
 }
 
 .ask-shreyash-msg-assistant {
-  align-self: flex-start;
   background: rgba(199, 112, 240, 0.12);
   color: var(--text-muted);
 }
 
 .ask-shreyash-msg-user {
-  align-self: flex-end;
   background: var(--imp-text-color);
   color: white;
 }
