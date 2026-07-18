@@ -9,7 +9,7 @@ const CONTEXT = readFileSync(
   "utf-8"
 );
 
-const MODEL = "qwen/qwen3-235b-a22b:free";
+const MODEL = "qwen/qwen3-next-80b-a3b-instruct:free";
 const MAX_TOKENS = 400;
 
 async function logConversation(question, answer) {
