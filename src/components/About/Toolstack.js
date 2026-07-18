@@ -12,55 +12,33 @@ import {
   SiDatadog,
   SiLinux,
   SiPostman,
+  SiOpentelemetry,
 } from "react-icons/si";
+
+const tools = [
+  { label: "VS Code", icon: <SiVisualstudiocode /> },
+  { label: "Docker", icon: <SiDocker /> },
+  { label: "Kubernetes", icon: <SiKubernetes /> },
+  { label: "Terraform", icon: <SiTerraform /> },
+  { label: "GitHub Actions", icon: <SiGithubactions /> },
+  { label: "Jenkins", icon: <SiJenkins /> },
+  { label: "OpenTelemetry", icon: <SiOpentelemetry /> },
+  { label: "Prometheus", icon: <SiPrometheus /> },
+  { label: "Grafana", icon: <SiGrafana /> },
+  { label: "Datadog", icon: <SiDatadog /> },
+  { label: "Linux", icon: <SiLinux /> },
+  { label: "Postman", icon: <SiPostman /> },
+];
 
 function Toolstack() {
   return (
     <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>VS Code</h4>
-        <SiVisualstudiocode />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Docker</h4>
-        <SiDocker />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Kubernetes</h4>
-        <SiKubernetes />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Terraform</h4>
-        <SiTerraform />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>GitHub Actions</h4>
-        <SiGithubactions />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Jenkins</h4>
-        <SiJenkins />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Grafana</h4>
-        <SiGrafana />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Prometheus</h4>
-        <SiPrometheus />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Datadog</h4>
-        <SiDatadog />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Linux</h4>
-        <SiLinux />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Postman</h4>
-        <SiPostman />
-      </Col>
+      {tools.map((t) => (
+        <Col key={t.label} xs={4} md={2} className="tech-icons">
+          <h4>{t.label}</h4>
+          {t.icon}
+        </Col>
+      ))}
     </Row>
   );
 }

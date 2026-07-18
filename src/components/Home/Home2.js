@@ -15,29 +15,25 @@ function Home2() {
               LET ME <span className="purple"> INTRODUCE </span> MYSELF
             </h1>
             <p className="home-about-body">
-              Platform engineer with <b className="purple">4+ years</b> of compounded scope — leading architecture, owning end-to-end technical vision, and shipping foundational platform primitives that other engineers depend on daily.
+              <b className="purple">Platform AI Architect</b> with{" "}
+              <b className="purple">5+ years</b> of end-to-end technical ownership —{" "}
+              <b>1,519+ commits · 543+ PRs · 10+ production repos · 4 direct reports</b>.
               <br />
               <br />
-              Built and maintained production{" "}
-              <i>
-                <b className="purple">MCP integrations and A2A Protocol infrastructure</b>
-              </i>{" "}
-              — the exact connectivity layer that powers agentic AI platforms. Designed enterprise-grade{" "}
-              <i>
-                <b className="purple">Auth & Identity systems</b>
-              </i>{" "}
-              (Auth0, Okta, Cognito — JWT, SAML, MFA, RBAC, SSO) at ≤3ms token latency with zero CVEs.
+              Built and deployed production{" "}
+              <i><b className="purple">MCP integrations and A2A Protocol infrastructure</b></i> connecting Classification, Extraction, Mapping, and Validation agents — the foundational connectivity layer of agentic AI platforms. Architected a{" "}
+              <i><b className="purple">complete multi-tenant Identity Provider from scratch in Go/Echo</b></i>{" "}
+              (JWT, SAML 2.0, RBAC, MFA, SSO, AI agent security registry) — an Auth0-equivalent platform, zero CVEs, ≤5ms token verification at 10K concurrent requests.
               <br />
               <br />
               Shipped the complete{" "}
-              <i>
-                <b className="purple">multi-cloud API infrastructure stack</b>
-              </i>: Terraform (AWS/GCP/Azure), cloud-agnostic deployment pipelines, OTel observability, and enterprise compliance (SOC-2, SEC 17a-4). Contributed directly to{" "}
-              <b className="purple">Scale AI's LLM Engine</b> — hands-on familiarity with AI platform architecture at production scale.
+              <i><b className="purple">multi-cloud scalable infrastructure stack</b></i>: Terraform (AWS/GCP/Azure), EKS, Kubernetes, Helm, OTel distributed tracing, Prometheus + Grafana observability, and enterprise compliance (FINRA, SOC-2, SEC 17a-4). Designed{" "}
+              <b className="purple">LangGraph Agentic Intelligence</b> (HITL escalation) deployed across three production verticals. Contributed directly to{" "}
+              <b className="purple">Scale AI's LLM Engine</b>.
               <br />
               <br />
               M.S. Computer Science,{" "}
-              <b className="purple">New York University</b>. 2 Springer AI publications.
+              <b className="purple">New York University</b> — Distributed Systems, ML Infrastructure, Security & Platform Engineering. 2 Springer AI publications.
             </p>
           </Col>
           <Col md={4} className="myAvtar">
@@ -90,4 +86,5 @@ function Home2() {
     </Container>
   );
 }
+
 export default Home2;

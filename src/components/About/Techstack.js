@@ -1,10 +1,6 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
-import {
-  DiPython,
-  DiJava,
-  DiReact,
-} from "react-icons/di";
+import { DiPython, DiJava, DiReact } from "react-icons/di";
 import {
   SiTypescript,
   SiNodedotjs,
@@ -20,80 +16,55 @@ import {
   SiGrafana,
   SiAuth0,
   SiMysql,
+  SiOpensearch,
+  SiApachespark,
 } from "react-icons/si";
+
+const skills = [
+  { label: "Python", icon: <DiPython /> },
+  { label: "Go / Echo", icon: <SiGo /> },
+  { label: "TypeScript", icon: <SiTypescript /> },
+  { label: "Java 11", icon: <DiJava /> },
+  { label: "Node.js", icon: <SiNodedotjs /> },
+  { label: "SQL", icon: <SiMysql /> },
+  { label: "AWS", icon: <SiAmazonaws /> },
+  { label: "Docker", icon: <SiDocker /> },
+  { label: "Kubernetes", icon: <SiKubernetes /> },
+  { label: "Terraform", icon: <SiTerraform /> },
+  { label: "PostgreSQL", icon: <SiPostgresql /> },
+  { label: "Redis", icon: <SiRedis /> },
+  { label: "Kafka", icon: <SiApachekafka /> },
+  { label: "OpenSearch", icon: <SiOpensearch /> },
+  { label: "Prometheus", icon: <SiPrometheus /> },
+  { label: "Grafana", icon: <SiGrafana /> },
+  { label: "Auth0 / Okta", icon: <SiAuth0 /> },
+  { label: "React", icon: <DiReact /> },
+];
 
 function Techstack() {
   return (
-    <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Python</h4>
-        <DiPython />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>TypeScript</h4>
-        <SiTypescript />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Go</h4>
-        <SiGo />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Java</h4>
-        <DiJava />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Node.js</h4>
-        <SiNodedotjs />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>SQL</h4>
-        <SiMysql />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>AWS</h4>
-        <SiAmazonaws />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Docker</h4>
-        <SiDocker />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Kubernetes</h4>
-        <SiKubernetes />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Terraform</h4>
-        <SiTerraform />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>PostgreSQL</h4>
-        <SiPostgresql />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Redis</h4>
-        <SiRedis />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Kafka</h4>
-        <SiApachekafka />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Prometheus</h4>
-        <SiPrometheus />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Grafana</h4>
-        <SiGrafana />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>Auth0 / Okta</h4>
-        <SiAuth0 />
-      </Col>
-      <Col xs={4} md={2} className="tech-icons">
-        <h4>React</h4>
-        <DiReact />
-      </Col>
-    </Row>
+    <>
+      <Row style={{ justifyContent: "center", paddingBottom: "10px" }}>
+        <Col md={12} style={{ textAlign: "center", color: "white", paddingBottom: "20px" }}>
+          <p style={{ fontSize: "0.95em", color: "#c770f0" }}>
+            <b>Languages:</b> Python · Go · TypeScript · Java 11 · Node.js · SQL · Bash &nbsp;|&nbsp;
+            <b>Cloud:</b> AWS (EKS, Lambda, S3, DynamoDB, Aurora, KMS, Bedrock, CloudFront) · GCP · Azure &nbsp;|&nbsp;
+            <b>Infra:</b> Kubernetes · Terraform · Helm · Docker · Cloudflare Workers &nbsp;|&nbsp;
+            <b>AI:</b> MCP · A2A · LangGraph · LangChain · Claude · GPT-4o · Bedrock · vLLM · RAG &nbsp;|&nbsp;
+            <b>Identity:</b> Auth0 · Okta · Cognito · JWT · SAML 2.0 · RBAC · MFA · SSO &nbsp;|&nbsp;
+            <b>Compliance:</b> SOC-2 · FINRA · SEC 17a-4 · FedRAMP-adjacent
+          </p>
+        </Col>
+      </Row>
+      <Row style={{ justifyContent: "center", paddingBottom: "50px" }}>
+        {skills.map((s) => (
+          <Col key={s.label} xs={4} md={2} className="tech-icons">
+            <h4>{s.label}</h4>
+            {s.icon}
+          </Col>
+        ))}
+      </Row>
+    </>
   );
 }
 

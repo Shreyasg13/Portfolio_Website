@@ -6,10 +6,11 @@ function Type1() {
     <Typewriter
       options={{
         strings: [
-          "Staff Platform Engineer at Engineersmind",
-          "Lead Platform Architect — pdffillr.ai",
+          "Platform AI Architect — 5+ Years",
+          "Cloud & Scalable Infrastructure Expert",
+          "System Design & Distributed Systems",
+          "Lead Architect — pdffillr.ai & Revi AI",
           "M.S. Computer Science, NYU",
-          "Former System Engineer at TCS",
         ],
         autoStart: true,
         loop: true,
