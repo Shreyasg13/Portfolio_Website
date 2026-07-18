@@ -12,6 +12,7 @@ import {
   Routes
 } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
+import AskShreyash from "./components/Chat/AskShreyash";
 import "./style.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -41,6 +42,7 @@ function App() {
           {/* <Route path="*" element={<Navigate to="/"/>} /> */}
         </Routes>
         <Footer />
+        <AskShreyash />
       </div>
     </Router>
   );

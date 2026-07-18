@@ -57,6 +57,9 @@ jobs:
     outputs:
       deploy_url: ${{ steps.netlify_deploy.outputs.deploy-url }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
@@ -68,6 +71,7 @@ jobs:
         uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: "./build"
+          functions-dir: "netlify/functions"
           production-branch: main
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { AiFillMail, AiFillGithub } from "react-icons/ai";
 import { FaLinkedinIn } from "react-icons/fa";
+import VisitorCounter from "./Home/VisitorCounter";
 
 const VERSION = process.env.REACT_APP_GIT_SHA
   ? process.env.REACT_APP_GIT_SHA.slice(0, 7)
@@ -20,6 +21,7 @@ function Footer() {
           <p style={{ color: "#666", fontSize: "0.7em", margin: 0 }}>
             v{VERSION}
           </p>
+          <VisitorCounter />
         </Col>
         <Col md="4" className="footer-body">
           <ul className="footer-icons">
