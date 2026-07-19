@@ -25,7 +25,7 @@ function ResumeNew() {
           <div style={{ textAlign: "center" }}>
             <h2 style={{ color: "white", paddingBottom: "10px" }}>
               Shreyash Gondane —{" "}
-              <span style={{ color: "#c770f0" }}>Platform AI Architect</span>
+              <span style={{ color: "#e0452a" }}>Platform AI Architect</span>
             </h2>
             <p style={{ color: "#c2c2d2", fontSize: "0.95em" }}>
               5+ yrs · 3,000+ commits · 700+ PRs · vLLM · MCP · Auth & Identity · Multi-Cloud

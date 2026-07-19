@@ -9,7 +9,7 @@ const pillars = [
   {
     icon: <GiBrain size={40} />,
     title: "Agentic AI & LLM Inference",
-    color: "#c770f0",
+    color: "#e0452a",
     points: [
       "Self-hosted vLLM: Qwen3-32B INT4 AWQ · Qwen3-VL · DeepSeek-R1",
       "MCP server+client · A2A Protocol orchestration",
