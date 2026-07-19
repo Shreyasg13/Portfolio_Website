@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { BsChevronLeft, BsChevronRight, BsRobot, BsServer, BsCpu, BsShieldCheck, BsGraphUp } from "react-icons/bs";
+import SystemPreview from "./SystemPreview";
 
 const SYSTEMS = [
   {
@@ -63,11 +64,7 @@ function LiveSystems() {
       <div className="ls-track" ref={trackRef}>
         {SYSTEMS.map((s) => (
           <div className="ls-card hg-glass" key={s.title}>
-            <div className={`ls-card-mock ls-card-mock-${s.visual}`} aria-hidden="true">
-              <div className="ls-mock-topline"><span /> <span /> <span /></div>
-              <span className="ls-card-icon">{s.icon}</span>
-              <div className="ls-mock-data"><i /><i /><i /><i /></div>
-            </div>
+            <SystemPreview type={s.visual} icon={s.icon} />
             <div className="ls-card-body">
               <div className="ls-card-title-row">
                 <span className="ls-card-title">{s.title}</span>
