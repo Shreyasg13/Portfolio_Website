@@ -5,12 +5,20 @@ import { BsArrowRight } from "react-icons/bs";
 const LINKS = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
+  { to: "/about", label: "Expertise" },
   { to: "/project", label: "Projects" },
+  { to: "/about", label: "Publications" },
   { to: "/resume", label: "Resume" },
 ];
 
 function TopNav() {
   const location = useLocation();
+  const activeLabel = {
+    "/": "Home",
+    "/about": "About",
+    "/project": "Projects",
+    "/resume": "Resume",
+  }[location.pathname];
 
   return (
     <nav className="tn-nav">
@@ -23,7 +31,7 @@ function TopNav() {
           <Link
             key={l.label}
             to={l.to}
-            className={`tn-pill-link ${location.pathname === l.to ? "tn-pill-link-active" : ""}`}
+            className={`tn-pill-link ${activeLabel === l.label ? "tn-pill-link-active" : ""}`}
           >
             {l.label}
           </Link>

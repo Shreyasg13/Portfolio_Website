@@ -143,12 +143,6 @@ function HeroGlass() {
           </div>
         </div>
 
-        <div className="hg-center">
-          <div className="hg-photo-slot">
-            <img src={heroPortrait} alt="Shreyash Gondane" className="hg-photo-img" />
-          </div>
-        </div>
-
         <div className="hg-right">
           <div className="hg-panel hg-glass">
             <div className="hg-panel-header">
@@ -198,28 +192,34 @@ function HeroGlass() {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="hg-panel hg-glass hg-build-panel">
-        <div className="hg-panel-header">
-          What I Build &amp; Deliver
-          <Link to="/project" className="hg-view-all">
-            View All <BsArrowRight />
-          </Link>
+        <div className="hg-center">
+          <div className="hg-photo-slot">
+            <img src={heroPortrait} alt="Shreyash Gondane" className="hg-photo-img" />
+          </div>
         </div>
-        <div className="hg-build-grid hg-build-grid-wide">
-          {BUILD_DELIVER.map((b) => (
-            <div className="hg-build-item" key={b.title}>
-              <span
-                className="hg-build-icon"
-                style={{ background: `${b.color}22`, color: b.color }}
-              >
-                {b.icon}
-              </span>
-              <div className="hg-build-title">{b.title}</div>
-              <div className="hg-build-desc">{b.desc}</div>
-            </div>
-          ))}
+
+        <div className="hg-panel hg-glass hg-build-panel">
+          <div className="hg-panel-header">
+            What I Build &amp; Deliver
+            <Link to="/project" className="hg-view-all">
+              View All <BsArrowRight />
+            </Link>
+          </div>
+          <div className="hg-build-grid hg-build-grid-wide">
+            {BUILD_DELIVER.map((b) => (
+              <div className="hg-build-item" key={b.title}>
+                <span
+                  className="hg-build-icon"
+                  style={{ background: `${b.color}22`, color: b.color }}
+                >
+                  {b.icon}
+                </span>
+                <div className="hg-build-title">{b.title}</div>
+                <div className="hg-build-desc">{b.desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
