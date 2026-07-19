@@ -3,5 +3,8 @@
   publish = "build"
   functions = "netlify/functions"
 
+[build.environment]
+  CI = "false"
+
 [functions]
   directory = "netlify/functions"
