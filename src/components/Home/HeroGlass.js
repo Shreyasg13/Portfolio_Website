@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import heroPortrait from "../../Assets/hero-portrait.png";
+import heroScreen from "../../Assets/ChatGPT Image Jul 19, 2026, 10_42_10 AM.png";
 import {
   BsCircleFill,
   BsArrowRight,
-  BsChatDotsFill,
   BsGraphUp,
   BsCheckCircleFill,
   BsGearFill,
@@ -25,15 +24,15 @@ const TAGS = [
   "Identity & Security",
   "Backend Systems",
   "Cloud & DevOps",
-  "Distributed Systems",
+  "Distributed Infrastructure",
 ];
 
 const ASSISTANT_SUGGESTIONS = [
-  { icon: <BsChatDotsFill />, label: "How can I help you today?" },
-  { icon: <BsGraphUp />, label: "Analyze customer sentiment" },
-  { icon: <BsCheckCircleFill />, label: "Check system health" },
-  { icon: <BsGearFill />, label: "Summarize platform metrics" },
-  { icon: <BsFileEarmarkTextFill />, label: "Generate architecture diagram" },
+  { icon: <BsCheckCircleFill />, label: "What makes you a strong fit for this role?" },
+  { icon: <Layers3 />, label: "Tell me about your leadership experience" },
+  { icon: <BsGearFill />, label: "What's your core technical expertise?" },
+  { icon: <Rocket />, label: "What's your most impactful project?" },
+  { icon: <BsFileEarmarkTextFill />, label: "Do you need visa sponsorship?" },
 ];
 
 const TOP_STATS = [
@@ -55,19 +54,22 @@ const BUILD_DELIVER = [
 
 function localReply(question) {
   const query = question.toLowerCase();
-  if (query.includes("health") || query.includes("system")) {
-    return "All platform signals are healthy. I build observable, production-grade systems with metrics, tracing, and reliability controls designed in from day one.";
+  if (query.includes("fit") || query.includes("role")) {
+    return "I bring 5+ years building production AI platforms \u2014 agentic AI/MCP, self-hosted LLM inference, identity security, and distributed systems \u2014 plus experience leading teams as large as 21 engineers. That mix of hands-on platform engineering and technical leadership is what I'd bring to this role.";
   }
-  if (query.includes("sentiment") || query.includes("customer")) {
-    return "I would route the request through an agentic workflow, combine model inference with evaluation guardrails, and return an auditable sentiment and intent summary.";
+  if (query.includes("leadership") || query.includes("lead")) {
+    return "I've led engineering teams as large as 21 people (4 direct reports), mentored engineers to raise PR acceptance by 30%, and served as Principal Architect across multiple platform initiatives \u2014 balancing hands-on system design with team growth and delivery.";
   }
-  if (query.includes("metric") || query.includes("platform")) {
-    return "My focus is reliable AI platform engineering: agentic AI and MCP, self-hosted and managed LLMs, identity, APIs, and cloud operations at production scale.";
+  if (query.includes("technical") || query.includes("expertise") || query.includes("stack")) {
+    return "My core stack is Python, Go, and TypeScript, with deep experience in self-hosted LLM serving (vLLM, Qwen3, DeepSeek-R1), agentic AI (MCP, A2A, LangGraph), identity/auth systems built from scratch, and cloud-native infrastructure on AWS/Kubernetes.";
   }
-  if (query.includes("architecture") || query.includes("diagram")) {
-    return "A typical design starts with a secure API and identity boundary, then an orchestration layer, tools and retrieval, model routing, and full observability across the request path.";
+  if (query.includes("project") || query.includes("impact")) {
+    return "One of the most impactful was building MCP and A2A connectivity infrastructure at PDFfillr.ai \u2014 it cut document processing time from 15 days to 5 minutes while raising field accuracy from 90% to 97%, and cut compute costs roughly 50%.";
   }
-  return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about a specific platform, system, or leadership experience.";
+  if (query.includes("visa") || query.includes("sponsor")) {
+    return "Yes \u2014 I'm currently on an H1B visa and would need employer sponsorship (an H1B transfer) to take on a new role. Happy to discuss details.";
+  }
+  return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about my fit for the role, leadership experience, technical expertise, or sponsorship needs.";
 }
 
 function HeroGlass() {
@@ -164,7 +166,7 @@ function HeroGlass() {
             <br />
             <span>Gondane</span>
           </h1>
-          <p className="hg-title">Staff / Principal AI Platform Engineer</p>
+          <p className="hg-title">Principal AI Platform Engineer — Distributed Infrastructure &amp; Scaling</p>
           <p className="hg-desc">
             I design, build and scale production-grade AI platforms,
             self-hosted LLM systems, and secure identity infrastructure that
@@ -197,7 +199,7 @@ function HeroGlass() {
               <div className="hg-chat-scroll" aria-live="polite" aria-busy={loading}>
                 {messages.length === 0 &&
                   <>
-                    <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask me about platforms, LLM infrastructure, or leadership experience.</div>
+                    <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask the questions that matter most for screening — fit, leadership, technical depth, impact, or logistics.</div>
                     {ASSISTANT_SUGGESTIONS.map((s) => (
                       <button
                         className="hg-suggestion"
@@ -251,7 +253,7 @@ function HeroGlass() {
 
         <div className="hg-center">
           <div className="hg-photo-slot">
-            <img src={heroPortrait} alt="Shreyash Gondane" className="hg-photo-img" />
+            <img src={heroScreen} alt="Shreyash Gondane workspace dashboard" className="hg-photo-img" />
           </div>
         </div>
 
