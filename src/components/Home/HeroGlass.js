@@ -1,23 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import heroPortrait from "../../Assets/hero-portrait.png";
+import heroScreen from "../../Assets/ChatGPT Image Jul 19, 2026, 10_42_10 AM.png";
 import {
   BsCircleFill,
   BsArrowRight,
-  BsChatDotsFill,
   BsGraphUp,
   BsCheckCircleFill,
   BsGearFill,
   BsFileEarmarkTextFill,
   BsDiagram3Fill,
   BsSend,
-  BsRocketTakeoffFill,
-  BsLayersFill,
-  BsBookFill,
-  BsShieldFillCheck,
+  BsMicFill,
+  BsStopFill,
 } from "react-icons/bs";
 import { AiFillCloud } from "react-icons/ai";
 import { GiBrain } from "react-icons/gi";
+import { BookOpen, Layers3, MessagesSquare, Rocket, ShieldCheck } from "lucide-react";
 
 const TAGS = [
   "AI Platforms",
@@ -26,23 +24,23 @@ const TAGS = [
   "Identity & Security",
   "Backend Systems",
   "Cloud & DevOps",
-  "Distributed Systems",
+  "Distributed Infrastructure",
 ];
 
 const ASSISTANT_SUGGESTIONS = [
-  { icon: <BsChatDotsFill />, label: "Is he a fit for a Staff Platform Engineer role?" },
-  { icon: <BsGraphUp />, label: "What's his AI / LLM infrastructure experience?" },
-  { icon: <BsCheckCircleFill />, label: "Tell me about his auth & identity work" },
-  { icon: <BsGearFill />, label: "What's his experience with distributed systems?" },
-  { icon: <BsFileEarmarkTextFill />, label: "Is he open to sponsorship?" },
+  { icon: <BsCheckCircleFill />, label: "What makes you a strong fit for this role?" },
+  { icon: <Layers3 />, label: "Tell me about your leadership experience" },
+  { icon: <BsGearFill />, label: "What's your core technical expertise?" },
+  { icon: <Rocket />, label: "What's your most impactful project?" },
+  { icon: <BsFileEarmarkTextFill />, label: "Do you need visa sponsorship?" },
 ];
 
 const TOP_STATS = [
-  { icon: <BsRocketTakeoffFill />, color: "#e0452a", num: "5+", lab: "Years Experience" },
-  { icon: <BsChatDotsFill />, color: "#ff7a5c", num: "1.2M+", lab: "AI Conversations / Month" },
-  { icon: <BsLayersFill />, color: "#4caf50", num: "10+", lab: "Production Platforms" },
-  { icon: <BsBookFill />, color: "#e0a02a", num: "2", lab: "Springer Publications" },
-  { icon: <BsShieldFillCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
+  { icon: <Rocket />, color: "#e0452a", num: "5+", lab: "Years Experience" },
+  { icon: <MessagesSquare />, color: "#ff7a5c", num: "1.2M+", lab: "AI Conversations / Month" },
+  { icon: <Layers3 />, color: "#4caf50", num: "10+", lab: "Production Platforms" },
+  { icon: <BookOpen />, color: "#e0a02a", num: "2", lab: "Springer Publications" },
+  { icon: <ShieldCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
 ];
 
 const BUILD_DELIVER = [
@@ -54,11 +52,33 @@ const BUILD_DELIVER = [
   { icon: <AiFillCloud />, color: "#4fa8e0", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
 ];
 
+function localReply(question) {
+  const query = question.toLowerCase();
+  if (query.includes("fit") || query.includes("role")) {
+    return "I bring 5+ years building production AI platforms \u2014 agentic AI/MCP, self-hosted LLM inference, identity security, and distributed systems \u2014 plus experience leading teams as large as 21 engineers. That mix of hands-on platform engineering and technical leadership is what I'd bring to this role.";
+  }
+  if (query.includes("leadership") || query.includes("lead")) {
+    return "I've led engineering teams as large as 21 people (4 direct reports), mentored engineers to raise PR acceptance by 30%, and served as Principal Architect across multiple platform initiatives \u2014 balancing hands-on system design with team growth and delivery.";
+  }
+  if (query.includes("technical") || query.includes("expertise") || query.includes("stack")) {
+    return "My core stack is Python, Go, and TypeScript, with deep experience in self-hosted LLM serving (vLLM, Qwen3, DeepSeek-R1), agentic AI (MCP, A2A, LangGraph), identity/auth systems built from scratch, and cloud-native infrastructure on AWS/Kubernetes.";
+  }
+  if (query.includes("project") || query.includes("impact")) {
+    return "One of the most impactful was building MCP and A2A connectivity infrastructure at PDFfillr.ai \u2014 it cut document processing time from 15 days to 5 minutes while raising field accuracy from 90% to 97%, and cut compute costs roughly 50%.";
+  }
+  if (query.includes("visa") || query.includes("sponsor")) {
+    return "Yes \u2014 I'm currently on an H1B visa and would need employer sponsorship (an H1B transfer) to take on a new role. Happy to discuss details.";
+  }
+  return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about my fit for the role, leadership experience, technical expertise, or sponsorship needs.";
+}
+
 function HeroGlass() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const bottomRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -73,21 +93,47 @@ function HeroGlass() {
       const res = await fetch("/.netlify/functions/ask-shreyash", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({
+          question,
+          history: messages.slice(-6).map(({ role, content }) => ({ role, content })),
+        }),
       });
+      if (!res.ok) throw new Error("Assistant unavailable");
       const data = await res.json();
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: data.answer || "No answer came back — try again?" },
+        { role: "assistant", content: data.answer || localReply(question) },
       ]);
     } catch {
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "Couldn't reach the AI assistant right now — please try again shortly." },
+        { role: "assistant", content: localReply(question), offline: true },
       ]);
     } finally {
       setLoading(false);
     }
+  }
+
+  function toggleVoiceInput() {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setMessages((m) => [...m, { role: "assistant", content: "Voice input is not supported in this browser. Please type your question instead." }]);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => setListening(true);
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognition.onresult = (event) => setInput(event.results[0][0].transcript);
+    recognitionRef.current = recognition;
+    recognition.start();
   }
 
   return (
@@ -120,7 +166,7 @@ function HeroGlass() {
             <br />
             <span>Gondane</span>
           </h1>
-          <p className="hg-title">Staff / Principal AI Platform Engineer</p>
+          <p className="hg-title">Principal AI Platform Engineer — Distributed Infrastructure &amp; Scaling</p>
           <p className="hg-desc">
             I design, build and scale production-grade AI platforms,
             self-hosted LLM systems, and secure identity infrastructure that
@@ -143,12 +189,6 @@ function HeroGlass() {
           </div>
         </div>
 
-        <div className="hg-center">
-          <div className="hg-photo-slot">
-            <img src={heroPortrait} alt="Shreyash Gondane" className="hg-photo-img" />
-          </div>
-        </div>
-
         <div className="hg-right">
           <div className="hg-panel hg-glass">
             <div className="hg-panel-header">
@@ -156,19 +196,22 @@ function HeroGlass() {
               <span className="hd-live-dot" style={{ marginLeft: "auto" }} /> Online
             </div>
             <div className="hg-panel-body">
-              <div className="hg-chat-scroll">
+              <div className="hg-chat-scroll" aria-live="polite" aria-busy={loading}>
                 {messages.length === 0 &&
-                  ASSISTANT_SUGGESTIONS.map((s) => (
-                    <button
-                      className="hg-suggestion"
-                      key={s.label}
-                      onClick={() => ask(s.label)}
-                      type="button"
-                    >
-                      <span className="hg-suggestion-icon">{s.icon}</span>
-                      {s.label}
-                    </button>
-                  ))}
+                  <>
+                    <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask the questions that matter most for screening — fit, leadership, technical depth, impact, or logistics.</div>
+                    {ASSISTANT_SUGGESTIONS.map((s) => (
+                      <button
+                        className="hg-suggestion"
+                        key={s.label}
+                        onClick={() => ask(s.label)}
+                        type="button"
+                      >
+                        <span className="hg-suggestion-icon">{s.icon}</span>
+                        {s.label}
+                      </button>
+                    ))}
+                  </>}
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
                     {m.content}
@@ -191,6 +234,15 @@ function HeroGlass() {
                   placeholder="Ask anything…"
                   disabled={loading}
                 />
+                <button
+                  className={`hg-mic-button ${listening ? "hg-mic-button-active" : ""}`}
+                  type="button"
+                  aria-label={listening ? "Stop voice input" : "Start voice input"}
+                  aria-pressed={listening}
+                  onClick={toggleVoiceInput}
+                >
+                  {listening ? <BsStopFill /> : <BsMicFill />}
+                </button>
                 <button type="submit" aria-label="Send" disabled={loading || !input.trim()}>
                   <BsSend />
                 </button>
@@ -198,28 +250,34 @@ function HeroGlass() {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="hg-panel hg-glass hg-build-panel">
-        <div className="hg-panel-header">
-          What I Build &amp; Deliver
-          <Link to="/project" className="hg-view-all">
-            View All <BsArrowRight />
-          </Link>
+        <div className="hg-center">
+          <div className="hg-photo-slot">
+            <img src={heroScreen} alt="Shreyash Gondane workspace dashboard" className="hg-photo-img" />
+          </div>
         </div>
-        <div className="hg-build-grid hg-build-grid-wide">
-          {BUILD_DELIVER.map((b) => (
-            <div className="hg-build-item" key={b.title}>
-              <span
-                className="hg-build-icon"
-                style={{ background: `${b.color}22`, color: b.color }}
-              >
-                {b.icon}
-              </span>
-              <div className="hg-build-title">{b.title}</div>
-              <div className="hg-build-desc">{b.desc}</div>
-            </div>
-          ))}
+
+        <div className="hg-panel hg-glass hg-build-panel">
+          <div className="hg-panel-header">
+            What I Build &amp; Deliver
+            <Link to="/project" className="hg-view-all">
+              View All <BsArrowRight />
+            </Link>
+          </div>
+          <div className="hg-build-grid hg-build-grid-wide">
+            {BUILD_DELIVER.map((b) => (
+              <div className="hg-build-item" key={b.title}>
+                <span
+                  className="hg-build-icon"
+                  style={{ background: `${b.color}22`, color: b.color }}
+                >
+                  {b.icon}
+                </span>
+                <div className="hg-build-title">{b.title}</div>
+                <div className="hg-build-desc">{b.desc}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

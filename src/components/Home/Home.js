@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Container } from "react-bootstrap";
 import Particle from "../Particle";
 import HeroGlass from "./HeroGlass";
@@ -8,6 +8,34 @@ import HomeBottom from "./HomeBottom";
 import Reveal from "../Reveal";
 
 function Home() {
+  useEffect(() => {
+    const cards = document.querySelectorAll(".home-section .hg-glass");
+    const listeners = [];
+
+    cards.forEach((card) => {
+      const handlePointerMove = (event) => {
+        const bounds = card.getBoundingClientRect();
+        card.style.setProperty("--spotlight-x", `${event.clientX - bounds.left}px`);
+        card.style.setProperty("--spotlight-y", `${event.clientY - bounds.top}px`);
+      };
+      const handlePointerLeave = () => {
+        card.style.removeProperty("--spotlight-x");
+        card.style.removeProperty("--spotlight-y");
+      };
+
+      card.addEventListener("pointermove", handlePointerMove);
+      card.addEventListener("pointerleave", handlePointerLeave);
+      listeners.push([card, handlePointerMove, handlePointerLeave]);
+    });
+
+    return () => {
+      listeners.forEach(([card, handlePointerMove, handlePointerLeave]) => {
+        card.removeEventListener("pointermove", handlePointerMove);
+        card.removeEventListener("pointerleave", handlePointerLeave);
+      });
+    };
+  }, []);
+
   return (
     <section>
       <Container fluid className="home-section" id="home">

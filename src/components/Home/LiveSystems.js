@@ -1,31 +1,37 @@
 import React, { useRef, useState } from "react";
 import { BsChevronLeft, BsChevronRight, BsRobot, BsServer, BsCpu, BsShieldCheck, BsGraphUp } from "react-icons/bs";
+import SystemPreview from "./SystemPreview";
 
 const SYSTEMS = [
   {
     icon: <BsRobot />,
     title: "AI Assistant Platform",
     desc: "Multi-tenant agentic platform serving 4 product verticals",
+    visual: "assistant",
   },
   {
     icon: <BsServer />,
     title: "MCP Server",
     desc: "Tools, resources & prompts for agentic orchestration",
+    visual: "network",
   },
   {
     icon: <BsCpu />,
     title: "LLM Inference Hub",
     desc: "Self-hosted vLLM + Bedrock hybrid routing",
+    visual: "inference",
   },
   {
     icon: <BsShieldCheck />,
     title: "Identity Provider",
     desc: "Auth0-equivalent IdP with SAML, OIDC, RBAC, MFA",
+    visual: "identity",
   },
   {
     icon: <BsGraphUp />,
     title: "Analytics & Observability",
     desc: "Real-time metrics, traces, costs & quality monitoring",
+    visual: "analytics",
   },
 ];
 
@@ -58,9 +64,7 @@ function LiveSystems() {
       <div className="ls-track" ref={trackRef}>
         {SYSTEMS.map((s) => (
           <div className="ls-card hg-glass" key={s.title}>
-            <div className="ls-card-mock">
-              <span className="ls-card-icon">{s.icon}</span>
-            </div>
+            <SystemPreview type={s.visual} icon={s.icon} />
             <div className="ls-card-body">
               <div className="ls-card-title-row">
                 <span className="ls-card-title">{s.title}</span>

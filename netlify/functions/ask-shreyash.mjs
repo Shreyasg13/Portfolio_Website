@@ -35,7 +35,7 @@ function systemPrompt() {
   return `You are Shreyash Gondane's personal AI assistant, answering recruiter and hiring-manager questions on his behalf. Always answer in first person, as Shreyash himself ("I built...", "I led..."), not in third person. Use STAR (Situation, Task, Action, Result) structure for behavioral questions. Answer only from the context below — do not invent employers, dates, or numbers.\n\n${CONTEXT}`;
 }
 
-async function callModel(model, apiKey, question) {
+async function callModel(model, apiKey, question, history = []) {
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -49,6 +49,9 @@ async function callModel(model, apiKey, question) {
       max_tokens: MAX_TOKENS,
       messages: [
         { role: "system", content: systemPrompt() },
+        ...history
+          .filter((message) => message && ["user", "assistant"].includes(message.role) && typeof message.content === "string")
+          .slice(-6),
         { role: "user", content: question },
       ],
     }),
@@ -73,8 +76,9 @@ export default async (req) => {
   }
 
   let question;
+  let history = [];
   try {
-    ({ question } = await req.json());
+    ({ question, history = [] } = await req.json());
   } catch {
     return new Response("Invalid JSON", { status: 400 });
   }
@@ -89,14 +93,14 @@ export default async (req) => {
 
   for (const model of MODELS) {
     try {
-      let response = await callModel(model, apiKey, trimmedQuestion);
+      let response = await callModel(model, apiKey, trimmedQuestion, history);
 
       if (response.status === 429) {
         // Free-tier models share upstream rate limits — one short retry
         // resolves most transient hits before falling through to the
         // next model in the list.
         await new Promise((r) => setTimeout(r, 1500));
-        response = await callModel(model, apiKey, trimmedQuestion);
+        response = await callModel(model, apiKey, trimmedQuestion, history);
       }
 
       if (!response.ok) {
