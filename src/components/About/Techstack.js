@@ -80,15 +80,15 @@ function Techstack() {
         <Col md={12}>
           <div
             style={{
-              background: "rgba(199, 112, 240, 0.05)",
-              border: "1px solid rgba(199, 112, 240, 0.2)",
+              background: "rgba(224, 69, 42, 0.05)",
+              border: "1px solid rgba(224, 69, 42, 0.2)",
               borderRadius: "12px",
               padding: "20px 24px",
             }}
           >
             {skillBar.map((s) => (
               <p key={s.category} style={{ margin: "6px 0", fontSize: "0.88em", color: "#c2c2d2" }}>
-                <b style={{ color: "#c770f0" }}>{s.category}:</b>{" "}
+                <b style={{ color: "#e0452a" }}>{s.category}:</b>{" "}
                 <span>{s.items}</span>
               </p>
             ))}

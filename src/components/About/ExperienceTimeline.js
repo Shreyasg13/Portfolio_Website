@@ -6,7 +6,7 @@ const timeline = [
     period: "2026 – Present",
     role: "Principal Platform Engineer",
     company: "Engineersmind Corp. — Jersey City, NJ",
-    color: "#c770f0",
+    color: "#e0452a",
     items: [
       { name: "Governed Multi-Tenant AI Platform", desc: "vLLM (Qwen3-32B, DeepSeek-R1), EKS Auto Mode, Karpenter, KEDA, Istio mTLS, Milvus RAG, 4 verticals" },
       { name: "Multi-Tenant IdP", desc: "Go/Echo — 8 phases, SAML 2.0+JIT, AI agent registry, zero CVEs, sub-5ms at 10K concurrent" },

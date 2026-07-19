@@ -55,7 +55,7 @@ function AdminConsole() {
               style={{
                 width: "100%",
                 background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(199,112,240,0.25)",
+                border: "1px solid rgba(224, 69, 42,0.25)",
                 borderRadius: 8,
                 padding: "10px 12px",
                 color: "white",

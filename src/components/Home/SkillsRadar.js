@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 const domains = [
-  { label: "Agentic AI & LLM Inference", value: 95, color: "#c770f0" },
+  { label: "Agentic AI & LLM Inference", value: 95, color: "#e0452a" },
   { label: "Cloud & Infrastructure", value: 92, color: "#4fc3f7" },
   { label: "Auth & Identity", value: 90, color: "#ff7043" },
   { label: "Distributed Systems", value: 88, color: "#66bb6a" },
