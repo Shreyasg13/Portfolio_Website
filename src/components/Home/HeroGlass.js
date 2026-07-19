@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import heroPortrait from "../../Assets/hero-portrait.png";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -143,11 +144,8 @@ function HeroGlass() {
         </div>
 
         <div className="hg-center">
-          {/* Photo placeholder — swap for a real photo: add the image to
-              src/Assets (e.g. profile.jpg), import it above, and replace
-              this div's content with <img src={profile} alt="Shreyash Gondane" /> */}
-          <div className="hg-photo-slot" aria-hidden="true">
-            <span className="hg-photo-initials">SG</span>
+          <div className="hg-photo-slot">
+            <img src={heroPortrait} alt="Shreyash Gondane" className="hg-photo-img" />
           </div>
         </div>
 
