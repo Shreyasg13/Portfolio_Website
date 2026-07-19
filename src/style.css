@@ -267,6 +267,7 @@ button:focus {
   background-size: cover !important;
   width: 100%;
   height: 100%;
+  pointer-events: none !important;
 }
 
 .home-header {
@@ -275,7 +276,6 @@ button:focus {
 
 .home-section {
   position: relative;
-  z-index: -1;
   background-color: var(--bg);
   padding-bottom: 30px !important;
   padding-top: 110px !important;
@@ -2183,14 +2183,21 @@ body {
 }
 
 .hg-topstat {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.hg-topstat-icon {
+  font-size: 1.3em;
+  flex-shrink: 0;
 }
 
 .hg-topstat-num {
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1.2em;
-  color: var(--imp-text-color);
 }
 
 .hg-topstat-lab {
@@ -2354,6 +2361,22 @@ body {
   justify-content: center;
 }
 
+.hg-view-all {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8em;
+  color: var(--accent-secondary);
+  text-decoration: none;
+}
+
+.hg-view-all:hover {
+  color: white;
+}
+
 .hg-panel-body {
   padding: 14px 18px;
 }
@@ -2481,10 +2504,14 @@ body {
 }
 
 .hg-build-icon {
-  color: var(--imp-text-color);
-  font-size: 1.1em;
-  display: block;
-  margin-bottom: 6px;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  font-size: 1.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .hg-build-title {
@@ -2791,7 +2818,6 @@ body {
 }
 
 .hb-tech-chip svg {
-  color: var(--imp-text-color);
   font-size: 1.1em;
 }
 
@@ -2815,6 +2841,17 @@ body {
   border-radius: 12px;
   padding: 18px;
   text-align: center;
+}
+
+.hb-stat-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15em;
+  margin: 0 auto 10px;
 }
 
 .hb-stat-num {

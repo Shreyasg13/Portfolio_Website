@@ -10,6 +10,10 @@ import {
   BsFileEarmarkTextFill,
   BsDiagram3Fill,
   BsSend,
+  BsRocketTakeoffFill,
+  BsLayersFill,
+  BsBookFill,
+  BsShieldFillCheck,
 } from "react-icons/bs";
 import { AiFillCloud } from "react-icons/ai";
 import { GiBrain } from "react-icons/gi";
@@ -33,20 +37,20 @@ const ASSISTANT_SUGGESTIONS = [
 ];
 
 const TOP_STATS = [
-  { num: "5+", lab: "Years Experience" },
-  { num: "1.2M+", lab: "AI Conversations / Month" },
-  { num: "10+", lab: "Production Platforms" },
-  { num: "2", lab: "Springer Publications" },
-  { num: "Zero", lab: "CVEs (Security First)" },
+  { icon: <BsRocketTakeoffFill />, color: "#e0452a", num: "5+", lab: "Years Experience" },
+  { icon: <BsChatDotsFill />, color: "#ff7a5c", num: "1.2M+", lab: "AI Conversations / Month" },
+  { icon: <BsLayersFill />, color: "#4caf50", num: "10+", lab: "Production Platforms" },
+  { icon: <BsBookFill />, color: "#e0a02a", num: "2", lab: "Springer Publications" },
+  { icon: <BsShieldFillCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
 ];
 
 const BUILD_DELIVER = [
-  { icon: <GiBrain />, title: "AI Platform Engineering", desc: "Agentic AI, MCP, A2A, multi-model orchestration, RAG, tools & integrations" },
-  { icon: <BsDiagram3Fill />, title: "LLM Infrastructure", desc: "Self-hosted vLLM, Qwen3-32B, DeepSeek-R1, Bedrock fallback, scaling & cost optimization" },
-  { icon: <BsCheckCircleFill />, title: "Identity & Security", desc: "Multi-tenant IdP, SAML 2.0, OIDC, OAuth2, RBAC, MFA, zero-trust security" },
-  { icon: <BsGearFill />, title: "Backend & APIs", desc: "High-scale APIs, event-driven systems, auth, payments, webhooks & real-time" },
-  { icon: <BsGraphUp />, title: "Data & Intelligence", desc: "Pipelines, vector stores, analytics, forecasting, anomaly detection" },
-  { icon: <AiFillCloud />, title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
+  { icon: <GiBrain />, color: "#a855f7", title: "AI Platform Engineering", desc: "Agentic AI, MCP, A2A, multi-model orchestration, RAG, tools & integrations" },
+  { icon: <BsDiagram3Fill />, color: "#e0a02a", title: "LLM Infrastructure", desc: "Self-hosted vLLM, Qwen3-32B, DeepSeek-R1, Bedrock fallback, scaling & cost optimization" },
+  { icon: <BsCheckCircleFill />, color: "#4caf50", title: "Identity & Security", desc: "Multi-tenant IdP, SAML 2.0, OIDC, OAuth2, RBAC, MFA, zero-trust security" },
+  { icon: <BsGearFill />, color: "#8a8f98", title: "Backend & APIs", desc: "High-scale APIs, event-driven systems, auth, payments, webhooks & real-time" },
+  { icon: <BsGraphUp />, color: "#e0452a", title: "Data & Intelligence", desc: "Pipelines, vector stores, analytics, forecasting, anomaly detection" },
+  { icon: <AiFillCloud />, color: "#4fa8e0", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
 ];
 
 function HeroGlass() {
@@ -91,8 +95,15 @@ function HeroGlass() {
         <div className="hg-topstats">
           {TOP_STATS.map((s) => (
             <div className="hg-topstat" key={s.lab}>
-              <div className="hg-topstat-num">{s.num}</div>
-              <div className="hg-topstat-lab">{s.lab}</div>
+              <span className="hg-topstat-icon" style={{ color: s.color }}>
+                {s.icon}
+              </span>
+              <div>
+                <div className="hg-topstat-num" style={{ color: s.color }}>
+                  {s.num}
+                </div>
+                <div className="hg-topstat-lab">{s.lab}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -192,11 +203,21 @@ function HeroGlass() {
       </div>
 
       <div className="hg-panel hg-glass hg-build-panel">
-        <div className="hg-panel-header">What I Build &amp; Deliver</div>
+        <div className="hg-panel-header">
+          What I Build &amp; Deliver
+          <Link to="/project" className="hg-view-all">
+            View All <BsArrowRight />
+          </Link>
+        </div>
         <div className="hg-build-grid hg-build-grid-wide">
           {BUILD_DELIVER.map((b) => (
             <div className="hg-build-item" key={b.title}>
-              <span className="hg-build-icon">{b.icon}</span>
+              <span
+                className="hg-build-icon"
+                style={{ background: `${b.color}22`, color: b.color }}
+              >
+                {b.icon}
+              </span>
               <div className="hg-build-title">{b.title}</div>
               <div className="hg-build-desc">{b.desc}</div>
             </div>
