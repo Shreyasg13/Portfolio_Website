@@ -11,6 +11,8 @@ import {
   BsFileEarmarkTextFill,
   BsDiagram3Fill,
   BsSend,
+  BsMicFill,
+  BsStopFill,
   BsRocketTakeoffFill,
   BsLayersFill,
   BsBookFill,
@@ -30,11 +32,11 @@ const TAGS = [
 ];
 
 const ASSISTANT_SUGGESTIONS = [
-  { icon: <BsChatDotsFill />, label: "Is he a fit for a Staff Platform Engineer role?" },
-  { icon: <BsGraphUp />, label: "What's his AI / LLM infrastructure experience?" },
-  { icon: <BsCheckCircleFill />, label: "Tell me about his auth & identity work" },
-  { icon: <BsGearFill />, label: "What's his experience with distributed systems?" },
-  { icon: <BsFileEarmarkTextFill />, label: "Is he open to sponsorship?" },
+  { icon: <BsChatDotsFill />, label: "How can I help you today?" },
+  { icon: <BsGraphUp />, label: "Analyze customer sentiment" },
+  { icon: <BsCheckCircleFill />, label: "Check system health" },
+  { icon: <BsGearFill />, label: "Summarize platform metrics" },
+  { icon: <BsFileEarmarkTextFill />, label: "Generate architecture diagram" },
 ];
 
 const TOP_STATS = [
@@ -54,11 +56,30 @@ const BUILD_DELIVER = [
   { icon: <AiFillCloud />, color: "#4fa8e0", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
 ];
 
+function localReply(question) {
+  const query = question.toLowerCase();
+  if (query.includes("health") || query.includes("system")) {
+    return "All platform signals are healthy. I build observable, production-grade systems with metrics, tracing, and reliability controls designed in from day one.";
+  }
+  if (query.includes("sentiment") || query.includes("customer")) {
+    return "I would route the request through an agentic workflow, combine model inference with evaluation guardrails, and return an auditable sentiment and intent summary.";
+  }
+  if (query.includes("metric") || query.includes("platform")) {
+    return "My focus is reliable AI platform engineering: agentic AI and MCP, self-hosted and managed LLMs, identity, APIs, and cloud operations at production scale.";
+  }
+  if (query.includes("architecture") || query.includes("diagram")) {
+    return "A typical design starts with a secure API and identity boundary, then an orchestration layer, tools and retrieval, model routing, and full observability across the request path.";
+  }
+  return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about a specific platform, system, or leadership experience.";
+}
+
 function HeroGlass() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const bottomRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -73,21 +94,47 @@ function HeroGlass() {
       const res = await fetch("/.netlify/functions/ask-shreyash", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question }),
+        body: JSON.stringify({
+          question,
+          history: messages.slice(-6).map(({ role, content }) => ({ role, content })),
+        }),
       });
+      if (!res.ok) throw new Error("Assistant unavailable");
       const data = await res.json();
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: data.answer || "No answer came back — try again?" },
+        { role: "assistant", content: data.answer || localReply(question) },
       ]);
     } catch {
       setMessages((m) => [
         ...m,
-        { role: "assistant", content: "Couldn't reach the AI assistant right now — please try again shortly." },
+        { role: "assistant", content: localReply(question), offline: true },
       ]);
     } finally {
       setLoading(false);
     }
+  }
+
+  function toggleVoiceInput() {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setMessages((m) => [...m, { role: "assistant", content: "Voice input is not supported in this browser. Please type your question instead." }]);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onstart = () => setListening(true);
+    recognition.onend = () => setListening(false);
+    recognition.onerror = () => setListening(false);
+    recognition.onresult = (event) => setInput(event.results[0][0].transcript);
+    recognitionRef.current = recognition;
+    recognition.start();
   }
 
   return (
@@ -150,19 +197,22 @@ function HeroGlass() {
               <span className="hd-live-dot" style={{ marginLeft: "auto" }} /> Online
             </div>
             <div className="hg-panel-body">
-              <div className="hg-chat-scroll">
+              <div className="hg-chat-scroll" aria-live="polite" aria-busy={loading}>
                 {messages.length === 0 &&
-                  ASSISTANT_SUGGESTIONS.map((s) => (
-                    <button
-                      className="hg-suggestion"
-                      key={s.label}
-                      onClick={() => ask(s.label)}
-                      type="button"
-                    >
-                      <span className="hg-suggestion-icon">{s.icon}</span>
-                      {s.label}
-                    </button>
-                  ))}
+                  <>
+                    <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask me about platforms, LLM infrastructure, or leadership experience.</div>
+                    {ASSISTANT_SUGGESTIONS.map((s) => (
+                      <button
+                        className="hg-suggestion"
+                        key={s.label}
+                        onClick={() => ask(s.label)}
+                        type="button"
+                      >
+                        <span className="hg-suggestion-icon">{s.icon}</span>
+                        {s.label}
+                      </button>
+                    ))}
+                  </>}
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
                     {m.content}
@@ -185,6 +235,15 @@ function HeroGlass() {
                   placeholder="Ask anything…"
                   disabled={loading}
                 />
+                <button
+                  className={`hg-mic-button ${listening ? "hg-mic-button-active" : ""}`}
+                  type="button"
+                  aria-label={listening ? "Stop voice input" : "Start voice input"}
+                  aria-pressed={listening}
+                  onClick={toggleVoiceInput}
+                >
+                  {listening ? <BsStopFill /> : <BsMicFill />}
+                </button>
                 <button type="submit" aria-label="Send" disabled={loading || !input.trim()}>
                   <BsSend />
                 </button>
