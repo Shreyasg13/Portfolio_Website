@@ -22,14 +22,10 @@ import {
   BsTelephoneFill,
   BsGlobe,
   BsFillCloudFill,
-  BsRocketTakeoffFill,
-  BsPcDisplay,
-  BsBoxSeamFill,
-  BsCashCoin,
-  BsPeopleFill,
 } from "react-icons/bs";
 import { AiFillMail, AiFillGithub } from "react-icons/ai";
 import { FaLinkedinIn, FaMicrosoft } from "react-icons/fa";
+import { BookOpen, GitPullRequest, Layers3, Rocket, UsersRound } from "lucide-react";
 
 const TECH = [
   { icon: <DiPython />, label: "Python", color: "#3776AB" },
@@ -53,11 +49,11 @@ const TECH = [
 ];
 
 const STATS = [
-  { icon: <BsRocketTakeoffFill />, color: "#a855f7", num: "3,000+", lab: "Commits" },
-  { icon: <BsPcDisplay />, color: "#4fa8e0", num: "700+", lab: "PRs Merged" },
-  { icon: <BsBoxSeamFill />, color: "#e0a02a", num: "10+", lab: "Production Repos" },
-  { icon: <BsCashCoin />, color: "#4caf50", num: "2", lab: "Springer AI Publications" },
-  { icon: <BsPeopleFill />, color: "#e0452a", num: "21", lab: "Engineers Led · 4 Direct Reports" },
+  { icon: <Rocket />, color: "#a855f7", num: "3,000+", lab: "Commits" },
+  { icon: <GitPullRequest />, color: "#4fa8e0", num: "700+", lab: "PRs Merged" },
+  { icon: <Layers3 />, color: "#e0a02a", num: "10+", lab: "Production Repos" },
+  { icon: <BookOpen />, color: "#4caf50", num: "2", lab: "Springer AI Publications" },
+  { icon: <UsersRound />, color: "#e0452a", num: "21", lab: "Engineers Led · 4 Direct Reports" },
 ];
 
 function HomeBottom() {

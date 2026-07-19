@@ -13,13 +13,10 @@ import {
   BsSend,
   BsMicFill,
   BsStopFill,
-  BsRocketTakeoffFill,
-  BsLayersFill,
-  BsBookFill,
-  BsShieldFillCheck,
 } from "react-icons/bs";
 import { AiFillCloud } from "react-icons/ai";
 import { GiBrain } from "react-icons/gi";
+import { BookOpen, Layers3, MessagesSquare, Rocket, ShieldCheck } from "lucide-react";
 
 const TAGS = [
   "AI Platforms",
@@ -40,11 +37,11 @@ const ASSISTANT_SUGGESTIONS = [
 ];
 
 const TOP_STATS = [
-  { icon: <BsRocketTakeoffFill />, color: "#e0452a", num: "5+", lab: "Years Experience" },
-  { icon: <BsChatDotsFill />, color: "#ff7a5c", num: "1.2M+", lab: "AI Conversations / Month" },
-  { icon: <BsLayersFill />, color: "#4caf50", num: "10+", lab: "Production Platforms" },
-  { icon: <BsBookFill />, color: "#e0a02a", num: "2", lab: "Springer Publications" },
-  { icon: <BsShieldFillCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
+  { icon: <Rocket />, color: "#e0452a", num: "5+", lab: "Years Experience" },
+  { icon: <MessagesSquare />, color: "#ff7a5c", num: "1.2M+", lab: "AI Conversations / Month" },
+  { icon: <Layers3 />, color: "#4caf50", num: "10+", lab: "Production Platforms" },
+  { icon: <BookOpen />, color: "#e0a02a", num: "2", lab: "Springer Publications" },
+  { icon: <ShieldCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
 ];
 
 const BUILD_DELIVER = [
