@@ -10,13 +10,19 @@ import AdminConsole from "./components/Admin/AdminConsole";
 import {
   BrowserRouter as Router,
   Route,
-  Routes
+  Routes,
+  useLocation,
 } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import AskShreyash from "./components/Chat/AskShreyash";
 import "./style.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+function HomeOnlyAskShreyash() {
+  const location = useLocation();
+  return location.pathname === "/" ? <AskShreyash /> : null;
+}
 
 function App() {
   const [load, upadateLoad] = useState(true);
@@ -44,7 +50,7 @@ function App() {
           {/* <Route path="*" element={<Navigate to="/"/>} /> */}
         </Routes>
         <Footer />
-        <AskShreyash />
+        <HomeOnlyAskShreyash />
       </div>
     </Router>
   );

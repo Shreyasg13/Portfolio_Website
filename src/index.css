@@ -4,5 +4,5 @@ body {
   font-family: "Inter", system-ui, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #0e0d10;
+  background-color: #0e0d10 !important;
 }
