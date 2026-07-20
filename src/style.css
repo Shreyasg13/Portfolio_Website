@@ -617,6 +617,13 @@ button:focus {
   color: var(--accent-secondary);
   font-size: 0.75em;
   margin-top: 4px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.visitor-counter:hover {
+  color: white;
+  text-decoration: underline;
 }
 /* --------- */
 /* Projects */

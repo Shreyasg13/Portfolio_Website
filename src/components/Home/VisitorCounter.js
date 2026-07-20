@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { AiOutlineEye } from "react-icons/ai";
 
 function VisitorCounter() {
@@ -8,7 +9,16 @@ function VisitorCounter() {
     const alreadyCounted = sessionStorage.getItem("sg-visit-counted");
     const method = alreadyCounted ? "GET" : "POST";
 
-    fetch("/.netlify/functions/visitor-count", { method })
+    fetch("/.netlify/functions/visitor-count", {
+      method,
+      ...(method === "POST" && {
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          path: window.location.pathname,
+          referrer: document.referrer || null,
+        }),
+      }),
+    })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data) setCount(data.count);
@@ -20,9 +30,9 @@ function VisitorCounter() {
   if (count === null) return null;
 
   return (
-    <span className="visitor-counter">
+    <Link to="/admin/visitors" className="visitor-counter">
       <AiOutlineEye /> {count.toLocaleString()} visitors
-    </span>
+    </Link>
   );
 }
 
