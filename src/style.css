@@ -625,6 +625,147 @@ button:focus {
   color: white;
   text-decoration: underline;
 }
+
+/* --------- */
+/* Visitor Dashboard (/admin/visitors) */
+/* --------- */
+.vc-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+
+.vc-stat {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.vc-stat-value {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.7em;
+  color: white;
+}
+
+.vc-stat-label {
+  margin-top: 4px;
+  font-size: 0.78em;
+  color: var(--text-muted);
+}
+
+.vc-section {
+  margin-bottom: 32px;
+}
+
+.vc-section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95em;
+  color: white;
+  margin-bottom: 14px;
+}
+
+.vc-empty {
+  color: var(--text-dim);
+  font-size: 0.85em;
+}
+
+.vc-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 140px;
+  padding: 20px 8px 0;
+  border-radius: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.vc-col-wrap {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 0;
+}
+
+.vc-col {
+  width: 100%;
+  max-width: 24px;
+  background: var(--imp-text-color);
+  border-radius: 4px 4px 0 0;
+  transition: opacity 0.2s ease;
+}
+
+.vc-col-wrap:hover .vc-col {
+  opacity: 0.8;
+}
+
+.vc-col-value {
+  margin-bottom: 4px;
+  font-size: 0.62em;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+}
+
+.vc-col-label {
+  margin-top: 8px;
+  font-size: 0.58em;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.vc-barlist {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vc-bar-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 28px;
+  align-items: center;
+  gap: 10px;
+}
+
+.vc-bar-label {
+  font-size: 0.75em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vc-bar-track {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.vc-bar-fill {
+  display: block;
+  height: 100%;
+  min-width: 4px;
+  border-radius: 4px;
+  background: var(--imp-text-color);
+}
+
+.vc-bar-value {
+  font-size: 0.72em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+  text-align: right;
+}
 /* --------- */
 /* Projects */
 /* --------- */
