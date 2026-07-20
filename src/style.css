@@ -2717,6 +2717,8 @@ body {
   scroll-snap-type: x mandatory;
   padding-bottom: 6px;
   scrollbar-width: none;
+  mask-image: linear-gradient(to right, black 0%, black 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 94%, transparent 100%);
 }
 
 .ls-track::-webkit-scrollbar {
