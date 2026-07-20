@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import heroScreen from "../../Assets/ChatGPT Image Jul 19, 2026, 10_42_10 AM.png";
+import assistantAvatar from "../../Assets/hero-portrait.png";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -12,6 +13,9 @@ import {
   BsSend,
   BsMicFill,
   BsStopFill,
+  BsVolumeUpFill,
+  BsVolumeMuteFill,
+  BsThreeDotsVertical,
 } from "react-icons/bs";
 import { AiFillCloud } from "react-icons/ai";
 import { GiBrain } from "react-icons/gi";
@@ -72,20 +76,82 @@ function localReply(question) {
   return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about my fit for the role, leadership experience, technical expertise, or sponsorship needs.";
 }
 
+function Waveform({ active, bars = 18 }) {
+  return (
+    <div className={`hg-waveform ${active ? "hg-waveform-active" : ""}`} aria-hidden="true">
+      {Array.from({ length: bars }).map((_, i) => (
+        <span key={i} style={{ animationDelay: `${(i % 6) * 0.09}s` }} />
+      ))}
+    </div>
+  );
+}
+
+function formatTimer(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+  const s = (totalSeconds % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
 function HeroGlass() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
+  const [listenSeconds, setListenSeconds] = useState(0);
+  const [voiceOn, setVoiceOn] = useState(true);
+  const [speaking, setSpeaking] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const bottomRef = useRef(null);
   const recognitionRef = useRef(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    function onDocClick(e) {
+      if (!menuRef.current?.contains(e.target)) setMenuOpen(false);
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (!listening) {
+      setListenSeconds(0);
+      return undefined;
+    }
+    setListenSeconds(0);
+    const id = setInterval(() => setListenSeconds((s) => s + 1), 1000);
+    return () => clearInterval(id);
+  }, [listening]);
+
+  useEffect(() => () => window.speechSynthesis?.cancel(), []);
+
+  function speak(text) {
+    const synth = window.speechSynthesis;
+    if (!voiceOn || !synth) return;
+    synth.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.onstart = () => setSpeaking(true);
+    utterance.onend = () => setSpeaking(false);
+    utterance.onerror = () => setSpeaking(false);
+    synth.speak(utterance);
+  }
+
+  function toggleVoiceOutput() {
+    setVoiceOn((v) => {
+      const next = !v;
+      if (!next) window.speechSynthesis?.cancel();
+      return next;
+    });
+  }
+
   async function ask(question) {
     if (!question.trim() || loading) return;
+    window.speechSynthesis?.cancel();
     setMessages((m) => [...m, { role: "user", content: question }]);
     setInput("");
     setLoading(true);
@@ -100,15 +166,13 @@ function HeroGlass() {
       });
       if (!res.ok) throw new Error("Assistant unavailable");
       const data = await res.json();
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: data.answer || localReply(question) },
-      ]);
+      const answer = data.answer || localReply(question);
+      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      speak(answer);
     } catch {
-      setMessages((m) => [
-        ...m,
-        { role: "assistant", content: localReply(question), offline: true },
-      ]);
+      const answer = localReply(question);
+      setMessages((m) => [...m, { role: "assistant", content: answer, offline: true }]);
+      speak(answer);
     } finally {
       setLoading(false);
     }
@@ -192,8 +256,46 @@ function HeroGlass() {
         <div className="hg-right">
           <div className="hg-panel hg-glass">
             <div className="hg-panel-header">
-              <span className="hg-logo-chip">S</span> Shreyash AI Assistant
-              <span className="hd-live-dot" style={{ marginLeft: "auto" }} /> Online
+              <img src={assistantAvatar} alt="" className="hg-avatar" />
+              Shreyash AI Assistant
+              <div className="hg-header-actions">
+                <button
+                  type="button"
+                  className="hg-icon-btn"
+                  aria-label={voiceOn ? "Mute voice replies" : "Unmute voice replies"}
+                  aria-pressed={voiceOn}
+                  onClick={toggleVoiceOutput}
+                >
+                  {voiceOn ? <BsVolumeUpFill /> : <BsVolumeMuteFill />}
+                </button>
+                <div className="hg-menu" ref={menuRef}>
+                  <button
+                    type="button"
+                    className="hg-icon-btn"
+                    aria-label="More options"
+                    aria-haspopup="true"
+                    aria-expanded={menuOpen}
+                    onClick={() => setMenuOpen((o) => !o)}
+                  >
+                    <BsThreeDotsVertical />
+                  </button>
+                  {menuOpen && (
+                    <div className="hg-menu-dropdown">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          window.speechSynthesis?.cancel();
+                          setMessages([]);
+                          setMenuOpen(false);
+                        }}
+                      >
+                        Clear conversation
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <span className="hd-live-dot" /> Online
+              </div>
             </div>
             <div className="hg-panel-body">
               <div className="hg-chat-scroll" aria-live="polite" aria-busy={loading}>
@@ -202,6 +304,9 @@ function HeroGlass() {
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
                     {m.content}
+                    {m.role === "assistant" && i === messages.length - 1 && speaking && (
+                      <Waveform active bars={14} />
+                    )}
                   </div>
                 ))}
                 {loading && <div className="hg-msg hg-msg-assistant hg-typing">Thinking…</div>}
@@ -248,6 +353,16 @@ function HeroGlass() {
                   <BsSend />
                 </button>
               </form>
+              {listening && (
+                <div className="hg-listening-bar" role="status">
+                  <span className="hg-listening-mic">
+                    <BsMicFill />
+                  </span>
+                  <span className="hg-listening-label">Listening…</span>
+                  <Waveform active bars={22} />
+                  <span className="hg-listening-timer">{formatTimer(listenSeconds)}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
