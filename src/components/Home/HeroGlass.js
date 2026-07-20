@@ -92,28 +92,57 @@ function formatTimer(totalSeconds) {
   return `${m}:${s}`;
 }
 
-const PREFERRED_VOICE_NAMES = [
-  "Microsoft Guy Online (Natural) - English (United States)",
-  "Microsoft Andrew Online (Natural) - English (United States)",
-  "Microsoft Brian Online (Natural) - English (United States)",
-  "Google US English",
-  "Daniel",
-  "Alex",
+// Voice names/availability vary wildly by OS and browser, so instead of
+// matching exact names we score every available voice and pick the best —
+// this actually finds a good match on whatever platform the visitor is on.
+const GOOD_VOICE_PATTERNS = [
+  { re: /online \(natural\)/i, score: 100 },
+  { re: /neural/i, score: 95 },
+  { re: /\bnatural\b/i, score: 90 },
+  { re: /premium|enhanced/i, score: 85 },
+  { re: /google/i, score: 75 },
+  { re: /\b(samantha|daniel|alex|karen|moira|tessa|serena|aria|jenny|guy|ryan)\b/i, score: 60 },
 ];
+const BAD_VOICE_PATTERNS = [/desktop/i, /espeak/i, /compact/i, /\bzira\b/i, /\bdavid\b/i];
+
+function scoreVoice(voice) {
+  let score = 0;
+  for (const { re, score: s } of GOOD_VOICE_PATTERNS) {
+    if (re.test(voice.name)) score = Math.max(score, s);
+  }
+  for (const re of BAD_VOICE_PATTERNS) {
+    if (re.test(voice.name)) score -= 40;
+  }
+  if (voice.lang === "en-US") score += 8;
+  else if (voice.lang?.startsWith("en")) score += 4;
+  if (!voice.localService) score += 5;
+  return score;
+}
 
 function pickPreferredVoice(voices) {
   if (!voices.length) return null;
-  for (const name of PREFERRED_VOICE_NAMES) {
-    const exact = voices.find((v) => v.name === name);
-    if (exact) return exact;
-  }
-  const natural = voices.find((v) => /en-US|en_US/.test(v.lang) && /natural|premium|enhanced/i.test(v.name));
-  if (natural) return natural;
-  const remoteEnUs = voices.find((v) => v.lang === "en-US" && !v.localService);
-  if (remoteEnUs) return remoteEnUs;
-  const anyEnUs = voices.find((v) => v.lang === "en-US");
-  if (anyEnUs) return anyEnUs;
-  return voices.find((v) => v.lang.startsWith("en")) || voices[0];
+  const englishVoices = voices.filter((v) => v.lang?.startsWith("en"));
+  const pool = englishVoices.length ? englishVoices : voices;
+  return pool.reduce((best, v) => (scoreVoice(v) > scoreVoice(best) ? v : best), pool[0]);
+}
+
+function waitForVoices(synth, timeoutMs = 1000) {
+  return new Promise((resolve) => {
+    const existing = synth.getVoices();
+    if (existing.length) {
+      resolve(existing);
+      return;
+    }
+    const onChange = () => {
+      synth.removeEventListener("voiceschanged", onChange);
+      resolve(synth.getVoices());
+    };
+    synth.addEventListener("voiceschanged", onChange);
+    setTimeout(() => {
+      synth.removeEventListener("voiceschanged", onChange);
+      resolve(synth.getVoices());
+    }, timeoutMs);
+  });
 }
 
 function HeroGlass() {
@@ -166,17 +195,23 @@ function HeroGlass() {
 
   useEffect(() => () => window.speechSynthesis?.cancel(), []);
 
-  function speak(text) {
+  async function speak(text) {
     const synth = window.speechSynthesis;
     if (!voiceOn || !synth) return;
     synth.cancel();
+    // On first load the voice list can still be empty (it loads
+    // asynchronously), which used to silently fall back to the browser's
+    // flat default voice. Wait for it so the good voice is actually used.
+    if (!voicesRef.current.length) {
+      voicesRef.current = await waitForVoices(synth);
+    }
     const utterance = new SpeechSynthesisUtterance(text);
     const voice = pickPreferredVoice(voicesRef.current);
     if (voice) utterance.voice = voice;
     // Slightly slower and lower than default TTS so replies read as a calm,
     // professional colleague rather than a flat robotic voice.
-    utterance.rate = 0.96;
-    utterance.pitch = 0.94;
+    utterance.rate = 0.94;
+    utterance.pitch = 0.92;
     utterance.volume = 1;
     utterance.onstart = () => setSpeaking(true);
     utterance.onend = () => setSpeaking(false);
