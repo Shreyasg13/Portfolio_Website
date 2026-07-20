@@ -198,26 +198,27 @@ function HeroGlass() {
             <div className="hg-panel-body">
               <div className="hg-chat-scroll" aria-live="polite" aria-busy={loading}>
                 {messages.length === 0 &&
-                  <>
-                    <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask the questions that matter most for screening — fit, leadership, technical depth, impact, or logistics.</div>
-                    {ASSISTANT_SUGGESTIONS.map((s) => (
-                      <button
-                        className="hg-suggestion"
-                        key={s.label}
-                        onClick={() => ask(s.label)}
-                        type="button"
-                      >
-                        <span className="hg-suggestion-icon">{s.icon}</span>
-                        {s.label}
-                      </button>
-                    ))}
-                  </>}
+                  <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask the questions that matter most for screening — fit, leadership, technical depth, impact, or logistics.</div>}
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
                     {m.content}
                   </div>
                 ))}
                 {loading && <div className="hg-msg hg-msg-assistant hg-typing">Thinking…</div>}
+                <div className={`hg-suggestions ${messages.length === 0 ? "hg-suggestions-first" : ""}`}>
+                  {ASSISTANT_SUGGESTIONS.map((s) => (
+                    <button
+                      className="hg-suggestion"
+                      key={s.label}
+                      onClick={() => ask(s.label)}
+                      type="button"
+                      disabled={loading}
+                    >
+                      <span className="hg-suggestion-icon">{s.icon}</span>
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
                 <div ref={bottomRef} />
               </div>
               <form

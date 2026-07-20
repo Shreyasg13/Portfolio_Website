@@ -2523,6 +2523,27 @@ body {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.hg-suggestion:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hg-suggestions {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.hg-suggestions-first {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.hg-suggestions .hg-suggestion:last-child {
+  margin-bottom: 0;
+}
+
 .hg-suggestion-icon {
   color: var(--imp-text-color);
   flex-shrink: 0;
