@@ -92,6 +92,30 @@ function formatTimer(totalSeconds) {
   return `${m}:${s}`;
 }
 
+const PREFERRED_VOICE_NAMES = [
+  "Microsoft Guy Online (Natural) - English (United States)",
+  "Microsoft Andrew Online (Natural) - English (United States)",
+  "Microsoft Brian Online (Natural) - English (United States)",
+  "Google US English",
+  "Daniel",
+  "Alex",
+];
+
+function pickPreferredVoice(voices) {
+  if (!voices.length) return null;
+  for (const name of PREFERRED_VOICE_NAMES) {
+    const exact = voices.find((v) => v.name === name);
+    if (exact) return exact;
+  }
+  const natural = voices.find((v) => /en-US|en_US/.test(v.lang) && /natural|premium|enhanced/i.test(v.name));
+  if (natural) return natural;
+  const remoteEnUs = voices.find((v) => v.lang === "en-US" && !v.localService);
+  if (remoteEnUs) return remoteEnUs;
+  const anyEnUs = voices.find((v) => v.lang === "en-US");
+  if (anyEnUs) return anyEnUs;
+  return voices.find((v) => v.lang.startsWith("en")) || voices[0];
+}
+
 function HeroGlass() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -104,10 +128,22 @@ function HeroGlass() {
   const bottomRef = useRef(null);
   const recognitionRef = useRef(null);
   const menuRef = useRef(null);
+  const voicesRef = useRef([]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    const synth = window.speechSynthesis;
+    if (!synth) return undefined;
+    function loadVoices() {
+      voicesRef.current = synth.getVoices();
+    }
+    loadVoices();
+    synth.addEventListener("voiceschanged", loadVoices);
+    return () => synth.removeEventListener("voiceschanged", loadVoices);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return undefined;
@@ -135,6 +171,13 @@ function HeroGlass() {
     if (!voiceOn || !synth) return;
     synth.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
+    const voice = pickPreferredVoice(voicesRef.current);
+    if (voice) utterance.voice = voice;
+    // Slightly slower and lower than default TTS so replies read as a calm,
+    // professional colleague rather than a flat robotic voice.
+    utterance.rate = 0.96;
+    utterance.pitch = 0.94;
+    utterance.volume = 1;
     utterance.onstart = () => setSpeaking(true);
     utterance.onend = () => setSpeaking(false);
     utterance.onerror = () => setSpeaking(false);
