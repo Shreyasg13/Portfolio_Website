@@ -2903,6 +2903,47 @@ body {
   margin-top: 6px;
 }
 
+.hg-resume-confirm {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hg-resume-confirm-text {
+  margin: 0 0 6px;
+  font-size: 0.95em;
+}
+
+.hg-resume-confirm-error {
+  color: #ff7043;
+}
+
+.hg-resume-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.hg-resume-confirm-send,
+.hg-resume-confirm-cancel {
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hg-resume-confirm-send {
+  background: var(--imp-text-color);
+  color: white;
+  border: none;
+}
+
+.hg-resume-confirm-cancel {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--glass-border);
+}
+
 .hg-ask-row {
   display: flex;
   gap: 8px;
