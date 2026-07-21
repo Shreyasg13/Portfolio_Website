@@ -181,6 +181,8 @@ function HeroGlass() {
   const menuRef = useRef(null);
   const voicesRef = useRef([]);
   const audioRef = useRef(null);
+  const utteranceRef = useRef(null);
+  const keepAliveRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -220,6 +222,11 @@ function HeroGlass() {
 
   function stopSpeaking() {
     window.speechSynthesis?.cancel();
+    if (keepAliveRef.current) {
+      clearInterval(keepAliveRef.current);
+      keepAliveRef.current = null;
+    }
+    utteranceRef.current = null;
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.src = "";
@@ -230,8 +237,16 @@ function HeroGlass() {
 
   // Fallback only: each browser exposes a different voice list, so this can
   // never guarantee the exact same audio everywhere — it's what runs if the
-  // server-side ElevenLabs voice (the one that IS consistent everywhere,
-  // see speak() below) is unavailable.
+  // server-side voice (the one that IS consistent everywhere, see speak()
+  // below) is unavailable.
+  //
+  // Two long-standing cross-browser SpeechSynthesis bugs this works around:
+  // 1. Chromium silently cuts speech off after ~15s on longer utterances
+  //    (chromium issue 679437) unless the synth is periodically nudged with
+  //    pause()/resume() while it's speaking.
+  // 2. The utterance can get garbage-collected mid-speech if nothing keeps
+  //    a reference to it, silently stopping playback — so we hold one in a
+  //    ref for the duration instead of only a local variable.
   async function speakWithBrowserVoice(text) {
     const synth = window.speechSynthesis;
     if (!synth) return;
@@ -239,14 +254,30 @@ function HeroGlass() {
       voicesRef.current = await waitForVoices(synth);
     }
     const utterance = new SpeechSynthesisUtterance(text);
+    utteranceRef.current = utterance;
     const voice = pickPreferredVoice(voicesRef.current);
     if (voice) utterance.voice = voice;
     utterance.rate = VOICE_PERSONA.rate;
     utterance.pitch = VOICE_PERSONA.pitch;
     utterance.volume = VOICE_PERSONA.volume;
-    utterance.onstart = () => setSpeaking(true);
-    utterance.onend = () => setSpeaking(false);
-    utterance.onerror = () => setSpeaking(false);
+    utterance.onstart = () => {
+      setSpeaking(true);
+      keepAliveRef.current = setInterval(() => {
+        if (!synth.speaking) return;
+        synth.pause();
+        synth.resume();
+      }, 10000);
+    };
+    const finish = () => {
+      setSpeaking(false);
+      if (keepAliveRef.current) {
+        clearInterval(keepAliveRef.current);
+        keepAliveRef.current = null;
+      }
+      utteranceRef.current = null;
+    };
+    utterance.onend = finish;
+    utterance.onerror = finish;
     synth.speak(utterance);
   }
 
