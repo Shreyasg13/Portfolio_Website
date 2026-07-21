@@ -336,7 +336,10 @@ function HeroGlass() {
       if (!res.ok) throw new Error("Assistant unavailable");
       const data = await res.json();
       const answer = data.answer || localReply(question);
-      setMessages((m) => [...m, { role: "assistant", content: answer }]);
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: answer, resumeProposal: data.resumeProposal || null },
+      ]);
       speak(answer);
     } catch {
       const answer = localReply(question);
@@ -345,6 +348,29 @@ function HeroGlass() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function updateMessage(index, patch) {
+    setMessages((m) => m.map((msg, i) => (i === index ? { ...msg, ...patch } : msg)));
+  }
+
+  function confirmSendResume(index, proposal) {
+    updateMessage(index, { resumeSendStatus: "sending" });
+    fetch("/.netlify/functions/send-resume", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: proposal.email, variant: proposal.variant }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to send the resume.");
+        updateMessage(index, { resumeSendStatus: "sent" });
+      })
+      .catch((err) => updateMessage(index, { resumeSendStatus: "error", resumeSendError: err.message }));
+  }
+
+  function cancelSendResume(index) {
+    updateMessage(index, { resumeSendStatus: "cancelled" });
   }
 
   function toggleVoiceInput() {
@@ -475,6 +501,41 @@ function HeroGlass() {
                     {m.content}
                     {m.role === "assistant" && i === messages.length - 1 && speaking && (
                       <Waveform active bars={14} />
+                    )}
+                    {m.resumeProposal && (
+                      <div className="hg-resume-confirm">
+                        {!m.resumeSendStatus && (
+                          <>
+                            <p className="hg-resume-confirm-text">
+                              Send my resume ({m.resumeProposal.variant}) to {m.resumeProposal.email}?
+                            </p>
+                            <div className="hg-resume-confirm-actions">
+                              <button
+                                type="button"
+                                className="hg-resume-confirm-send"
+                                onClick={() => confirmSendResume(i, m.resumeProposal)}
+                              >
+                                Send
+                              </button>
+                              <button
+                                type="button"
+                                className="hg-resume-confirm-cancel"
+                                onClick={() => cancelSendResume(i)}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </>
+                        )}
+                        {m.resumeSendStatus === "sending" && <p className="hg-resume-confirm-text">Sending…</p>}
+                        {m.resumeSendStatus === "sent" && (
+                          <p className="hg-resume-confirm-text">Sent to {m.resumeProposal.email}.</p>
+                        )}
+                        {m.resumeSendStatus === "error" && (
+                          <p className="hg-resume-confirm-text hg-resume-confirm-error">{m.resumeSendError}</p>
+                        )}
+                        {m.resumeSendStatus === "cancelled" && <p className="hg-resume-confirm-text">Cancelled.</p>}
+                      </div>
                     )}
                   </div>
                 ))}

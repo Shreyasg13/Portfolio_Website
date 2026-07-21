@@ -4,12 +4,11 @@ import Button from "react-bootstrap/Button";
 import { AiOutlineDownload } from "react-icons/ai";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import pdf from "../../Assets/Shreyash.pdf";
+import pdf from "../../Assets/Resumev3.pdf";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-const resumeLink =
-  "https://drive.google.com/file/d/1FxAyiXcA9IZ_gni-jlAZxLcJHVa0O0H0/view?usp=sharing";
+const resumeLink = pdf;
 
 function ResumeNew() {
   const [width, setWidth] = useState(1200);
