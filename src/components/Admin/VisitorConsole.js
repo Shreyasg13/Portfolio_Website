@@ -180,6 +180,57 @@ function VoicePicker({ password }) {
   );
 }
 
+const RESUME_STATUS_LABEL = { sent: "Sent", rate_limited: "Rate-limited", failed: "Failed" };
+const RESUME_STATUS_COLOR = { sent: "#4caf50", rate_limited: "#e0a02a", failed: "#ff7043" };
+
+function ResumeSendLog({ password }) {
+  const [sends, setSends] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    // Same guard as VoicePicker: skip while password is still the initial
+    // empty value so this doesn't fire (and fail) before the parent's
+    // own login fetch has actually resolved.
+    if (!password) return;
+    setError("");
+    fetch("/.netlify/functions/admin-resume-sends", {
+      headers: { "X-Admin-Password": password },
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to load resume send log");
+        setSends(data.sends);
+      })
+      .catch((err) => setError(err.message));
+  }, [password]);
+
+  if (error) return <p style={{ color: "#ff7043" }}>{error}</p>;
+  if (!sends) return <p className="vc-empty">Loading…</p>;
+  if (!sends.length) return <p className="vc-empty">No resume-send activity yet.</p>;
+
+  return (
+    <Row>
+      {sends.map((s, i) => (
+        <Col md={12} key={i} style={{ marginBottom: 12 }}>
+          <div className="timeline-content">
+            <div className="timeline-period" style={{ color: RESUME_STATUS_COLOR[s.status] || "#4fc3f7" }}>
+              {new Date(s.timestamp).toLocaleString()} · {RESUME_STATUS_LABEL[s.status] || s.status}
+            </div>
+            <div className="timeline-role" style={{ fontSize: "0.95em", marginTop: 6 }}>
+              {s.email} — {s.variant}
+            </div>
+            {s.detail && (
+              <div className="timeline-item-desc" style={{ marginTop: 4, fontSize: "0.75em", color: "#8892a6" }}>
+                {s.detail}
+              </div>
+            )}
+          </div>
+        </Col>
+      ))}
+    </Row>
+  );
+}
+
 function VisitorConsole() {
   const [password, setPassword] = useState(sessionStorage.getItem("sg-admin-pw") || "");
   const [input, setInput] = useState("");
@@ -288,6 +339,11 @@ function VisitorConsole() {
         <div className="vc-section">
           <h3 className="vc-section-title">Assistant voice</h3>
           <VoicePicker password={password} />
+        </div>
+
+        <div className="vc-section">
+          <h3 className="vc-section-title">Resume send activity</h3>
+          <ResumeSendLog password={password} />
         </div>
 
         <div className="vc-stats">
