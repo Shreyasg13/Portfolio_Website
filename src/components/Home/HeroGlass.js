@@ -32,7 +32,7 @@ const TAGS = [
 ];
 
 const ASSISTANT_SUGGESTIONS = [
-  { icon: <BsCheckCircleFill />, label: "What makes you a strong fit for this role?" },
+  { icon: <BsCheckCircleFill />, label: "What makes you a strong fit? (tell me the role you're hiring for)" },
   { icon: <Layers3 />, label: "Tell me about your leadership experience" },
   { icon: <BsGearFill />, label: "What's your core technical expertise?" },
   { icon: <Rocket />, label: "What's your most impactful project?" },
@@ -59,7 +59,7 @@ const BUILD_DELIVER = [
 function localReply(question) {
   const query = question.toLowerCase();
   if (query.includes("fit") || query.includes("role")) {
-    return "I bring 5+ years building production AI platforms \u2014 agentic AI/MCP, self-hosted LLM inference, identity security, and distributed systems \u2014 plus experience leading teams as large as 21 engineers. That mix of hands-on platform engineering and technical leadership is what I'd bring to this role.";
+    return "I bring 5+ years building production AI platforms \u2014 agentic AI/MCP, self-hosted LLM inference, identity security, and distributed systems \u2014 plus experience leading teams as large as 21 engineers. That mix of hands-on platform engineering and technical leadership carries across most senior/staff engineering and technical leadership roles. Let me know the specific role or JD you're hiring for and I can speak to fit more precisely.";
   }
   if (query.includes("leadership") || query.includes("lead")) {
     return "I've led engineering teams as large as 21 people (4 direct reports), mentored engineers to raise PR acceptance by 30%, and served as Principal Architect across multiple platform initiatives \u2014 balancing hands-on system design with team growth and delivery.";
