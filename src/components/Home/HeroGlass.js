@@ -101,9 +101,22 @@ const GOOD_VOICE_PATTERNS = [
   { re: /\bnatural\b/i, score: 90 },
   { re: /premium|enhanced/i, score: 85 },
   { re: /google/i, score: 75 },
-  { re: /\b(samantha|daniel|alex|karen|moira|tessa|serena|aria|jenny|guy|ryan)\b/i, score: 60 },
+  { re: /\b(guy|ryan|daniel|alex|christopher|andrew|brian)\b/i, score: 60 },
 ];
 const BAD_VOICE_PATTERNS = [/desktop/i, /espeak/i, /compact/i, /\bzira\b/i, /\bdavid\b/i];
+
+// The assistant's persona is a single, consistent male voice — pick from
+// these first regardless of which platform/browser is rendering, so the
+// "who's speaking" identity doesn't shift between visitors. Extend this
+// list as more platform voice names are found to sound off.
+const MALE_VOICE_RE = /\b(guy|ryan|daniel|alex|david|christopher|eric|andrew|brian|roger|steffan|thomas|oliver|diego|fred|george|james|kevin|liam|matthew|will|mark|paul|tom)\b/i;
+const FEMALE_VOICE_RE = /\b(samantha|karen|moira|tessa|serena|aria|jenny|zira|susan|victoria|fiona|kate|allison|ava|michelle|nicky|catherine|hazel|sonia|libby|emma|olivia|sara|zoe|amy|joanna|salli|kimberly|female)\b/i;
+
+// Fixed delivery — applied to whichever underlying voice engine the
+// browser provides, so the pacing/tone stays the same "measured,
+// professional" persona everywhere even though the raw voice timbre
+// still varies by platform (the Web Speech API gives no way around that).
+const VOICE_PERSONA = { rate: 0.95, pitch: 0.9, volume: 1 };
 
 function scoreVoice(voice) {
   let score = 0;
@@ -123,7 +136,16 @@ function pickPreferredVoice(voices) {
   if (!voices.length) return null;
   const englishVoices = voices.filter((v) => v.lang?.startsWith("en"));
   const pool = englishVoices.length ? englishVoices : voices;
-  return pool.reduce((best, v) => (scoreVoice(v) > scoreVoice(best) ? v : best), pool[0]);
+
+  // Gender consistency first, voice quality second: prefer an explicitly
+  // male-named voice; failing that, at least avoid an explicitly
+  // female-named one; only fall back to the unfiltered pool if that
+  // leaves nothing to speak with at all.
+  const male = pool.filter((v) => MALE_VOICE_RE.test(v.name) && !FEMALE_VOICE_RE.test(v.name));
+  const notFemale = pool.filter((v) => !FEMALE_VOICE_RE.test(v.name));
+  const finalPool = male.length ? male : notFemale.length ? notFemale : pool;
+
+  return finalPool.reduce((best, v) => (scoreVoice(v) > scoreVoice(best) ? v : best), finalPool[0]);
 }
 
 function waitForVoices(synth, timeoutMs = 1000) {
@@ -208,11 +230,9 @@ function HeroGlass() {
     const utterance = new SpeechSynthesisUtterance(text);
     const voice = pickPreferredVoice(voicesRef.current);
     if (voice) utterance.voice = voice;
-    // Slightly slower and lower than default TTS so replies read as a calm,
-    // professional colleague rather than a flat robotic voice.
-    utterance.rate = 0.94;
-    utterance.pitch = 0.92;
-    utterance.volume = 1;
+    utterance.rate = VOICE_PERSONA.rate;
+    utterance.pitch = VOICE_PERSONA.pitch;
+    utterance.volume = VOICE_PERSONA.volume;
     utterance.onstart = () => setSpeaking(true);
     utterance.onend = () => setSpeaking(false);
     utterance.onerror = () => setSpeaking(false);
