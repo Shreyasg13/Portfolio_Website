@@ -766,6 +766,51 @@ button:focus {
   color: var(--text-dim);
   text-align: right;
 }
+
+.vc-voice-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.vc-voice-card {
+  position: relative;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.vc-voice-card-active {
+  border-color: var(--imp-text-color);
+}
+
+.vc-voice-recommended {
+  position: absolute;
+  top: -9px;
+  right: 14px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.62em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: var(--imp-text-color);
+  color: #14141c;
+}
+
+.vc-voice-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: white;
+}
+
+.vc-voice-labels {
+  margin-top: 4px;
+  font-size: 0.72em;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
 /* --------- */
 /* Projects */
 /* --------- */
