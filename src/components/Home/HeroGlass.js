@@ -180,6 +180,7 @@ function HeroGlass() {
   const recognitionRef = useRef(null);
   const menuRef = useRef(null);
   const voicesRef = useRef([]);
+  const audioRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -215,15 +216,25 @@ function HeroGlass() {
     return () => clearInterval(id);
   }, [listening]);
 
-  useEffect(() => () => window.speechSynthesis?.cancel(), []);
+  useEffect(() => () => stopSpeaking(), []);
 
-  async function speak(text) {
+  function stopSpeaking() {
+    window.speechSynthesis?.cancel();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current = null;
+    }
+    setSpeaking(false);
+  }
+
+  // Fallback only: each browser exposes a different voice list, so this can
+  // never guarantee the exact same audio everywhere — it's what runs if the
+  // server-side ElevenLabs voice (the one that IS consistent everywhere,
+  // see speak() below) is unavailable.
+  async function speakWithBrowserVoice(text) {
     const synth = window.speechSynthesis;
-    if (!voiceOn || !synth) return;
-    synth.cancel();
-    // On first load the voice list can still be empty (it loads
-    // asynchronously), which used to silently fall back to the browser's
-    // flat default voice. Wait for it so the good voice is actually used.
+    if (!synth) return;
     if (!voicesRef.current.length) {
       voicesRef.current = await waitForVoices(synth);
     }
@@ -239,17 +250,46 @@ function HeroGlass() {
     synth.speak(utterance);
   }
 
+  async function speak(text) {
+    if (!voiceOn) return;
+    stopSpeaking();
+    try {
+      const res = await fetch("/.netlify/functions/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      if (!res.ok) throw new Error("tts unavailable");
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onplay = () => setSpeaking(true);
+      audio.onended = () => {
+        setSpeaking(false);
+        URL.revokeObjectURL(url);
+      };
+      audio.onerror = () => {
+        setSpeaking(false);
+        URL.revokeObjectURL(url);
+      };
+      await audio.play();
+    } catch {
+      speakWithBrowserVoice(text);
+    }
+  }
+
   function toggleVoiceOutput() {
     setVoiceOn((v) => {
       const next = !v;
-      if (!next) window.speechSynthesis?.cancel();
+      if (!next) stopSpeaking();
       return next;
     });
   }
 
   async function ask(question) {
     if (!question.trim() || loading) return;
-    window.speechSynthesis?.cancel();
+    stopSpeaking();
     setMessages((m) => [...m, { role: "user", content: question }]);
     setInput("");
     setLoading(true);
@@ -382,7 +422,7 @@ function HeroGlass() {
                       <button
                         type="button"
                         onClick={() => {
-                          window.speechSynthesis?.cancel();
+                          stopSpeaking();
                           setMessages([]);
                           setMenuOpen(false);
                         }}
