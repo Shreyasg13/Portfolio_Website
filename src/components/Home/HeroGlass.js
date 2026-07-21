@@ -37,6 +37,7 @@ const ASSISTANT_SUGGESTIONS = [
   { icon: <BsGearFill />, label: "What's your core technical expertise?" },
   { icon: <Rocket />, label: "What's your most impactful project?" },
   { icon: <BsFileEarmarkTextFill />, label: "Do you need visa sponsorship?" },
+  { icon: <BsSend />, label: "Can you email me your resume?" },
 ];
 
 const TOP_STATS = [
@@ -359,7 +360,7 @@ function HeroGlass() {
     fetch("/.netlify/functions/send-resume", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: proposal.email, variant: proposal.variant }),
+      body: JSON.stringify({ email: proposal.email, variant: proposal.variant, message: proposal.message }),
     })
       .then(async (res) => {
         const data = await res.json();

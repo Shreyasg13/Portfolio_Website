@@ -9,8 +9,63 @@ import path from "path";
 import { getStore } from "@netlify/blobs";
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
-const VALID_VARIANTS = new Set(["Resumev1", "Resumev2", "Resumev3"]);
+// v1/v2 are Word docs, v3 is a PDF — real filenames/extensions on disk.
+const VARIANT_FILES = {
+  Resumev1: { file: "Resumev1.docx", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
+  Resumev2: { file: "Resumev2.docx", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
+  Resumev3: { file: "Resumev3.pdf", type: "application/pdf" },
+};
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const MAX_MESSAGE_CHARS = 1500;
+const DEFAULT_INTRO = "Thanks for your interest — my resume is attached.";
+
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+// customMessage (when present) is the model's own note composed from the
+// actual conversation — referencing the role/company the visitor mentioned
+// — rather than a generic canned line. Split on blank lines so multi-
+// paragraph messages keep proper spacing in both the plain-text and HTML
+// parts instead of collapsing into one run-on block.
+function emailBody(customMessage) {
+  const intro = (customMessage || "").trim().slice(0, MAX_MESSAGE_CHARS) || DEFAULT_INTRO;
+  const paragraphs = intro.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+
+  const signatureLines = [
+    "Best,",
+    "Shreyash Gondane",
+    "shreyasgondane@gmail.com | +1 (929) 527-9683",
+    "LinkedIn: https://www.linkedin.com/in/shreyash130197/",
+    "Portfolio: https://shreyashportfolio.netlify.app/",
+    "GitHub: https://github.com/Shreyasg13",
+  ];
+
+  const text = [...paragraphs, "", signatureLines.join("\n")].join("\n\n");
+
+  const introHtml = paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join("\n");
+  const signatureHtml = `
+    <p>
+      Best,<br>
+      Shreyash Gondane<br>
+      📧 <a href="mailto:shreyasgondane@gmail.com">shreyasgondane@gmail.com</a>
+      &nbsp;|&nbsp; 📞 +1 (929) 527-9683<br>
+      <a href="https://www.linkedin.com/in/shreyash130197/">LinkedIn</a>
+      &nbsp;|&nbsp;
+      <a href="https://shreyashportfolio.netlify.app/">Portfolio</a>
+      &nbsp;|&nbsp;
+      <a href="https://github.com/Shreyasg13">GitHub</a>
+    </p>
+  `.trim();
+
+  return { text, html: `${introHtml}\n${signatureHtml}` };
+}
 
 // Abuse guard on a public, unauthenticated, email-sending endpoint: cap
 // sends per requester email and a global daily cap, both tracked in Blobs.
@@ -73,17 +128,19 @@ export default async (req) => {
 
   const email = typeof body.email === "string" ? body.email.trim() : "";
   const variant = typeof body.variant === "string" ? body.variant.trim() : "";
+  const message = typeof body.message === "string" ? body.message.slice(0, MAX_MESSAGE_CHARS) : "";
 
   if (!EMAIL_RE.test(email)) {
     return Response.json({ error: "That doesn't look like a valid email address." }, { status: 400 });
   }
-  if (!VALID_VARIANTS.has(variant)) {
+  const variantInfo = VARIANT_FILES[variant];
+  if (!variantInfo) {
     return Response.json({ error: "Unknown resume variant." }, { status: 400 });
   }
 
-  const pdfPath = path.join(currentDir, "..", "..", "src", "Assets", `${variant}.pdf`);
-  if (!existsSync(pdfPath)) {
-    console.error("send-resume: missing PDF for variant", variant, pdfPath);
+  const filePath = path.join(currentDir, "..", "..", "src", "Assets", variantInfo.file);
+  if (!existsSync(filePath)) {
+    console.error("send-resume: missing file for variant", variant, filePath);
     await logAttempt({ email, variant, status: "failed", detail: "resume file missing" });
     return Response.json({ error: "That resume variant isn't available right now." }, { status: 503 });
   }
@@ -96,7 +153,9 @@ export default async (req) => {
   }
 
   try {
-    const pdfBase64 = readFileSync(pdfPath).toString("base64");
+    const fileBase64 = readFileSync(filePath).toString("base64");
+    const extension = path.extname(variantInfo.file);
+    const { text, html } = emailBody(message);
 
     const sgResponse = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
@@ -109,16 +168,14 @@ export default async (req) => {
         from: { email: fromEmail, name: "Shreyash Gondane" },
         subject: "Shreyash Gondane — Resume",
         content: [
-          {
-            type: "text/plain",
-            value: "Thanks for your interest — my resume is attached.\n\nBest,\nShreyash",
-          },
+          { type: "text/plain", value: text },
+          { type: "text/html", value: html },
         ],
         attachments: [
           {
-            content: pdfBase64,
-            filename: "Shreyash_Gondane_Resume.pdf",
-            type: "application/pdf",
+            content: fileBase64,
+            filename: `Shreyash_Gondane_Resume${extension}`,
+            type: variantInfo.type,
             disposition: "attachment",
           },
         ],
