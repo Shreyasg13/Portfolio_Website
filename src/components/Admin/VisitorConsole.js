@@ -113,6 +113,11 @@ function VoicePicker({ password }) {
   const [settingId, setSettingId] = useState(null);
 
   useEffect(() => {
+    // password arrives a tick after the parent's own login fetch resolves
+    // (React 17 doesn't batch setState across separate promise callbacks),
+    // so this effect can briefly re-run with the empty initial value first.
+    if (!password) return;
+    setError("");
     fetch("/.netlify/functions/admin-voices", {
       headers: { "X-Admin-Password": password },
     })
