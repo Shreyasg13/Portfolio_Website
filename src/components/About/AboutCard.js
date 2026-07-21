@@ -15,15 +15,20 @@ function AboutCard() {
             <div style={{ padding: 20, textAlign: "Left", fontSize: 14 }}>
               <Type1 />
             </div>
-            <b>Platform AI Architect</b> with <b>5+ years</b> and{" "}
-            <b>3,000+ commits · 700+ PRs · 10+ production repos</b>.
-            Principal architect of a{" "}
+            I build infrastructure — the code, systems, and{" "}
+            <span className="purple">LLM/AI platforms</span> that other engineers build on top
+            of. <b>Platform AI Architect</b> with <b>5+ years</b> of hands-on technical work (
+            <b>3,000+ commits · 700+ PRs · 10+ production repos</b>), backed by experience{" "}
+            <b>leading and managing engineering teams</b>.
+            <br />
+            <br />
+            As Principal Architect, I built a{" "}
             <span className="purple">governed multi-tenant AI platform</span> with self-hosted{" "}
             <span className="purple">vLLM (Qwen3-32B · DeepSeek-R1)</span> on GPU spot fleets, Bedrock fallback, Milvus RAG, and Langfuse LLM observability.
-            Built a complete{" "}
-            <span className="purple">multi-tenant IdP in Go/Echo</span> (zero CVEs, ≤5ms, 10K concurrent). Shipped{" "}
-            <span className="purple">MCP + A2A agentic infrastructure</span> and LangGraph HITL systems at{" "}
-            <span className="purple">1.2M conversations/month</span>. Led team of 21, 4 direct reports.
+            I built a complete{" "}
+            <span className="purple">multi-tenant IdP in Go/Echo</span> (zero CVEs, ≤5ms, 10K concurrent), and shipped{" "}
+            <span className="purple">MCP + A2A agentic infrastructure</span> and LangGraph HITL systems serving{" "}
+            <span className="purple">1.2M conversations/month</span> — while leading a team of 21 (4 direct reports).
             <br />
             <br />
             Beyond engineering:
