@@ -7,9 +7,24 @@
 // Apache-2.0, no per-request cost. Free serverless endpoints cold-start and
 // can be unreliable for less-common models, so on any failure this falls
 // through to ElevenLabs (paid, but dependable) rather than going silent.
+import { getStore } from "@netlify/blobs";
+
 const HF_MODEL = "hexgrad/Kokoro-82M";
 const ELEVENLABS_DEFAULT_VOICE_ID = "pNInz6obpgDQGcFmaJgB"; // "Adam" — deep, professional male
 const MAX_CHARS = 800;
+
+// Voice precedence: whatever's picked in /admin/visitors (stored in Blobs)
+// > ELEVENLABS_VOICE_ID env var > the hardcoded default above.
+async function activeVoiceId() {
+  try {
+    const store = getStore("settings");
+    const active = await store.get("active_voice_id", { type: "json" });
+    return active?.voiceId || null;
+  } catch (err) {
+    console.error("Failed to read active voice id", err);
+    return null;
+  }
+}
 
 async function tryHuggingFace(text) {
   const hfToken = process.env.HUGGINGFACE_API_KEY;
@@ -54,7 +69,7 @@ async function tryElevenLabs(text) {
   const apiKey = process.env.ELEVENLABS_API_KEY;
   if (!apiKey) return null;
 
-  const voiceId = process.env.ELEVENLABS_VOICE_ID || ELEVENLABS_DEFAULT_VOICE_ID;
+  const voiceId = (await activeVoiceId()) || process.env.ELEVENLABS_VOICE_ID || ELEVENLABS_DEFAULT_VOICE_ID;
 
   try {
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {

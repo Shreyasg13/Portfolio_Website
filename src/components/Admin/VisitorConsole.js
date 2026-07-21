@@ -106,6 +106,75 @@ function BarList({ items }) {
   );
 }
 
+function VoicePicker({ password }) {
+  const [voices, setVoices] = useState(null);
+  const [activeVoiceId, setActiveVoiceId] = useState(null);
+  const [error, setError] = useState("");
+  const [settingId, setSettingId] = useState(null);
+
+  useEffect(() => {
+    fetch("/.netlify/functions/admin-voices", {
+      headers: { "X-Admin-Password": password },
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to load voices");
+        setVoices(data.voices);
+        setActiveVoiceId(data.activeVoiceId);
+      })
+      .catch((err) => setError(err.message));
+  }, [password]);
+
+  const selectVoice = (voiceId) => {
+    setSettingId(voiceId);
+    fetch("/.netlify/functions/admin-voices", {
+      method: "POST",
+      headers: { "X-Admin-Password": password, "Content-Type": "application/json" },
+      body: JSON.stringify({ voiceId }),
+    })
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Failed to set voice");
+        setActiveVoiceId(voiceId);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setSettingId(null));
+  };
+
+  if (error) return <p style={{ color: "#ff7043" }}>{error}</p>;
+  if (!voices) return <p className="vc-empty">Loading voices…</p>;
+  if (!voices.length) return <p className="vc-empty">No voices found on this ElevenLabs account.</p>;
+
+  return (
+    <div className="vc-voice-grid">
+      {voices.map((v, i) => {
+        const isActive = v.voiceId === activeVoiceId;
+        return (
+          <div className={`vc-voice-card${isActive ? " vc-voice-card-active" : ""}`} key={v.voiceId}>
+            {i === 0 && <span className="vc-voice-recommended">Recommended</span>}
+            <div className="vc-voice-name">{v.name}</div>
+            <div className="vc-voice-labels">
+              {[v.gender, v.accent, v.description, v.useCase].filter(Boolean).join(" · ")}
+            </div>
+            {v.previewUrl && (
+              <audio controls src={v.previewUrl} style={{ width: "100%", marginTop: 8, height: 32 }} />
+            )}
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={{ marginTop: 10, width: "100%" }}
+              disabled={isActive || settingId === v.voiceId}
+              onClick={() => selectVoice(v.voiceId)}
+            >
+              {isActive ? "Active" : settingId === v.voiceId ? "Setting…" : "Set as active"}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function VisitorConsole() {
   const [password, setPassword] = useState(sessionStorage.getItem("sg-admin-pw") || "");
   const [input, setInput] = useState("");
@@ -210,6 +279,11 @@ function VisitorConsole() {
       <Particle />
       <Container style={{ paddingTop: "80px", paddingBottom: 60 }}>
         <h2 style={{ color: "white", marginBottom: 20 }}>Visitor Dashboard</h2>
+
+        <div className="vc-section">
+          <h3 className="vc-section-title">Assistant voice</h3>
+          <VoicePicker password={password} />
+        </div>
 
         <div className="vc-stats">
           <StatTile label="Total visitors (all-time)" value={totalCount === null ? "—" : totalCount.toLocaleString()} />
