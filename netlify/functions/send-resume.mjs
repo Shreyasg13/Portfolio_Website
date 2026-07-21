@@ -38,6 +38,18 @@ async function checkAndRecordRateLimit(store, email) {
   return { ok: true };
 }
 
+// Logs every real attempt (rate-limited, failed, or sent) so /admin/visitors
+// can show a full "what actually happened" picture, not just successes.
+async function logAttempt({ email, variant, status, detail }) {
+  try {
+    const log = getStore("resume-send-log");
+    const key = new Date().toISOString() + "-" + Math.random().toString(36).slice(2, 8);
+    await log.setJSON(key, { email, variant, status, detail: detail || null, timestamp: new Date().toISOString() });
+  } catch (err) {
+    console.error("Failed to log resume-send attempt", err);
+  }
+}
+
 export default async (req) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
@@ -72,12 +84,14 @@ export default async (req) => {
   const pdfPath = path.join(currentDir, "..", "..", "src", "Assets", `${variant}.pdf`);
   if (!existsSync(pdfPath)) {
     console.error("send-resume: missing PDF for variant", variant, pdfPath);
+    await logAttempt({ email, variant, status: "failed", detail: "resume file missing" });
     return Response.json({ error: "That resume variant isn't available right now." }, { status: 503 });
   }
 
-  const store = getStore("resume-sends");
-  const limit = await checkAndRecordRateLimit(store, email);
+  const rateStore = getStore("resume-send-rate");
+  const limit = await checkAndRecordRateLimit(rateStore, email);
   if (!limit.ok) {
+    await logAttempt({ email, variant, status: "rate_limited", detail: limit.reason });
     return Response.json({ error: limit.reason }, { status: 429 });
   }
 
@@ -114,16 +128,15 @@ export default async (req) => {
     if (!sgResponse.ok) {
       const errBody = await sgResponse.text();
       console.error("SendGrid error", sgResponse.status, errBody.slice(0, 300));
+      await logAttempt({ email, variant, status: "failed", detail: `SendGrid ${sgResponse.status}` });
       return Response.json({ error: "Failed to send the email — please try again shortly." }, { status: 502 });
     }
 
-    const log = getStore("resume-send-log");
-    const logKey = new Date().toISOString() + "-" + Math.random().toString(36).slice(2, 8);
-    await log.setJSON(logKey, { email, variant, timestamp: new Date().toISOString() });
-
+    await logAttempt({ email, variant, status: "sent" });
     return Response.json({ ok: true });
   } catch (err) {
     console.error("send-resume error", err);
+    await logAttempt({ email, variant, status: "failed", detail: String(err).slice(0, 200) });
     return Response.json({ error: "Failed to send the email — please try again shortly." }, { status: 500 });
   }
 };
