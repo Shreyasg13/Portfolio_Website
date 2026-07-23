@@ -1,4 +1,4 @@
-html {
+:root {
   --bg: #0e0d10;
   --bg2: #17141a;
   --card: #1a171d;
@@ -18,8 +18,12 @@ html {
 
   --imp-text-color: #e0452a;
   --accent-secondary: #ff7a5c;
+  --accent-blue: #3b9cff;
   --text-muted: #b3adb2;
   --text-dim: #8a838a;
+
+  --glass-bg: rgba(13, 20, 31, 0.62);
+  --glass-border: rgba(142, 183, 227, 0.19);
 
   --font-display: "Sora", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
@@ -2179,11 +2183,6 @@ button:focus {
 /* --------- */
 /* Glass UI: TopNav + IconRail */
 /* --------- */
-:root {
-  --glass-bg: rgba(26, 23, 29, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.08);
-}
-
 body {
   padding-left: 76px;
 }
@@ -3522,12 +3521,6 @@ body {
 /* --------- */
 /* Portfolio dashboard alignment pass */
 /* --------- */
-:root {
-  --glass-bg: rgba(13, 20, 31, 0.62);
-  --glass-border: rgba(142, 183, 227, 0.19);
-  --accent-blue: #3b9cff;
-}
-
 body {
   background:
     radial-gradient(circle at 58% 20%, rgba(37, 111, 175, 0.2), transparent 28%),
