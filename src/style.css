@@ -2362,13 +2362,22 @@ body {
 
 .hg-glass {
   position: relative;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border-radius: 14px;
   overflow: hidden;
-  transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  --spotlight-x: 50%;
+  --spotlight-y: 20%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    radial-gradient(260px circle at var(--spotlight-x) var(--spotlight-y), rgba(255, 255, 255, 0.06), transparent 62%),
+    linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015) 40%, rgba(0, 0, 0, 0) 70%),
+    rgba(13, 20, 31, 0.6);
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .hg-glass::before {
@@ -2395,7 +2404,12 @@ body {
 }
 
 .hg-glass:hover {
-  border-color: rgba(224, 69, 42, 0.3);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 22px 54px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .hg-topbar {
@@ -2996,20 +3010,6 @@ body {
   .hg-build-grid-wide {
     grid-template-columns: 1fr 1fr;
   }
-}
-
-.hg-build-item {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  padding: 12px;
-  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
-}
-
-.hg-build-item:hover {
-  transform: translateY(-3px);
-  border-color: rgba(224, 69, 42, 0.35);
-  background: rgba(255, 255, 255, 0.05);
 }
 
 .hg-build-icon {
@@ -3651,8 +3651,10 @@ body {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.11), 0 10px 24px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 .hg-build-item:hover {
+  transform: translateY(-3px);
   border-color: rgba(224, 69, 42, 0.4);
   background: linear-gradient(140deg, rgba(56, 82, 114, 0.38), rgba(10, 20, 34, 0.46));
 }
@@ -3748,35 +3750,9 @@ body {
   mix-blend-mode: soft-light;
 }
 
-.hg-glass {
-  --spotlight-x: 50%;
-  --spotlight-y: 20%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background:
-    radial-gradient(260px circle at var(--spotlight-x) var(--spotlight-y), rgba(255, 255, 255, 0.06), transparent 62%),
-    linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.015) 40%, rgba(0, 0, 0, 0) 70%),
-    rgba(13, 20, 31, 0.6);
-  box-shadow:
-    0 18px 46px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
 .hg-glass > * {
   position: relative;
   z-index: 1;
-}
-
-.hg-glass:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.18);
-  box-shadow:
-    0 22px 54px rgba(0, 0, 0, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .hg-topstats,

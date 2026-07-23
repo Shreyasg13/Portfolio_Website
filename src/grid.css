@@ -1,0 +1,52 @@
+/* --------- */
+/* 12-column grid utilities. `ds-` prefix deliberately avoids colliding */
+/* with Bootstrap's row/col/g- classes, already loaded site-wide via */
+/* react-bootstrap. Purely additive — not yet used by any existing */
+/* layout (.hg-grid and friends are untouched in this phase). */
+/* --------- */
+.ds-container {
+  max-width: 1520px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+}
+
+.ds-col-1 { grid-column: span 1 / span 1; }
+.ds-col-2 { grid-column: span 2 / span 2; }
+.ds-col-3 { grid-column: span 3 / span 3; }
+.ds-col-4 { grid-column: span 4 / span 4; }
+.ds-col-5 { grid-column: span 5 / span 5; }
+.ds-col-6 { grid-column: span 6 / span 6; }
+.ds-col-7 { grid-column: span 7 / span 7; }
+.ds-col-8 { grid-column: span 8 / span 8; }
+.ds-col-9 { grid-column: span 9 / span 9; }
+.ds-col-10 { grid-column: span 10 / span 10; }
+.ds-col-11 { grid-column: span 11 / span 11; }
+.ds-col-12 { grid-column: span 12 / span 12; }
+
+@media (max-width: 900px) {
+  .ds-col-md-1 { grid-column: span 1 / span 1; }
+  .ds-col-md-2 { grid-column: span 2 / span 2; }
+  .ds-col-md-3 { grid-column: span 3 / span 3; }
+  .ds-col-md-4 { grid-column: span 4 / span 4; }
+  .ds-col-md-5 { grid-column: span 5 / span 5; }
+  .ds-col-md-6 { grid-column: span 6 / span 6; }
+  .ds-col-md-7 { grid-column: span 7 / span 7; }
+  .ds-col-md-8 { grid-column: span 8 / span 8; }
+  .ds-col-md-9 { grid-column: span 9 / span 9; }
+  .ds-col-md-10 { grid-column: span 10 / span 10; }
+  .ds-col-md-11 { grid-column: span 11 / span 11; }
+  .ds-col-md-12 { grid-column: span 12 / span 12; }
+}
+
+@media (max-width: 620px) {
+  .ds-col-sm-1, .ds-col-sm-2, .ds-col-sm-3, .ds-col-sm-4, .ds-col-sm-5, .ds-col-sm-6,
+  .ds-col-sm-7, .ds-col-sm-8, .ds-col-sm-9, .ds-col-sm-10, .ds-col-sm-11, .ds-col-sm-12 {
+    grid-column: span 12 / span 12;
+  }
+}
