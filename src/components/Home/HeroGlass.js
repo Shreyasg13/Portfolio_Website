@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import heroScreen from "../../Assets/ChatGPT Image Jul 19, 2026, 10_42_10 AM.png";
 import assistantAvatar from "../../Assets/hero-portrait.png";
@@ -168,7 +169,21 @@ function waitForVoices(synth, timeoutMs = 1000) {
   });
 }
 
+// Entrance animation for the hero's top-level panels — staggered by
+// `custom` (a small index-based delay) so the page feels assembled
+// rather than static on load. Distance/duration kept subtle per GOAL.md's
+// "ambient motion... slowly" guidance, not a flashy reveal.
+const panelVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: 0.08 * i, ease: [0.2, 0.8, 0.2, 1] },
+  }),
+};
+
 function HeroGlass() {
+  const reduceMotion = useReducedMotion();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -417,7 +432,13 @@ function HeroGlass() {
       </div>
 
       <div className="hg-grid">
-        <div className="hg-left">
+        <motion.div
+          className="hg-left"
+          variants={panelVariants}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          custom={0}
+        >
           <span className="hg-open-pill">
             <BsCircleFill className="hg-open-dot" /> Open to Opportunities
           </span>
@@ -447,9 +468,15 @@ function HeroGlass() {
               Download Resume
             </Link>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hg-right">
+        <motion.div
+          className="hg-right"
+          variants={panelVariants}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          custom={2}
+        >
           <div className="hg-panel hg-glass">
             <div className="hg-panel-header">
               <img src={assistantAvatar} alt="" className="hg-avatar" />
@@ -596,15 +623,35 @@ function HeroGlass() {
               )}
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hg-center">
+        <motion.div
+          className="hg-center"
+          variants={panelVariants}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          custom={1}
+        >
           <div className="hg-photo-slot">
             <img src={heroScreen} alt="Shreyash Gondane workspace dashboard" className="hg-photo-img" />
+            {!reduceMotion && (
+              <motion.div
+                className="hg-photo-sweep"
+                aria-hidden="true"
+                animate={{ x: ["-120%", "220%"] }}
+                transition={{ duration: 5, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
+              />
+            )}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="hg-panel hg-glass hg-build-panel">
+        <motion.div
+          className="hg-panel hg-glass hg-build-panel"
+          variants={panelVariants}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          custom={3}
+        >
           <div className="hg-panel-header">
             What I Build &amp; Deliver
             <Link to="/project" className="hg-view-all">
@@ -625,7 +672,7 @@ function HeroGlass() {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

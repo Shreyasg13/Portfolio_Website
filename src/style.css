@@ -2611,6 +2611,19 @@ body {
   display: block;
 }
 
+/* Ambient light sweep across the hero photo — driven by Framer Motion
+   in HeroGlass.js (animates `x`), this just sets the bar's look. */
+.hg-photo-sweep {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 40%;
+  height: 120%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.12) 45%, transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
 @keyframes photo-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
