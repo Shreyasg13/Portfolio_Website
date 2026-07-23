@@ -8,3 +8,13 @@
 
 [functions]
   directory = "netlify/functions"
+
+# SPA fallback: without this, a direct/fresh request to any client-side
+# route (e.g. /admin/visitors, /style-guide) 404s at Netlify's edge
+# before React Router ever gets a chance to handle it — only works when
+# navigated to via an in-app link click. Netlify Function routes
+# (/.netlify/functions/*) are unaffected; they're matched first.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
