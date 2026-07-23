@@ -9,6 +9,8 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid var(--glass-border);
+  /* Phase 4: gradient border, same technique as .hg-glass in style.css. */
+  border-image: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(122, 183, 246, 0.18) 45%, rgba(255, 255, 255, 0.04)) 1;
   background: var(--glass-bg);
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(24px) saturate(160%);
@@ -18,7 +20,7 @@
 
 .glass:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--shadow-xl), 0 0 32px rgba(122, 183, 246, 0.16);
 }
 
 .glass-subtle {
