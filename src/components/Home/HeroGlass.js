@@ -5,6 +5,7 @@ import assistantAvatar from "../../Assets/hero-portrait.png";
 import WorkspaceScene from "./WorkspaceScene";
 import DigitalTwinAvatar from "./DigitalTwinAvatar";
 import Waveform from "./Waveform";
+import AmbientParticles from "./AmbientParticles";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -405,6 +406,7 @@ function HeroGlass() {
 
   return (
     <div className="hg-hero">
+      <AmbientParticles reduceMotion={reduceMotion} />
       <div className="hg-topbar">
         <div className="hg-topstats">
           {TOP_STATS.map((s) => (

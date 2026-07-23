@@ -2360,6 +2360,19 @@ body {
   padding: 10px 0 40px;
 }
 
+/* Phase 6: R3F ambient depth/parallax layer, hero-scoped only — distinct
+   from the page-wide react-tsparticles drift in Particle.js (used on
+   Home/Admin/StyleGuide alike), which already covers flat 2D ambient
+   dust; this adds the thing that can't: real z-depth + camera parallax. */
+.ap-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ap-canvas-wrap canvas { display: block; }
+
 .hg-glass {
   position: relative;
   border-radius: 14px;

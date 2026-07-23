@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@netlify/blobs": "^10.7.9",
+    "@react-three/drei": "^8.20.2",
+    "@react-three/fiber": "^7.0.29",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -21,6 +23,7 @@
     "react-router-dom": "^6.2.2",
     "react-scripts": "5.0.0",
     "react-tsparticles": "^1.42.2",
+    "three": "^0.140.0",
     "typewriter-effect": "^2.18.2",
     "web-vitals": "^2.1.4"
   },
