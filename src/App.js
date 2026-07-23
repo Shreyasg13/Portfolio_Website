@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Resume from "./components/Resume/ResumeNew";
 import AdminConsole from "./components/Admin/AdminConsole";
 import VisitorConsole from "./components/Admin/VisitorConsole";
+import StyleGuide from "./components/StyleGuide/StyleGuide";
 import {
   BrowserRouter as Router,
   Route,
@@ -16,6 +17,10 @@ import {
 } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
 import "./style.css";
+import "./tokens.css";
+import "./glass.css";
+import "./grid.css";
+import "./type.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -44,6 +49,7 @@ function App() {
           <Route path="/resume" element={<Resume />} />
           <Route path="/admin" element={<AdminConsole />} />
           <Route path="/admin/visitors" element={<VisitorConsole />} />
+          <Route path="/style-guide" element={<StyleGuide />} />
           {/* <Route path="*" element={<Navigate to="/"/>} /> */}
         </Routes>
         <Footer />
