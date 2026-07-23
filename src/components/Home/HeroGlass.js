@@ -3,6 +3,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import assistantAvatar from "../../Assets/hero-portrait.png";
 import WorkspaceScene from "./WorkspaceScene";
+import DigitalTwinAvatar from "./DigitalTwinAvatar";
+import Waveform from "./Waveform";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -76,16 +78,6 @@ function localReply(question) {
     return "Yes \u2014 I'm currently on an H1B visa and would need employer sponsorship (an H1B transfer) to take on a new role. Happy to discuss details.";
   }
   return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about my fit for the role, leadership experience, technical expertise, or sponsorship needs.";
-}
-
-function Waveform({ active, bars = 18 }) {
-  return (
-    <div className={`hg-waveform ${active ? "hg-waveform-active" : ""}`} aria-hidden="true">
-      {Array.from({ length: bars }).map((_, i) => (
-        <span key={i} style={{ animationDelay: `${(i % 6) * 0.09}s` }} />
-      ))}
-    </div>
-  );
 }
 
 function formatTimer(totalSeconds) {
@@ -634,6 +626,7 @@ function HeroGlass() {
         >
           <div className="hg-photo-slot">
             <WorkspaceScene />
+            <DigitalTwinAvatar listening={listening} loading={loading} speaking={speaking} reduceMotion={reduceMotion} />
             {!reduceMotion && (
               <motion.div
                 className="hg-photo-sweep"

@@ -2703,6 +2703,75 @@ body {
 .ws-keyboard-glow { position: absolute; top: 0; bottom: 0; width: 30%; background: linear-gradient(90deg, transparent, rgba(70, 183, 255, 0.5), transparent); animation: ws-keyboard-glow 5s ease-in-out infinite; }
 @keyframes ws-keyboard-glow { 0% { transform: translateX(-40%); } 50% { transform: translateX(240%); } 100% { transform: translateX(-40%); } }
 
+/* --------- */
+/* Phase 3: AI Digital Twin avatar — a "PiP" bubble sitting at the
+   WorkspaceScene desk, state-driven from HeroGlass.js's existing
+   listening/loading/speaking booleans (no new state machine). */
+.dt-avatar {
+  position: absolute;
+  left: 5%;
+  bottom: 8%;
+  z-index: 2;
+  width: 27%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: dt-breathe 4.6s ease-in-out infinite;
+}
+@keyframes dt-breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2%) scale(1.015); } }
+
+.dt-ring {
+  position: absolute;
+  inset: -6%;
+  border-radius: 50%;
+  border: 1.5px solid rgba(122, 183, 246, 0.35);
+}
+.dt-ring-listening { border-color: #46b7ff; box-shadow: 0 0 0 rgba(70, 183, 255, 0.5); animation: dt-listen-pulse 1.6s ease-out infinite; }
+.dt-ring-thinking { border-style: dashed; border-color: #a76bff; animation: dt-think-orbit 3.2s linear infinite; }
+.dt-ring-speaking { border-color: #3fd092; box-shadow: 0 0 14px rgba(63, 208, 146, 0.55); animation: dt-speak-glow 0.8s ease-in-out infinite; }
+.dt-ring-completed { border-color: #3fd092; animation: dt-complete-pulse 1.2s ease-out; }
+@keyframes dt-listen-pulse { 0% { box-shadow: 0 0 0 0 rgba(70, 183, 255, 0.5); } 100% { box-shadow: 0 0 0 10px rgba(70, 183, 255, 0); } }
+@keyframes dt-think-orbit { 100% { transform: rotate(360deg); } }
+@keyframes dt-speak-glow { 0%, 100% { box-shadow: 0 0 10px rgba(63, 208, 146, 0.4); } 50% { box-shadow: 0 0 18px rgba(63, 208, 146, 0.75); } }
+@keyframes dt-complete-pulse { 0% { box-shadow: 0 0 0 0 rgba(63, 208, 146, 0.6); } 100% { box-shadow: 0 0 0 14px rgba(63, 208, 146, 0); } }
+
+.dt-face { width: 78%; height: 78%; border-radius: 50%; box-shadow: var(--shadow-md); }
+.dt-face-bg { fill: #1c2a42; stroke: rgba(122, 183, 246, 0.3); stroke-width: 1.5; }
+.dt-eyes { animation: dt-blink 4.4s ease-in-out infinite; transform-origin: 50px 44px; }
+.dt-eye-white { fill: #e9f2ff; }
+.dt-pupil { fill: #14202f; transition: transform 0.12s linear; }
+@keyframes dt-blink { 0%, 92%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
+.dt-mouth { fill: none; stroke: #9db6d6; stroke-width: 3; stroke-linecap: round; transform-origin: 50px 66px; }
+.dt-mouth-speaking { animation: dt-talk 0.55s ease-in-out infinite; stroke: #d7e6f7; }
+@keyframes dt-talk { 0%, 100% { transform: scaleY(1); } 30% { transform: scaleY(2.1); } 60% { transform: scaleY(1.4); } }
+
+.dt-avatar .hg-waveform { position: absolute; left: 50%; bottom: -14%; width: 70%; height: 14px; transform: translateX(-50%); justify-content: center; }
+
+.dt-label {
+  position: absolute;
+  bottom: -22%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(8, 18, 30, 0.72);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(12px);
+  color: #d5e4f4;
+  font-family: var(--font-mono);
+  font-size: 7px;
+  white-space: nowrap;
+}
+.dt-label-dot-idle { background: #7a8fa8; box-shadow: none; animation: none; }
+.dt-label-dot-listening { background: #46b7ff; }
+.dt-label-dot-thinking { background: #a76bff; }
+.dt-label-dot-speaking { background: #3fd092; }
+.dt-label-dot-completed { background: #3fd092; }
+
 /* Ambient light sweep across the hero photo — driven by Framer Motion
    in HeroGlass.js (animates `x`), this just sets the bar's look. */
 .hg-photo-sweep {
@@ -3819,12 +3888,14 @@ body {
   .tn-nav { left: 16px; right: 16px; }.icon-rail { display: none; } body { padding-left: 0; }
   .home-section { padding-top: 72px !important; }.hg-grid { grid-template-columns: 1fr 1fr; }.hg-left { grid-column: 1 / -1; }.hg-build-panel { grid-column: 1 / -1; }.ls-row { grid-template-columns: 1fr; }.af-panel { max-width: none; }
   .ws-monitor-code, .ws-whiteboard { display: none; }.ws-accessory-row { flex: 1.3; }
+  .dt-avatar { width: 32%; }.dt-label { font-size: 6.5px; }
 }
 
 @media (max-width: 620px) {
   .tn-pill { display: none; }.tn-nav { justify-content: flex-end; }.hg-topstats { justify-content: center; }.hg-topstat:nth-child(n + 4) { display: none; }
   .hg-grid { grid-template-columns: 1fr; }.hg-left, .hg-right, .hg-center, .hg-build-panel { grid-column: 1; }.hg-center { height: 280px; max-width: 260px; margin: 0 auto; }.hg-photo-slot { height: 280px; }.hg-build-grid-wide { grid-template-columns: 1fr 1fr; }.hb-stats-row { grid-template-columns: 1fr 1fr; }.hb-stat:nth-child(2) { border-right: 0; }.hb-quote-map { grid-template-columns: 1fr; }.hb-contact-bar { justify-content: flex-start; }.home-content.hero-wrap { padding-left: 16px !important; padding-right: 16px !important; }
   .ws-monitor-grafana, .ws-keyboard { display: none; }.ws-desk { inset: 8% 5% 6%; }.ws-monitor-row { flex: 2; }.ws-accessory-row { flex: 1; }
+  .dt-avatar { width: 38%; left: 6%; bottom: 10%; }.dt-label { font-size: 6px; padding: 2px 6px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
