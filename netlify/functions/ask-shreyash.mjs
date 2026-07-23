@@ -17,10 +17,18 @@ const RESUME_VARIANTS = readFileSync(
 // so fall through to the next one rather than failing the user's request.
 // Last entry is a paid model (fraction of a cent per request) as a guaranteed
 // fallback for when every free tier is saturated.
+//
+// OpenRouter's free-tier catalog turns over — the previous list
+// (qwen3-next-80b/qwen3-coder/llama-3.3-70b, all :free) was fully
+// deprecated/renamed at OpenRouter and silently 404ing on every request,
+// which is why every reply was falling through to "all models exhausted."
+// Re-picked from https://openrouter.ai/api/v1/models filtered to `:free`
+// on 2026-07-23 — if this list goes stale again, re-check that endpoint
+// rather than guessing at names.
 const MODELS = [
-  "qwen/qwen3-next-80b-a3b-instruct:free",
-  "qwen/qwen3-coder:free",
-  "meta-llama/llama-3.3-70b-instruct:free",
+  "openai/gpt-oss-20b:free",
+  "google/gemma-4-31b-it:free",
+  "nvidia/nemotron-3-super-120b-a12b:free",
   "mistralai/mistral-small-24b-instruct-2501",
 ];
 const MAX_TOKENS = 400;
