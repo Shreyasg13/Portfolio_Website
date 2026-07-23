@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
-import heroScreen from "../../Assets/ChatGPT Image Jul 19, 2026, 10_42_10 AM.png";
 import assistantAvatar from "../../Assets/hero-portrait.png";
+import WorkspaceScene from "./WorkspaceScene";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -633,7 +633,7 @@ function HeroGlass() {
           custom={1}
         >
           <div className="hg-photo-slot">
-            <img src={heroScreen} alt="Shreyash Gondane workspace dashboard" className="hg-photo-img" />
+            <WorkspaceScene />
             {!reduceMotion && (
               <motion.div
                 className="hg-photo-sweep"
