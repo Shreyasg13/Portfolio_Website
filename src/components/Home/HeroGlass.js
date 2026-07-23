@@ -5,6 +5,7 @@ import assistantAvatar from "../../Assets/hero-portrait.png";
 import WorkspaceScene from "./WorkspaceScene";
 import DigitalTwinAvatar from "./DigitalTwinAvatar";
 import Waveform from "./Waveform";
+import useParallax from "../../hooks/useParallax";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -191,6 +192,9 @@ function HeroGlass() {
   const audioRef = useRef(null);
   const utteranceRef = useRef(null);
   const keepAliveRef = useRef(null);
+  const photoSlotRef = useRef(null);
+
+  useParallax(photoSlotRef, { distance: 50, reduceMotion });
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -624,17 +628,24 @@ function HeroGlass() {
           animate="visible"
           custom={1}
         >
-          <div className="hg-photo-slot">
-            <WorkspaceScene />
-            <DigitalTwinAvatar listening={listening} loading={loading} speaking={speaking} reduceMotion={reduceMotion} />
-            {!reduceMotion && (
-              <motion.div
-                className="hg-photo-sweep"
-                aria-hidden="true"
-                animate={{ x: ["-120%", "220%"] }}
-                transition={{ duration: 5, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
-              />
-            )}
+          {/* Separate wrapper for the GSAP scroll-parallax ref (Phase 5) —
+              .hg-photo-slot already owns its own CSS transform animation
+              (photo-float) and sits inside a Framer Motion node, so the
+              scrubbed GSAP transform goes on its own plain, unanimated
+              element instead of fighting either of those for `transform`. */}
+          <div className="hg-parallax-wrap" ref={photoSlotRef}>
+            <div className="hg-photo-slot">
+              <WorkspaceScene />
+              <DigitalTwinAvatar listening={listening} loading={loading} speaking={speaking} reduceMotion={reduceMotion} />
+              {!reduceMotion && (
+                <motion.div
+                  className="hg-photo-sweep"
+                  aria-hidden="true"
+                  animate={{ x: ["-120%", "220%"] }}
+                  transition={{ duration: 5, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
+                />
+              )}
+            </div>
           </div>
         </motion.div>
 
