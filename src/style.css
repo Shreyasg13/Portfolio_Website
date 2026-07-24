@@ -2771,12 +2771,12 @@ body {
 .dt-body { fill: #1b2430; }
 .dt-neck { fill: #c68a5f; }
 .dt-head { fill: #dda274; }
-.dt-beard { fill: #241a13; opacity: 0.9; }
+.dt-beard { fill: #241a13; opacity: 0.85; }
 .dt-hair, .dt-hair-side { fill: #17110c; }
 .dt-brow { fill: #241a13; }
 .dt-eye-white { fill: #f4f1ea; }
 .dt-pupil { fill: #19130f; transition: transform 0.12s linear; }
-.dt-mouth { fill: #6b3226; stroke: #2c130c; stroke-width: 1; transition: d 0.06s linear; }
+.dt-mouth { fill: #a8493c; stroke: #5c2018; stroke-width: 1; transition: d 0.06s linear; }
 
 .dt-avatar .hg-waveform { position: absolute; left: 50%; bottom: -18%; width: 78%; height: 16px; transform: translateX(-50%); justify-content: center; z-index: 3; }
 
