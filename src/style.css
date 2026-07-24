@@ -2595,6 +2595,16 @@ body {
   justify-content: center;
 }
 
+/* Phase 5: plain wrapper the GSAP scroll-parallax ref attaches to,
+   isolated from .hg-photo-slot's own CSS transform animation below.
+   display:flex avoids margin-collapse with .hg-photo-slot's negative
+   top margin (set per-breakpoint further down) so this stays fully
+   transparent to the existing layout/sizing chain. */
+.hg-parallax-wrap {
+  width: 100%;
+  display: flex;
+}
+
 .hg-photo-slot {
   width: 100%;
   aspect-ratio: 3 / 4;

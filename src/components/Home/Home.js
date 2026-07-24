@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useReducedMotion } from "framer-motion";
 import { Container } from "react-bootstrap";
 import Particle from "../Particle";
 import HeroGlass from "./HeroGlass";
@@ -6,8 +7,12 @@ import LiveSystems from "./LiveSystems";
 import ActivityFeed from "./ActivityFeed";
 import HomeBottom from "./HomeBottom";
 import Reveal from "../Reveal";
+import useLenis from "../../hooks/useLenis";
 
 function Home() {
+  const reduceMotion = useReducedMotion();
+  useLenis(reduceMotion);
+
   useEffect(() => {
     const cards = document.querySelectorAll(".home-section .hg-glass");
     const listeners = [];
