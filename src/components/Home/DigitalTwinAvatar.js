@@ -1,12 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import Waveform from "./Waveform";
+import idlePhoto from "../../Assets/avatar-states/idle.png";
+import listeningPhoto from "../../Assets/avatar-states/listening.png";
+import thinkingPhoto from "../../Assets/avatar-states/thinking.png";
+import reasoningPhoto from "../../Assets/avatar-states/reasoning.png";
+import speakingPhoto from "../../Assets/avatar-states/speaking.png";
+import completePhoto from "../../Assets/avatar-states/complete.png";
 
 // TASK.md's Phase 3 names 7 states, but the app only ever exposes 3
 // booleans (listening/loading/speaking) — "Searching Memory", "Reasoning"
 // and "Querying Knowledge" (GOAL.md's own "AI thinking" list) are folded
-// into a rotating label under one unified "thinking" state rather than
-// invented as real, independently-triggerable states.
+// into a rotating label under one "thinking" state. The "Reasoning" tick
+// of that rotation swaps in the reasoning photo for a bit of variety
+// while thinking, since a real image exists for it.
 const THINKING_LABELS = ["Searching Memory", "Reasoning", "Querying Knowledge"];
+const THINKING_PHOTOS = [thinkingPhoto, reasoningPhoto, thinkingPhoto];
 
 const STATE_LABEL = {
   idle: "Idle",
@@ -16,17 +24,22 @@ const STATE_LABEL = {
   completed: "Completed",
 };
 
-// Pupils track the cursor for real (not a canned loop) — clamped to a few
-// px of travel so they never leave the eye-white, in the SVG's own 100x100
-// user-unit space (a CSS px transform on an SVG shape resolves in that
-// local coordinate system, not the screen's), so this stays correct at
-// every breakpoint without extra scaling math.
-const PUPIL_TRAVEL = 2.6;
+const STATE_PHOTO = {
+  idle: idlePhoto,
+  listening: listeningPhoto,
+  speaking: speakingPhoto,
+  completed: completePhoto,
+};
+
+// Subtle whole-photo tilt toward the cursor — a real photo can't move its
+// eyes like the earlier illustrated face did, so this is the equivalent
+// "reacts to your presence" touch instead.
+const TILT_DEG = 4;
 
 function DigitalTwinAvatar({ listening, loading, speaking, reduceMotion }) {
   const [thinkingIndex, setThinkingIndex] = useState(0);
   const [justCompleted, setJustCompleted] = useState(false);
-  const [pupilOffset, setPupilOffset] = useState({ x: 0, y: 0 });
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const wasLoadingRef = useRef(false);
   const avatarRef = useRef(null);
 
@@ -57,11 +70,9 @@ function DigitalTwinAvatar({ listening, loading, speaking, reduceMotion }) {
       const el = avatarRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const dx = e.clientX - (rect.left + rect.width / 2);
-      const dy = e.clientY - (rect.top + rect.height / 2);
-      const dist = Math.hypot(dx, dy) || 1;
-      const travel = Math.min(dist, PUPIL_TRAVEL);
-      setPupilOffset({ x: (dx / dist) * travel, y: (dy / dist) * travel });
+      const dx = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+      const dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+      setTilt({ x: Math.max(-1, Math.min(1, dx)), y: Math.max(-1, Math.min(1, dy)) });
     }
     document.addEventListener("mousemove", onMove);
     return () => document.removeEventListener("mousemove", onMove);
@@ -74,26 +85,18 @@ function DigitalTwinAvatar({ listening, loading, speaking, reduceMotion }) {
   else if (justCompleted) state = "completed";
 
   const label = state === "thinking" ? THINKING_LABELS[thinkingIndex] : STATE_LABEL[state];
-  const pupilStyle = { transform: `translate(${pupilOffset.x}px, ${pupilOffset.y}px)` };
+  const photo = state === "thinking" ? THINKING_PHOTOS[thinkingIndex] : STATE_PHOTO[state];
+  const tiltStyle = reduceMotion
+    ? undefined
+    : { transform: `rotateY(${tilt.x * TILT_DEG}deg) rotateX(${-tilt.y * TILT_DEG}deg)` };
 
   return (
     <div className={`dt-avatar dt-avatar-${state}`} ref={avatarRef} aria-hidden="true">
       <div className={`dt-ring dt-ring-${state}`} />
-      <svg className="dt-face" viewBox="0 0 100 100">
-        <circle className="dt-face-bg" cx="50" cy="50" r="46" />
-        <g className="dt-eyes">
-          <g transform="translate(34,44)">
-            <circle className="dt-eye-white" r="7" />
-            <circle className="dt-pupil" r="3.2" style={pupilStyle} />
-          </g>
-          <g transform="translate(66,44)">
-            <circle className="dt-eye-white" r="7" />
-            <circle className="dt-pupil" r="3.2" style={pupilStyle} />
-          </g>
-        </g>
-        <path className={`dt-mouth ${speaking ? "dt-mouth-speaking" : ""}`} d="M36 66 Q50 74 64 66" />
-      </svg>
-      {speaking && <Waveform active bars={10} />}
+      <div className="dt-photo-wrap" style={tiltStyle}>
+        <img key={photo} src={photo} alt="" className={`dt-photo ${speaking ? "dt-photo-speaking" : ""}`} />
+      </div>
+      {speaking && <Waveform active bars={12} />}
       <div className="dt-label">
         <span className={`hd-live-dot dt-label-dot dt-label-dot-${state}`} />
         {label}

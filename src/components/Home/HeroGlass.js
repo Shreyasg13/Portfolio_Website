@@ -314,10 +314,15 @@ function HeroGlass() {
       });
       if (!res.ok) throw new Error("tts unavailable");
       const blob = await res.blob();
+      if (!blob.size) throw new Error("tts returned empty audio");
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       audioRef.current = audio;
-      audio.onplay = () => setSpeaking(true);
+      let started = false;
+      audio.onplay = () => {
+        started = true;
+        setSpeaking(true);
+      };
       audio.onended = () => {
         setSpeaking(false);
         URL.revokeObjectURL(url);
@@ -327,6 +332,16 @@ function HeroGlass() {
         URL.revokeObjectURL(url);
       };
       await audio.play();
+      // audio.play() resolving only means the browser accepted the
+      // request, not that the `onplay` event (which drives the avatar's
+      // speaking state) actually fired — if it hasn't shortly after,
+      // treat it as a silent failure and fall back to the browser voice
+      // instead of leaving the avatar stuck on "Idle" through a real
+      // spoken reply.
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      if (!started && audioRef.current === audio) {
+        throw new Error("playback did not start");
+      }
     } catch {
       speakWithBrowserVoice(text);
     }
