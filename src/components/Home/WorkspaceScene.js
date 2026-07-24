@@ -11,16 +11,6 @@ const CODE_LINES = [
 
 const POD_STATUS = ["ok", "ok", "warn", "ok", "ok", "ok", "ok", "warn", "ok"];
 
-const TERMINAL_LINES = [
-  "$ kubectl get pods -n prod",
-  "vllm-inference-7f9c   Running",
-  "mcp-server-2b4a       Running",
-  "$ git commit -m \"feat: scale router\"",
-  "3 files changed, 42(+) 11(-)",
-  "$ deploy staging --watch",
-  "Build succeeded in 18.4s",
-];
-
 const STICKY_NOTES = [
   { rotate: -6, color: "#f2c14e" },
   { rotate: 4, color: "#6bc78a" },
@@ -114,23 +104,6 @@ function WorkspaceScene() {
             <div className="ws-stat-row">
               <b>CPU <em>64%</em></b>
               <b>MEM <em>2.1G</em></b>
-            </div>
-          </div>
-
-          <div className="ws-monitor ws-monitor-terminal">
-            <div className="ws-win-chrome">
-              <span /><span /><span />
-              <b>zsh</b>
-            </div>
-            <div className="ws-term-body">
-              <div className="ws-term-scroll">
-                {TERMINAL_LINES.map((line, i) => (
-                  <div key={i} className={`ws-term-line ${line.startsWith("$") ? "ws-term-prompt" : ""}`}>
-                    {line}
-                  </div>
-                ))}
-              </div>
-              <span className="ws-term-cursor">_</span>
             </div>
           </div>
         </div>
