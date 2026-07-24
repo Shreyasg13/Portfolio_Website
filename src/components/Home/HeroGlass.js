@@ -7,6 +7,7 @@ import DigitalTwinAvatar from "./DigitalTwinAvatar";
 import Waveform from "./Waveform";
 import useParallax from "../../hooks/useParallax";
 import AmbientParticles from "./AmbientParticles";
+import AssistantMessage from "./AssistantMessage";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -186,6 +187,7 @@ function HeroGlass() {
   const [voiceOn, setVoiceOn] = useState(true);
   const [speaking, setSpeaking] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [revealDone, setRevealDone] = useState({});
   const bottomRef = useRef(null);
   const recognitionRef = useRef(null);
   const menuRef = useRef(null);
@@ -524,11 +526,19 @@ function HeroGlass() {
                   <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask the questions that matter most for screening — fit, leadership, technical depth, impact, or logistics.</div>}
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
-                    {m.content}
+                    {m.role === "assistant" ? (
+                      <AssistantMessage
+                        content={m.content}
+                        reduceMotion={reduceMotion}
+                        onRevealDone={() => setRevealDone((prev) => (prev[i] ? prev : { ...prev, [i]: true }))}
+                      />
+                    ) : (
+                      m.content
+                    )}
                     {m.role === "assistant" && i === messages.length - 1 && speaking && (
                       <Waveform active bars={14} />
                     )}
-                    {m.resumeProposal && (
+                    {m.resumeProposal && revealDone[i] && (
                       <div className="hg-resume-confirm">
                         {!m.resumeSendStatus && (
                           <>
