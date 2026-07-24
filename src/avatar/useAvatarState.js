@@ -21,10 +21,25 @@ function deriveTarget({ listening, loading, speaking, completed }) {
   return "idle";
 }
 
+// Real audio amplitude is only ever populated on the primary TTS
+// <audio> path (useSpeechAmplitude's attach() is called from speak()'s
+// success path in HeroGlass.js) — the SpeechSynthesis browser-voice
+// fallback (used when the TTS function is unavailable) never feeds it,
+// so getAmplitude() reads a flat 0 the whole time someone is actually
+// speaking through that path. A pure "3 consecutive frames above
+// threshold" gate would then never fire and the avatar would get stuck
+// on its previous state forever — confirmed by actually triggering a
+// mocked conversation locally and watching "speaking" never commit.
+// SPEAK_COMMIT_TIMEOUT is the escape hatch: real amplitude still
+// confirms quickly when it's available, but its absence can't block the
+// transition indefinitely.
+const SPEAK_COMMIT_TIMEOUT = 400;
+
 function useAvatarState({ listening, loading, speaking, completed }, getAmplitude) {
   const [state, setState] = useState(() => deriveTarget({ listening, loading, speaking, completed }));
   const lastChangeRef = useRef(Date.now());
   const consecutiveRef = useRef(0);
+  const speakingSinceRef = useRef(null);
   const rafRef = useRef(null);
 
   useEffect(() => {
@@ -36,17 +51,22 @@ function useAvatarState({ listening, loading, speaking, completed }, getAmplitud
       const now = Date.now();
       const dwellOk = now - lastChangeRef.current >= MIN_DWELL;
 
+      let speakConfirmed = true;
       if (target === "speaking") {
+        if (speakingSinceRef.current === null) speakingSinceRef.current = now;
         const level = getAmplitude ? getAmplitude() : 1;
-        consecutiveRef.current = level >= SPEAK_THRESHOLD ? consecutiveRef.current + 1 : 0;
+        consecutiveRef.current = level >= SPEAK_THRESHOLD ? consecutiveRef.current + 1 : consecutiveRef.current;
+        const timedOut = now - speakingSinceRef.current >= SPEAK_COMMIT_TIMEOUT;
+        speakConfirmed = consecutiveRef.current >= CONSECUTIVE || timedOut;
       } else {
         consecutiveRef.current = 0;
+        speakingSinceRef.current = null;
       }
 
       setState((current) => {
         if (target === current) return current;
         if (!dwellOk) return current;
-        if (target === "speaking" && consecutiveRef.current < CONSECUTIVE) return current;
+        if (target === "speaking" && !speakConfirmed) return current;
         lastChangeRef.current = now;
         consecutiveRef.current = 0;
         return target;

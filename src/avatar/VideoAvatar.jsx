@@ -1,9 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import { avatarAsset } from "./avatarManifest";
 
-function pickFormat(el) {
-  if (el.canPlayType && el.canPlayType('video/webm; codecs="av01.0.05M.08"')) return "webm";
-  return "mp4";
+// Only actually prefer webm if the manifest has one for this state AND
+// the browser can decode it — the current manifest only ships raw mp4s
+// (no ffmpeg available to produce the AV1 encode), so this always falls
+// through to mp4 today, but stays correct the moment webm assets exist.
+function pickSrc(el, asset) {
+  if (asset.webm && el.canPlayType && el.canPlayType('video/webm; codecs="av01.0.05M.08"')) {
+    return asset.webm;
+  }
+  return asset.mp4;
 }
 
 // Dual stacked <video> elements, swapped by opacity only after the
@@ -28,7 +34,6 @@ function VideoAvatar({ state, onError }) {
   const ref0 = useRef(null);
   const ref1 = useRef(null);
   const refs = [ref0, ref1];
-  const formatRef = useRef(null);
   const isFirstLoadRef = useRef(true);
 
   useEffect(() => {
@@ -43,10 +48,9 @@ function VideoAvatar({ state, onError }) {
     const targetIdx = isFirstLoadRef.current ? activeIdx : 1 - activeIdx;
     const el = refs[targetIdx].current;
     if (!el) return undefined;
-    if (!formatRef.current) formatRef.current = pickFormat(el);
 
     const asset = avatarAsset(state);
-    el.src = formatRef.current === "webm" ? asset.webm : asset.mp4;
+    el.src = pickSrc(el, asset);
     el.load();
 
     let cancelled = false;
