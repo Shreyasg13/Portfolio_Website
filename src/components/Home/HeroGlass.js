@@ -6,6 +6,7 @@ import WorkspaceScene from "./WorkspaceScene";
 import DigitalTwinAvatar from "./DigitalTwinAvatar";
 import Waveform from "./Waveform";
 import useParallax from "../../hooks/useParallax";
+import useSpeechAmplitude from "../../hooks/useSpeechAmplitude";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -203,6 +204,7 @@ function HeroGlass() {
   const utteranceRef = useRef(null);
   const keepAliveRef = useRef(null);
   const photoSlotRef = useRef(null);
+  const { attach: attachSpeechAnalyser, getLevel: getSpeechLevel } = useSpeechAmplitude();
 
   useParallax(photoSlotRef, { distance: 50, reduceMotion });
 
@@ -318,6 +320,7 @@ function HeroGlass() {
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       audioRef.current = audio;
+      attachSpeechAnalyser(audio);
       let started = false;
       audio.onplay = () => {
         started = true;
@@ -674,7 +677,13 @@ function HeroGlass() {
           <div className="hg-parallax-wrap" ref={photoSlotRef}>
             <div className="hg-photo-slot">
               <WorkspaceScene />
-              <DigitalTwinAvatar listening={listening} loading={loading} speaking={speaking} reduceMotion={reduceMotion} />
+              <DigitalTwinAvatar
+                listening={listening}
+                loading={loading}
+                speaking={speaking}
+                reduceMotion={reduceMotion}
+                getSpeechLevel={getSpeechLevel}
+              />
               {!reduceMotion && (
                 <motion.div
                   className="hg-photo-sweep"
