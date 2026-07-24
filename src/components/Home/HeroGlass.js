@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense, lazy } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import assistantAvatar from "../../Assets/hero-portrait.png";
 import WorkspaceScene from "./WorkspaceScene";
 import DigitalTwinAvatar from "./DigitalTwinAvatar";
 import Waveform from "./Waveform";
+import useParallax from "../../hooks/useParallax";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -23,6 +24,15 @@ import {
 import { AiFillCloud } from "react-icons/ai";
 import { GiBrain } from "react-icons/gi";
 import { BookOpen, Layers3, MessagesSquare, Rocket, ShieldCheck } from "lucide-react";
+
+// Phase 8: both are the heavy additions from Phases 6/7 (three.js/R3F/drei,
+// and react-markdown+syntax-highlighter+mermaid respectively) — lazy so
+// neither weighs down the initial hero bundle. AmbientParticles is pure
+// decoration (null fallback is invisible, not a layout shift); assistant
+// replies only render after a real API round-trip anyway, so the chunk
+// has time to load in the background.
+const AmbientParticles = lazy(() => import("./AmbientParticles"));
+const AssistantMessage = lazy(() => import("./AssistantMessage"));
 
 const TAGS = [
   "AI Platforms",
@@ -184,6 +194,7 @@ function HeroGlass() {
   const [voiceOn, setVoiceOn] = useState(true);
   const [speaking, setSpeaking] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [revealDone, setRevealDone] = useState({});
   const bottomRef = useRef(null);
   const recognitionRef = useRef(null);
   const menuRef = useRef(null);
@@ -191,6 +202,9 @@ function HeroGlass() {
   const audioRef = useRef(null);
   const utteranceRef = useRef(null);
   const keepAliveRef = useRef(null);
+  const photoSlotRef = useRef(null);
+
+  useParallax(photoSlotRef, { distance: 50, reduceMotion });
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -405,6 +419,9 @@ function HeroGlass() {
 
   return (
     <div className="hg-hero">
+      <Suspense fallback={null}>
+        <AmbientParticles reduceMotion={reduceMotion} />
+      </Suspense>
       <div className="hg-topbar">
         <div className="hg-topstats">
           {TOP_STATS.map((s) => (
@@ -518,11 +535,21 @@ function HeroGlass() {
                   <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask the questions that matter most for screening — fit, leadership, technical depth, impact, or logistics.</div>}
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
-                    {m.content}
+                    {m.role === "assistant" ? (
+                      <Suspense fallback={m.content}>
+                        <AssistantMessage
+                          content={m.content}
+                          reduceMotion={reduceMotion}
+                          onRevealDone={() => setRevealDone((prev) => (prev[i] ? prev : { ...prev, [i]: true }))}
+                        />
+                      </Suspense>
+                    ) : (
+                      m.content
+                    )}
                     {m.role === "assistant" && i === messages.length - 1 && speaking && (
                       <Waveform active bars={14} />
                     )}
-                    {m.resumeProposal && (
+                    {m.resumeProposal && revealDone[i] && (
                       <div className="hg-resume-confirm">
                         {!m.resumeSendStatus && (
                           <>
@@ -624,17 +651,24 @@ function HeroGlass() {
           animate="visible"
           custom={1}
         >
-          <div className="hg-photo-slot">
-            <WorkspaceScene />
-            <DigitalTwinAvatar listening={listening} loading={loading} speaking={speaking} reduceMotion={reduceMotion} />
-            {!reduceMotion && (
-              <motion.div
-                className="hg-photo-sweep"
-                aria-hidden="true"
-                animate={{ x: ["-120%", "220%"] }}
-                transition={{ duration: 5, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
-              />
-            )}
+          {/* Separate wrapper for the GSAP scroll-parallax ref (Phase 5) —
+              .hg-photo-slot already owns its own CSS transform animation
+              (photo-float) and sits inside a Framer Motion node, so the
+              scrubbed GSAP transform goes on its own plain, unanimated
+              element instead of fighting either of those for `transform`. */}
+          <div className="hg-parallax-wrap" ref={photoSlotRef}>
+            <div className="hg-photo-slot">
+              <WorkspaceScene />
+              <DigitalTwinAvatar listening={listening} loading={loading} speaking={speaking} reduceMotion={reduceMotion} />
+              {!reduceMotion && (
+                <motion.div
+                  className="hg-photo-sweep"
+                  aria-hidden="true"
+                  animate={{ x: ["-120%", "220%"] }}
+                  transition={{ duration: 5, repeat: Infinity, repeatDelay: 3, ease: "easeInOut" }}
+                />
+              )}
+            </div>
           </div>
         </motion.div>
 
