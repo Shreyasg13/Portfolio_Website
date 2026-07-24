@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, Suspense, lazy } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "react-router-dom";
 import assistantAvatar from "../../Assets/hero-portrait.png";
@@ -6,8 +6,6 @@ import WorkspaceScene from "./WorkspaceScene";
 import DigitalTwinAvatar from "./DigitalTwinAvatar";
 import Waveform from "./Waveform";
 import useParallax from "../../hooks/useParallax";
-import AmbientParticles from "./AmbientParticles";
-import AssistantMessage from "./AssistantMessage";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -26,6 +24,15 @@ import {
 import { AiFillCloud } from "react-icons/ai";
 import { GiBrain } from "react-icons/gi";
 import { BookOpen, Layers3, MessagesSquare, Rocket, ShieldCheck } from "lucide-react";
+
+// Phase 8: both are the heavy additions from Phases 6/7 (three.js/R3F/drei,
+// and react-markdown+syntax-highlighter+mermaid respectively) — lazy so
+// neither weighs down the initial hero bundle. AmbientParticles is pure
+// decoration (null fallback is invisible, not a layout shift); assistant
+// replies only render after a real API round-trip anyway, so the chunk
+// has time to load in the background.
+const AmbientParticles = lazy(() => import("./AmbientParticles"));
+const AssistantMessage = lazy(() => import("./AssistantMessage"));
 
 const TAGS = [
   "AI Platforms",
@@ -412,7 +419,9 @@ function HeroGlass() {
 
   return (
     <div className="hg-hero">
-      <AmbientParticles reduceMotion={reduceMotion} />
+      <Suspense fallback={null}>
+        <AmbientParticles reduceMotion={reduceMotion} />
+      </Suspense>
       <div className="hg-topbar">
         <div className="hg-topstats">
           {TOP_STATS.map((s) => (
@@ -527,11 +536,13 @@ function HeroGlass() {
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
                     {m.role === "assistant" ? (
-                      <AssistantMessage
-                        content={m.content}
-                        reduceMotion={reduceMotion}
-                        onRevealDone={() => setRevealDone((prev) => (prev[i] ? prev : { ...prev, [i]: true }))}
-                      />
+                      <Suspense fallback={m.content}>
+                        <AssistantMessage
+                          content={m.content}
+                          reduceMotion={reduceMotion}
+                          onRevealDone={() => setRevealDone((prev) => (prev[i] ? prev : { ...prev, [i]: true }))}
+                        />
+                      </Suspense>
                     ) : (
                       m.content
                     )}
