@@ -135,7 +135,11 @@ function DigitalTwinAvatar({ listening, loading, speaking, reduceMotion, getSpee
 
   return (
     <div className={`dt-avatar dt-avatar-${state}`} ref={avatarRef} aria-hidden="true">
-      <div className={`dt-ring dt-ring-${state}`} />
+      {(listening || speaking) && (
+        <div className={`dt-orb dt-orb-${state}`}>
+          <Waveform active={speaking} bars={16} />
+        </div>
+      )}
       <svg className="dt-character" viewBox="0 0 100 100">
         <path className="dt-body" d="M12 100 Q12 74 30 70 L70 70 Q88 74 88 100 Z" />
         <rect className="dt-neck" x="41" y="56" width="18" height="18" rx="5" />
@@ -162,7 +166,6 @@ function DigitalTwinAvatar({ listening, loading, speaking, reduceMotion, getSpee
         </g>
         <path className="dt-mouth" d={MOUTH_PATHS[mouthTier]} />
       </svg>
-      {speaking && <Waveform active bars={12} />}
       <div className="dt-label">
         <span className={`hd-live-dot dt-label-dot dt-label-dot-${state}`} />
         {label}
