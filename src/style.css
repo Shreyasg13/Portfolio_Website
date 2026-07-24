@@ -2733,7 +2733,11 @@ body {
    small PiP bubble, since it's the actual "digital twin" deliverable. */
 .dt-avatar {
   position: absolute;
-  left: 4%;
+  /* Right-anchored, not left: the workspace desk's accessory row puts
+     the whiteboard on the left and the (much slimmer) keyboard strip on
+     the right — confirmed via a local screenshot that left-anchoring
+     the avatar collided with the whiteboard's sketch diagram. */
+  right: 4%;
   bottom: 6%;
   z-index: 2;
   /* Sized off height, not width: .hg-photo-slot is short and wide (a
@@ -3960,7 +3964,7 @@ body {
   .tn-pill { display: none; }.tn-nav { justify-content: flex-end; }.hg-topstats { justify-content: center; }.hg-topstat:nth-child(n + 4) { display: none; }
   .hg-grid { grid-template-columns: 1fr; }.hg-left, .hg-right, .hg-center, .hg-build-panel { grid-column: 1; }.hg-center { height: 280px; max-width: 260px; margin: 0 auto; }.hg-photo-slot { height: 280px; }.hg-build-grid-wide { grid-template-columns: 1fr 1fr; }.hb-stats-row { grid-template-columns: 1fr 1fr; }.hb-stat:nth-child(2) { border-right: 0; }.hb-quote-map { grid-template-columns: 1fr; }.hb-contact-bar { justify-content: flex-start; }.home-content.hero-wrap { padding-left: 16px !important; padding-right: 16px !important; }
   .ws-keyboard { display: none; }.ws-desk { inset: 8% 5% 6%; }.ws-monitor-row { flex: 2; }.ws-accessory-row { flex: 1; }
-  .dt-avatar { height: 50%; left: 6%; bottom: 12%; }.dt-label { font-size: 7px; padding: 3px 7px; }
+  .dt-avatar { height: 50%; right: 6%; bottom: 12%; }.dt-label { font-size: 7px; padding: 3px 7px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
