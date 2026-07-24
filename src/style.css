@@ -2736,8 +2736,13 @@ body {
   left: 4%;
   bottom: 6%;
   z-index: 2;
-  width: 50%;
+  /* Sized off height, not width: .hg-photo-slot is short and wide (a
+     fixed px height at most breakpoints), so width-based sizing with
+     this 3:4 aspect ratio was overflowing the container's own height —
+     confirmed by an actual local screenshot, not assumed. */
+  height: 42%;
   aspect-ratio: 3 / 4;
+  width: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2771,12 +2776,12 @@ body {
 .dt-body { fill: #1b2430; }
 .dt-neck { fill: #c68a5f; }
 .dt-head { fill: #dda274; }
-.dt-beard { fill: #241a13; opacity: 0.9; }
+.dt-beard { fill: #241a13; opacity: 0.85; }
 .dt-hair, .dt-hair-side { fill: #17110c; }
 .dt-brow { fill: #241a13; }
 .dt-eye-white { fill: #f4f1ea; }
 .dt-pupil { fill: #19130f; transition: transform 0.12s linear; }
-.dt-mouth { fill: #6b3226; stroke: #2c130c; stroke-width: 1; transition: d 0.06s linear; }
+.dt-mouth { fill: #a8493c; stroke: #5c2018; stroke-width: 1; transition: d 0.06s linear; }
 
 .dt-avatar .hg-waveform { position: absolute; left: 50%; bottom: -18%; width: 78%; height: 16px; transform: translateX(-50%); justify-content: center; z-index: 3; }
 
@@ -3948,14 +3953,14 @@ body {
   .tn-nav { left: 16px; right: 16px; }.icon-rail { display: none; } body { padding-left: 0; }
   .home-section { padding-top: 72px !important; }.hg-grid { grid-template-columns: 1fr 1fr; }.hg-left { grid-column: 1 / -1; }.hg-build-panel { grid-column: 1 / -1; }.ls-row { grid-template-columns: 1fr; }.af-panel { max-width: none; }
   .ws-monitor-code, .ws-whiteboard { display: none; }.ws-accessory-row { flex: 1.3; }
-  .dt-avatar { width: 54%; }.dt-label { font-size: 8px; }
+  .dt-avatar { height: 46%; }.dt-label { font-size: 8px; }
 }
 
 @media (max-width: 620px) {
   .tn-pill { display: none; }.tn-nav { justify-content: flex-end; }.hg-topstats { justify-content: center; }.hg-topstat:nth-child(n + 4) { display: none; }
   .hg-grid { grid-template-columns: 1fr; }.hg-left, .hg-right, .hg-center, .hg-build-panel { grid-column: 1; }.hg-center { height: 280px; max-width: 260px; margin: 0 auto; }.hg-photo-slot { height: 280px; }.hg-build-grid-wide { grid-template-columns: 1fr 1fr; }.hb-stats-row { grid-template-columns: 1fr 1fr; }.hb-stat:nth-child(2) { border-right: 0; }.hb-quote-map { grid-template-columns: 1fr; }.hb-contact-bar { justify-content: flex-start; }.home-content.hero-wrap { padding-left: 16px !important; padding-right: 16px !important; }
   .ws-keyboard { display: none; }.ws-desk { inset: 8% 5% 6%; }.ws-monitor-row { flex: 2; }.ws-accessory-row { flex: 1; }
-  .dt-avatar { width: 62%; left: 6%; bottom: 12%; }.dt-label { font-size: 7px; padding: 3px 7px; }
+  .dt-avatar { height: 50%; left: 6%; bottom: 12%; }.dt-label { font-size: 7px; padding: 3px 7px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

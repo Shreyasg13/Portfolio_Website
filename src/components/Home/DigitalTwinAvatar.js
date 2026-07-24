@@ -140,7 +140,9 @@ function DigitalTwinAvatar({ listening, loading, speaking, reduceMotion, getSpee
         <path className="dt-body" d="M12 100 Q12 74 30 70 L70 70 Q88 74 88 100 Z" />
         <rect className="dt-neck" x="41" y="56" width="18" height="18" rx="5" />
         <ellipse className="dt-head" cx="50" cy="40" rx="22" ry="25" />
-        <path className="dt-beard" d="M30 42 Q30 60 50 63 Q70 60 70 42 Q70 55 50 58 Q30 55 30 42 Z" />
+        <path className="dt-beard" d="M31 40 Q29 52 34 58 Q38 62 43 63 Q36 56 34 46 Q33 42 31 40 Z" />
+        <path className="dt-beard" d="M69 40 Q71 52 66 58 Q62 62 57 63 Q64 56 66 46 Q67 42 69 40 Z" />
+        <path className="dt-beard" d="M43 60 Q50 65 57 60 Q50 63 43 60 Z" />
         <path className="dt-hair" d="M27 36 Q23 10 50 9 Q77 10 73 36 Q73 20 50 18 Q27 20 27 36 Z" />
         <path className="dt-hair-side" d="M27 30 Q24 42 29 48 L31 34 Z" />
         <path className="dt-hair-side" d="M73 30 Q76 42 71 48 L69 34 Z" />
