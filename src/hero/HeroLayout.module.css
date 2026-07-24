@@ -1,0 +1,63 @@
+/*
+ * HeroLayout.module.css
+ * Three-column layout for the hero section's presenter rework.
+ * Self-contained: no dependency on tokens/vars from src/style.css.
+ */
+
+/* Replaces the existing 4-column .hg-grid for this row only. */
+.heroRow {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Pinned left column: existing chat/assistant panel. */
+.assistantColumn {
+  flex: 0 0 340px;
+  width: 340px;
+}
+
+/* Center column: flexible width, presenter itself capped ~640px. */
+.presenterColumn {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/*
+ * Fixed aspect-ratio box so mounting/swapping the video avatar (or its
+ * SVG fallback) never shifts surrounding layout — zero CLS by design.
+ * Do not let content inside dictate height; it must fill this box.
+ */
+.presenterBox {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 3 / 4;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Right column: existing conversation/build-panel area. */
+.conversationColumn {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+@media (max-width: 1180px) {
+  .heroRow {
+    flex-direction: column;
+  }
+
+  .assistantColumn,
+  .presenterColumn,
+  .conversationColumn {
+    width: 100%;
+    max-width: none;
+    flex: 1 1 auto;
+  }
+}

@@ -7,6 +7,9 @@ import DigitalTwinAvatar from "./DigitalTwinAvatar";
 import Waveform from "./Waveform";
 import useParallax from "../../hooks/useParallax";
 import useSpeechAmplitude from "../../hooks/useSpeechAmplitude";
+import AvatarStage from "../../avatar/AvatarStage";
+import useAvatarState from "../../avatar/useAvatarState";
+import RadialWaveform from "../../audio/RadialWaveform";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -62,13 +65,16 @@ const TOP_STATS = [
   { icon: <ShieldCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
 ];
 
+// Colors reference src/ui/tokens.css's categorical hue map (imported
+// globally in App.js) instead of duplicating hex values here — one
+// source of truth for "what color means what domain" across the site.
 const BUILD_DELIVER = [
-  { icon: <GiBrain />, color: "#a855f7", title: "AI Platform Engineering", desc: "Agentic AI, MCP, A2A, multi-model orchestration, RAG, tools & integrations" },
-  { icon: <BsDiagram3Fill />, color: "#e0a02a", title: "LLM Infrastructure", desc: "Self-hosted vLLM, Qwen3-32B, DeepSeek-R1, Bedrock fallback, scaling & cost optimization" },
-  { icon: <BsCheckCircleFill />, color: "#4caf50", title: "Identity & Security", desc: "Multi-tenant IdP, SAML 2.0, OIDC, OAuth2, RBAC, MFA, zero-trust security" },
-  { icon: <BsGearFill />, color: "#8a8f98", title: "Backend & APIs", desc: "High-scale APIs, event-driven systems, auth, payments, webhooks & real-time" },
-  { icon: <BsGraphUp />, color: "#e0452a", title: "Data & Intelligence", desc: "Pipelines, vector stores, analytics, forecasting, anomaly detection" },
-  { icon: <AiFillCloud />, color: "#4fa8e0", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
+  { icon: <GiBrain />, color: "var(--h-ai)", title: "AI Platform Engineering", desc: "Agentic AI, MCP, A2A, multi-model orchestration, RAG, tools & integrations" },
+  { icon: <BsDiagram3Fill />, color: "var(--h-infra)", title: "LLM Infrastructure", desc: "Self-hosted vLLM, Qwen3-32B, DeepSeek-R1, Bedrock fallback, scaling & cost optimization" },
+  { icon: <BsCheckCircleFill />, color: "var(--h-security)", title: "Identity & Security", desc: "Multi-tenant IdP, SAML 2.0, OIDC, OAuth2, RBAC, MFA, zero-trust security" },
+  { icon: <BsGearFill />, color: "var(--h-backend)", title: "Backend & APIs", desc: "High-scale APIs, event-driven systems, auth, payments, webhooks & real-time" },
+  { icon: <BsGraphUp />, color: "var(--h-data)", title: "Data & Intelligence", desc: "Pipelines, vector stores, analytics, forecasting, anomaly detection" },
+  { icon: <AiFillCloud />, color: "var(--h-cloud)", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
 ];
 
 function localReply(question) {
@@ -89,12 +95,6 @@ function localReply(question) {
     return "Yes \u2014 I'm currently on an H1B visa and would need employer sponsorship (an H1B transfer) to take on a new role. Happy to discuss details.";
   }
   return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about my fit for the role, leadership experience, technical expertise, or sponsorship needs.";
-}
-
-function formatTimer(totalSeconds) {
-  const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
-  const s = (totalSeconds % 60).toString().padStart(2, "0");
-  return `${m}:${s}`;
 }
 
 // Voice names/availability vary wildly by OS and browser, so instead of
@@ -205,8 +205,30 @@ function HeroGlass() {
   const keepAliveRef = useRef(null);
   const photoSlotRef = useRef(null);
   const { attach: attachSpeechAnalyser, getLevel: getSpeechLevel } = useSpeechAmplitude();
+  const [justCompleted, setJustCompleted] = useState(false);
+  const wasLoadingForAvatarRef = useRef(false);
 
   useParallax(photoSlotRef, { distance: 50, reduceMotion });
+
+  // Brief "complete" pulse on the loading→!loading transition — the same
+  // pattern DigitalTwinAvatar already uses internally for its own
+  // completed state, lifted here so AvatarStage's video/poster renderer
+  // (which doesn't have DigitalTwinAvatar's internals) gets the same signal.
+  useEffect(() => {
+    const wasLoading = wasLoadingForAvatarRef.current;
+    wasLoadingForAvatarRef.current = loading;
+    if (wasLoading && !loading) {
+      setJustCompleted(true);
+      const id = setTimeout(() => setJustCompleted(false), 1200);
+      return () => clearTimeout(id);
+    }
+    return undefined;
+  }, [loading]);
+
+  const avatarState = useAvatarState(
+    { listening, loading, speaking, completed: justCompleted },
+    getSpeechLevel
+  );
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -650,12 +672,18 @@ function HeroGlass() {
               </form>
               {listening && (
                 <div className="hg-listening-bar" role="status">
-                  <span className="hg-listening-mic">
-                    <BsMicFill />
-                  </span>
-                  <span className="hg-listening-label">Listening…</span>
-                  <Waveform active bars={22} />
-                  <span className="hg-listening-timer">{formatTimer(listenSeconds)}</span>
+                  {/* Mic input has no accessible amplitude (SpeechRecognition
+                      doesn't expose audio levels) — the ring's own per-bar
+                      seeded jitter still gives it visible life at a fixed
+                      target rather than looking static. */}
+                  <RadialWaveform
+                    active
+                    amplitude={0.5}
+                    label="Listening…"
+                    elapsedSeconds={listenSeconds}
+                    onMicClick={toggleVoiceInput}
+                    reduceMotion={reduceMotion}
+                  />
                 </div>
               )}
             </div>
@@ -677,12 +705,18 @@ function HeroGlass() {
           <div className="hg-parallax-wrap" ref={photoSlotRef}>
             <div className="hg-photo-slot">
               <WorkspaceScene />
-              <DigitalTwinAvatar
-                listening={listening}
-                loading={loading}
-                speaking={speaking}
+              <AvatarStage
+                state={avatarState}
                 reduceMotion={reduceMotion}
-                getSpeechLevel={getSpeechLevel}
+                fallback={
+                  <DigitalTwinAvatar
+                    listening={listening}
+                    loading={loading}
+                    speaking={speaking}
+                    reduceMotion={reduceMotion}
+                    getSpeechLevel={getSpeechLevel}
+                  />
+                }
               />
               {!reduceMotion && (
                 <motion.div
@@ -711,10 +745,10 @@ function HeroGlass() {
           </div>
           <div className="hg-build-grid hg-build-grid-wide">
             {BUILD_DELIVER.map((b) => (
-              <div className="hg-build-item" key={b.title}>
+              <div className="hg-build-item" key={b.title} style={{ "--accent": b.color }}>
                 <span
                   className="hg-build-icon"
-                  style={{ background: `${b.color}22`, color: b.color }}
+                  style={{ background: `color-mix(in srgb, ${b.color} 13%, transparent)`, color: b.color }}
                 >
                   {b.icon}
                 </span>

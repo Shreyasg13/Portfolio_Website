@@ -2666,53 +2666,16 @@ body {
 /* Softened, not sharp: the reference photo has the desk/monitors visibly
    blurred behind the person — the whole point is depth separation so
    the figure reads as the clear subject, not competing UI. */
-.ws-monitor-row { display: flex; gap: var(--space-2); flex: 3; min-height: 0; filter: blur(0.6px) brightness(0.78) saturate(0.85); opacity: 0.9; }
-.ws-monitor {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  border-radius: var(--radius-xs);
-  background: linear-gradient(135deg, #0b1727, #111d31);
-  border: 1px solid rgba(122, 183, 246, 0.14);
-  box-shadow: inset 0 -14px 18px rgba(2, 7, 15, 0.4);
-}
-
-.ws-win-chrome { display: flex; align-items: center; gap: 3px; padding: 3px 5px; font-size: 6px; color: #7f9cbd; flex-shrink: 0; }
-.ws-win-chrome span { width: 4px; height: 4px; border-radius: 50%; background: #5a718c; }
-.ws-win-chrome span:nth-child(1) { background: #f26b45; }
-.ws-win-chrome span:nth-child(2) { background: #e0c02a; }
-.ws-win-chrome span:nth-child(3) { background: #3fd092; }
-.ws-win-chrome b { margin-left: 3px; font-weight: 500; letter-spacing: 0.02em; font-family: var(--font-mono); }
-
-.ws-code-body { flex: 1; display: flex; gap: 4px; padding: 3px 5px; min-height: 0; }
-.ws-code-sidebar { display: flex; flex-direction: column; gap: 4px; width: 8px; padding-top: 2px; }
-.ws-code-sidebar i { height: 3px; border-radius: 1px; background: rgba(122, 183, 246, 0.28); }
-.ws-code-lines { flex: 1; position: relative; display: flex; flex-direction: column; justify-content: center; gap: 5px; }
-.ws-code-line { height: 4px; border-radius: 2px; opacity: 0.85; }
-.ws-code-cursor { position: absolute; right: 18%; bottom: 2px; width: 2px; height: 8px; background: #fff; animation: ws-blink 1s step-end infinite; }
-
-.ws-chart { flex: 1; width: 100%; min-height: 0; }
-.ws-chart-line { fill: none; stroke: #8f69e8; stroke-width: 2; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px #8964dd); }
-.ws-chart-area { fill: rgba(102, 78, 198, 0.2); stroke: none; }
-.ws-pods { display: flex; flex-wrap: wrap; gap: 2px; padding: 3px 5px; }
-.ws-pod { width: 5px; height: 5px; border-radius: 1px; background: #3fd092; animation: ws-pulse-pod 2.6s ease-in-out infinite; }
-.ws-pod-warn { background: #e0a02a; }
-@keyframes ws-pulse-pod { 0%, 100% { opacity: 0.55; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1); } }
-.ws-stat-row { display: flex; justify-content: space-between; padding: 3px 5px; font-size: 5.5px; color: #9cb5cd; flex-shrink: 0; }
-.ws-stat-row em { font-style: normal; color: #eaf5ff; margin-left: 2px; }
+/* .ws-monitor-row and its children (code editor / Grafana mockups) were
+   removed from WorkspaceScene.js — see the comment there. */
+.ws-desk-no-monitors { justify-content: center; }
 
 @keyframes ws-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
 
 .ws-accessory-row { display: flex; gap: var(--space-2); flex: 2; align-items: stretch; min-height: 0; }
 
-.ws-whiteboard { flex: 1.4; min-width: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 4px; border-radius: var(--radius-xs); background: rgba(232, 236, 240, 0.92); border: 1px solid rgba(255, 255, 255, 0.5); }
-.ws-sketch { width: 100%; height: 60%; }
-.ws-sketch-node { fill: rgba(70, 90, 120, 0.08); stroke: #3b5a8a; stroke-width: 1.4; stroke-dasharray: 3 2; }
-.ws-sketch-edge { stroke: #6b7f9c; stroke-width: 1; stroke-dasharray: 2 2; }
-.ws-sticky-row { display: flex; gap: 3px; justify-content: flex-end; }
-.ws-sticky { width: 9px; height: 9px; border-radius: 1px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25); }
+/* .ws-whiteboard and its children removed — see the comment in
+   WorkspaceScene.js (collided with the centered avatar). */
 
 .ws-coffee { position: relative; flex: 0 0 26px; display: flex; align-items: flex-end; justify-content: center; }
 .ws-cup { position: relative; width: 16px; height: 13px; border-radius: 2px 2px 7px 7px; background: linear-gradient(160deg, #4a3527, #2b1c14); }
@@ -2855,6 +2818,23 @@ body {
 .dt-label-dot-thinking { background: #a76bff; }
 .dt-label-dot-speaking { background: #3fd092; }
 .dt-label-dot-completed { background: #3fd092; }
+
+/* AvatarStage/VideoAvatar (src/avatar/) — video path shares .dt-avatar's
+   positioning (same box the SVG fallback and poster both occupy), so
+   swapping renderers never shifts anything else in the scene. */
+.avatar-video-wrap { overflow: hidden; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.avatar-slot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 420ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+.avatar-slot[data-on="true"] { opacity: 1; }
+.avatar-poster { object-fit: cover; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); display: block; }
 
 /* Ambient light sweep across the hero photo — driven by Framer Motion
    in HeroGlass.js (animates `x`), this just sets the bar's look. */
@@ -3940,7 +3920,10 @@ body {
 }
 .hg-build-item:hover {
   transform: translateY(-3px);
-  border-color: rgba(224, 69, 42, 0.4);
+  /* Per-card accent (set inline via --accent from BUILD_DELIVER's hue
+     tokens) instead of one hardcoded orange for every card regardless
+     of domain — six cards, six colors, so hue actually carries meaning. */
+  border-color: color-mix(in oklab, var(--accent, #e0452a) 45%, transparent);
   background: linear-gradient(140deg, rgba(56, 82, 114, 0.38), rgba(10, 20, 34, 0.46));
 }
 .hg-build-icon { width: 25px; height: 25px; border-radius: 7px; font-size: .82em; margin-bottom: 7px; }
@@ -3998,14 +3981,14 @@ body {
 @media (max-width: 900px) {
   .tn-nav { left: 16px; right: 16px; }.icon-rail { display: none; } body { padding-left: 0; }
   .home-section { padding-top: 72px !important; }.hg-grid { grid-template-columns: 1fr 1fr; }.hg-left { grid-column: 1 / -1; }.hg-build-panel { grid-column: 1 / -1; }.ls-row { grid-template-columns: 1fr; }.af-panel { max-width: none; }
-  .ws-monitor-code, .ws-whiteboard { display: none; }.ws-accessory-row { flex: 1.3; }
+  .ws-accessory-row { flex: 1.3; }
   .dt-avatar { height: 68%; }.dt-label { font-size: 8px; }
 }
 
 @media (max-width: 620px) {
   .tn-pill { display: none; }.tn-nav { justify-content: flex-end; }.hg-topstats { justify-content: center; }.hg-topstat:nth-child(n + 4) { display: none; }
   .hg-grid { grid-template-columns: 1fr; }.hg-left, .hg-right, .hg-center, .hg-build-panel { grid-column: 1; }.hg-center { height: 280px; max-width: 260px; margin: 0 auto; }.hg-photo-slot { height: 280px; }.hg-build-grid-wide { grid-template-columns: 1fr 1fr; }.hb-stats-row { grid-template-columns: 1fr 1fr; }.hb-stat:nth-child(2) { border-right: 0; }.hb-quote-map { grid-template-columns: 1fr; }.hb-contact-bar { justify-content: flex-start; }.home-content.hero-wrap { padding-left: 16px !important; padding-right: 16px !important; }
-  .ws-keyboard { display: none; }.ws-desk { inset: 8% 5% 6%; }.ws-monitor-row { flex: 2; }.ws-accessory-row { flex: 1; }
+  .ws-keyboard { display: none; }.ws-desk { inset: 8% 5% 6%; }.ws-accessory-row { flex: 1; }
   .dt-avatar { height: 66%; bottom: 6%; }.dt-label { font-size: 7px; padding: 3px 7px; }
 }
 

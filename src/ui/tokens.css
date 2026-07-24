@@ -1,0 +1,39 @@
+:root {
+  /* glass */
+  --glass-bg:      rgba(255,255,255,0.04);
+  --glass-bg-hi:   rgba(255,255,255,0.07);
+  --glass-border:  rgba(255,255,255,0.08);
+  --glass-blur:    20px;
+  --glass-shadow:  0 8px 32px rgba(0,0,0,0.45);
+
+  /* per-domain hue map — replaces a single-orange system with categorical meaning */
+  --h-ai:       #a855f7;  /* violet   — AI platform, agents, MCP */
+  --h-infra:    #22d3ee;  /* cyan     — LLM infra, scaling, K8s  */
+  --h-security: #34d399;  /* emerald  — identity, auth, zero CVE */
+  --h-data:     #fbbf24;  /* amber    — pipelines, analytics     */
+  --h-backend:  #f97316;  /* orange   — APIs, events (kept)      */
+  --h-cloud:    #60a5fa;  /* blue     — cloud, DevOps            */
+}
+
+.glass {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+}
+.glass::before {                    /* top specular edge */
+  content: ''; position: absolute; inset: 0 0 auto 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+  border-radius: 16px 16px 0 0;
+  pointer-events: none;
+}
+.glass--ai       { --accent: var(--h-ai); }
+.glass--infra    { --accent: var(--h-infra); }
+.glass--security { --accent: var(--h-security); }
+.glass--data     { --accent: var(--h-data); }
+.glass--backend  { --accent: var(--h-backend); }
+.glass--cloud    { --accent: var(--h-cloud); }
+.glass:hover { border-color: color-mix(in oklab, var(--accent) 40%, transparent); }
