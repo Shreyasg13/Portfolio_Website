@@ -4,9 +4,12 @@ import { Link } from "react-router-dom";
 import assistantAvatar from "../../Assets/hero-portrait.png";
 import WorkspaceScene from "./WorkspaceScene";
 import DigitalTwinAvatar from "./DigitalTwinAvatar";
+import AvatarStage from "../../avatar/AvatarStage";
+import useAvatarState from "../../avatar/useAvatarState";
 import Waveform from "./Waveform";
 import useParallax from "../../hooks/useParallax";
 import useSpeechAmplitude from "../../hooks/useSpeechAmplitude";
+import RadialWaveform from "../../audio/RadialWaveform";
 import {
   BsCircleFill,
   BsArrowRight,
@@ -35,6 +38,8 @@ import { BookOpen, Layers3, MessagesSquare, Rocket, ShieldCheck } from "lucide-r
 const AmbientParticles = lazy(() => import("./AmbientParticles"));
 const AssistantMessage = lazy(() => import("./AssistantMessage"));
 
+const AVATAR_RENDER_ENABLED = true;
+
 const TAGS = [
   "AI Platforms",
   "MCP",
@@ -62,13 +67,16 @@ const TOP_STATS = [
   { icon: <ShieldCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
 ];
 
+// Colors reference src/ui/tokens.css's categorical hue map (imported
+// globally in App.js) instead of duplicating hex values here — one
+// source of truth for "what color means what domain" across the site.
 const BUILD_DELIVER = [
-  { icon: <GiBrain />, color: "#a855f7", title: "AI Platform Engineering", desc: "Agentic AI, MCP, A2A, multi-model orchestration, RAG, tools & integrations" },
-  { icon: <BsDiagram3Fill />, color: "#e0a02a", title: "LLM Infrastructure", desc: "Self-hosted vLLM, Qwen3-32B, DeepSeek-R1, Bedrock fallback, scaling & cost optimization" },
-  { icon: <BsCheckCircleFill />, color: "#4caf50", title: "Identity & Security", desc: "Multi-tenant IdP, SAML 2.0, OIDC, OAuth2, RBAC, MFA, zero-trust security" },
-  { icon: <BsGearFill />, color: "#8a8f98", title: "Backend & APIs", desc: "High-scale APIs, event-driven systems, auth, payments, webhooks & real-time" },
-  { icon: <BsGraphUp />, color: "#e0452a", title: "Data & Intelligence", desc: "Pipelines, vector stores, analytics, forecasting, anomaly detection" },
-  { icon: <AiFillCloud />, color: "#4fa8e0", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
+  { icon: <GiBrain />, color: "var(--h-ai)", title: "AI Platform Engineering", desc: "Agentic AI, MCP, A2A, multi-model orchestration, RAG, tools & integrations" },
+  { icon: <BsDiagram3Fill />, color: "var(--h-infra)", title: "LLM Infrastructure", desc: "Self-hosted vLLM, Qwen3-32B, DeepSeek-R1, Bedrock fallback, scaling & cost optimization" },
+  { icon: <BsCheckCircleFill />, color: "var(--h-security)", title: "Identity & Security", desc: "Multi-tenant IdP, SAML 2.0, OIDC, OAuth2, RBAC, MFA, zero-trust security" },
+  { icon: <BsGearFill />, color: "var(--h-backend)", title: "Backend & APIs", desc: "High-scale APIs, event-driven systems, auth, payments, webhooks & real-time" },
+  { icon: <BsGraphUp />, color: "var(--h-data)", title: "Data & Intelligence", desc: "Pipelines, vector stores, analytics, forecasting, anomaly detection" },
+  { icon: <AiFillCloud />, color: "var(--h-cloud)", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
 ];
 
 function localReply(question) {
@@ -89,12 +97,6 @@ function localReply(question) {
     return "Yes \u2014 I'm currently on an H1B visa and would need employer sponsorship (an H1B transfer) to take on a new role. Happy to discuss details.";
   }
   return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about my fit for the role, leadership experience, technical expertise, or sponsorship needs.";
-}
-
-function formatTimer(totalSeconds) {
-  const m = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
-  const s = (totalSeconds % 60).toString().padStart(2, "0");
-  return `${m}:${s}`;
 }
 
 // Voice names/availability vary wildly by OS and browser, so instead of
@@ -172,6 +174,46 @@ function waitForVoices(synth, timeoutMs = 1000) {
   });
 }
 
+// Real lip-synced avatar generation (see lipsync-start.mjs/lipsync-status.mjs)
+// takes 10-60s+, well past what a single Netlify Function call can do
+// synchronously — the client starts a Replicate prediction, then polls this
+// status endpoint until it's ready or the deadline below is hit.
+const LIPSYNC_MAX_CHARS = 300; // mirrors lipsync-start.mjs's own cap
+const LIPSYNC_POLL_INTERVAL_MS = 2000;
+const LIPSYNC_POLL_TIMEOUT_MS = 8000; // per-poll network timeout, not the overall deadline
+const LIPSYNC_MAX_WAIT_MS = 60000;
+
+// Thrown only for a real, terminal "generation failed" from the server —
+// distinguishes that from a transient poll hiccup (network blip, single
+// slow request) so pollLipSyncStatus knows which ones to keep retrying
+// through vs. bail out of immediately.
+class LipSyncFailedError extends Error {}
+
+async function pollLipSyncStatus(jobId) {
+  const deadline = Date.now() + LIPSYNC_MAX_WAIT_MS;
+  while (Date.now() < deadline) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), LIPSYNC_POLL_TIMEOUT_MS);
+    try {
+      const res = await fetch(`/.netlify/functions/lipsync-status?id=${encodeURIComponent(jobId)}`, {
+        signal: controller.signal,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.status === "ready") return data.videoUrl;
+        if (data.status === "failed") throw new LipSyncFailedError(data.error || "lipsync generation failed");
+      }
+    } catch (err) {
+      if (err instanceof LipSyncFailedError) throw err;
+      // transient poll error — keep trying until the overall deadline
+    } finally {
+      clearTimeout(timeoutId);
+    }
+    await new Promise((resolve) => setTimeout(resolve, LIPSYNC_POLL_INTERVAL_MS));
+  }
+  throw new Error("lipsync generation timed out");
+}
+
 // Entrance animation for the hero's top-level panels — staggered by
 // `custom` (a small index-based delay) so the page feels assembled
 // rather than static on load. Distance/duration kept subtle per GOAL.md's
@@ -205,8 +247,46 @@ function HeroGlass() {
   const keepAliveRef = useRef(null);
   const photoSlotRef = useRef(null);
   const { attach: attachSpeechAnalyser, getLevel: getSpeechLevel } = useSpeechAmplitude();
+  const [justCompleted, setJustCompleted] = useState(false);
+  const wasLoadingForAvatarRef = useRef(false);
+  const [lipSyncPending, setLipSyncPending] = useState(false);
+  const [generatedClip, setGeneratedClip] = useState(null);
+  // True only while the real TTS <audio> element (the one useSpeechAmplitude
+  // is actually attached to) is driving playback — false during the
+  // speakWithBrowserVoice() fallback, which has no audio element for the
+  // analyser to read. VideoAvatar's amplitude-gated pause/resume must only
+  // run when this is true; otherwise it reads permanent near-silence from a
+  // stale/unattached analyser and freezes the speaking clip almost
+  // immediately while the browser voice keeps talking underneath it.
+  const [usingRealAudio, setUsingRealAudio] = useState(false);
+  const lipSyncTokenRef = useRef(0);
+  const pendingClipSettleRef = useRef(null);
 
   useParallax(photoSlotRef, { distance: 50, reduceMotion });
+
+  // Brief "complete" pulse on the loading→!loading transition — the same
+  // pattern DigitalTwinAvatar already uses internally for its own
+  // completed state, lifted here so AvatarStage's video/poster renderer
+  // (which doesn't have DigitalTwinAvatar's internals) gets the same signal.
+  useEffect(() => {
+    const wasLoading = wasLoadingForAvatarRef.current;
+    wasLoadingForAvatarRef.current = loading;
+    if (wasLoading && !loading) {
+      setJustCompleted(true);
+      const id = setTimeout(() => setJustCompleted(false), 1200);
+      return () => clearTimeout(id);
+    }
+    return undefined;
+  }, [loading]);
+
+  // lipSyncPending covers the generate+poll wait for a real lip-synced
+  // clip — OR-ing it into `loading` extends the existing alternating
+  // thinking/reasoning states over that whole window for free, with no
+  // changes needed to useAvatarState.js itself.
+  const avatarState = useAvatarState(
+    { listening, loading: loading || lipSyncPending, speaking, completed: justCompleted },
+    getSpeechLevel
+  );
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -245,6 +325,16 @@ function HeroGlass() {
   useEffect(() => () => stopSpeaking(), []);
 
   function stopSpeaking() {
+    // Invalidate any in-flight lipsync generation/poll/playback so a new
+    // question can't have an old attempt's fallback or clip land after it.
+    lipSyncTokenRef.current += 1;
+    if (pendingClipSettleRef.current) {
+      pendingClipSettleRef.current();
+      pendingClipSettleRef.current = null;
+    }
+    setLipSyncPending(false);
+    setGeneratedClip(null);
+    setUsingRealAudio(false);
     window.speechSynthesis?.cancel();
     if (keepAliveRef.current) {
       clearInterval(keepAliveRef.current);
@@ -325,13 +415,16 @@ function HeroGlass() {
       audio.onplay = () => {
         started = true;
         setSpeaking(true);
+        setUsingRealAudio(true);
       };
       audio.onended = () => {
         setSpeaking(false);
+        setUsingRealAudio(false);
         URL.revokeObjectURL(url);
       };
       audio.onerror = () => {
         setSpeaking(false);
+        setUsingRealAudio(false);
         URL.revokeObjectURL(url);
       };
       await audio.play();
@@ -347,6 +440,70 @@ function HeroGlass() {
       }
     } catch {
       speakWithBrowserVoice(text);
+    }
+  }
+
+  // Plays a Replicate-generated, real lip-synced clip as the sole media
+  // element for this turn (video + audio are the same file — SadTalker
+  // muxes them together — so there's no separate <audio> element and no
+  // drift risk between two independently-buffered elements). Resolves once
+  // the clip finishes; rejects if it fails to load/play, which
+  // speakWithLipSync treats the same as any other lipsync failure: fall
+  // back to the canned clip + TTS audio via speak().
+  function playGeneratedClip(videoUrl, token) {
+    return new Promise((resolve, reject) => {
+      pendingClipSettleRef.current = () => reject(new Error("interrupted"));
+      setSpeaking(true);
+      setGeneratedClip({
+        url: videoUrl,
+        onEnded: () => {
+          if (lipSyncTokenRef.current !== token) return;
+          pendingClipSettleRef.current = null;
+          setSpeaking(false);
+          setGeneratedClip(null);
+          resolve();
+        },
+        onError: () => {
+          if (lipSyncTokenRef.current !== token) return;
+          pendingClipSettleRef.current = null;
+          setSpeaking(false);
+          setGeneratedClip(null);
+          reject(new Error("generated clip failed to play"));
+        },
+      });
+    });
+  }
+
+  // Tries to generate and play a real lip-synced clip for this turn;
+  // any failure at any stage (unconfigured, over the daily cap, generation
+  // failed, timed out, or the clip itself failed to load) falls straight
+  // through to the existing speak() path — canned speaking.mp4 + TTS audio
+  // — so voice output always works even when lip sync doesn't.
+  async function speakWithLipSync(text) {
+    if (!voiceOn) return;
+    stopSpeaking();
+    if (text.length > LIPSYNC_MAX_CHARS) {
+      speak(text);
+      return;
+    }
+    const token = ++lipSyncTokenRef.current;
+    setLipSyncPending(true);
+    try {
+      const startRes = await fetch("/.netlify/functions/lipsync-start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      if (!startRes.ok) throw new Error("lipsync unavailable");
+      const { jobId } = await startRes.json();
+      if (!jobId) throw new Error("lipsync unavailable");
+      const videoUrl = await pollLipSyncStatus(jobId);
+      if (lipSyncTokenRef.current !== token) return;
+      await playGeneratedClip(videoUrl, token);
+    } catch {
+      if (lipSyncTokenRef.current === token) speak(text);
+    } finally {
+      if (lipSyncTokenRef.current === token) setLipSyncPending(false);
     }
   }
 
@@ -380,11 +537,11 @@ function HeroGlass() {
         ...m,
         { role: "assistant", content: answer, resumeProposal: data.resumeProposal || null },
       ]);
-      speak(answer);
+      speakWithLipSync(answer);
     } catch {
       const answer = localReply(question);
       setMessages((m) => [...m, { role: "assistant", content: answer, offline: true }]);
-      speak(answer);
+      speakWithLipSync(answer);
     } finally {
       setLoading(false);
     }
@@ -650,12 +807,18 @@ function HeroGlass() {
               </form>
               {listening && (
                 <div className="hg-listening-bar" role="status">
-                  <span className="hg-listening-mic">
-                    <BsMicFill />
-                  </span>
-                  <span className="hg-listening-label">Listening…</span>
-                  <Waveform active bars={22} />
-                  <span className="hg-listening-timer">{formatTimer(listenSeconds)}</span>
+                  {/* Mic input has no accessible amplitude (SpeechRecognition
+                      doesn't expose audio levels) — the ring's own per-bar
+                      seeded jitter still gives it visible life at a fixed
+                      target rather than looking static. */}
+                  <RadialWaveform
+                    active
+                    amplitude={0.5}
+                    label="Listening…"
+                    elapsedSeconds={listenSeconds}
+                    onMicClick={toggleVoiceInput}
+                    reduceMotion={reduceMotion}
+                  />
                 </div>
               )}
             </div>
@@ -677,13 +840,23 @@ function HeroGlass() {
           <div className="hg-parallax-wrap" ref={photoSlotRef}>
             <div className="hg-photo-slot">
               <WorkspaceScene />
-              <DigitalTwinAvatar
-                listening={listening}
-                loading={loading}
-                speaking={speaking}
-                reduceMotion={reduceMotion}
-                getSpeechLevel={getSpeechLevel}
-              />
+              {AVATAR_RENDER_ENABLED && (
+                <AvatarStage
+                  state={avatarState}
+                  reduceMotion={reduceMotion}
+                  getSpeechLevel={usingRealAudio ? getSpeechLevel : undefined}
+                  generatedClip={generatedClip}
+                  fallback={
+                    <DigitalTwinAvatar
+                      listening={listening}
+                      loading={loading}
+                      speaking={speaking}
+                      reduceMotion={reduceMotion}
+                      getSpeechLevel={getSpeechLevel}
+                    />
+                  }
+                />
+              )}
               {!reduceMotion && (
                 <motion.div
                   className="hg-photo-sweep"
@@ -711,10 +884,10 @@ function HeroGlass() {
           </div>
           <div className="hg-build-grid hg-build-grid-wide">
             {BUILD_DELIVER.map((b) => (
-              <div className="hg-build-item" key={b.title}>
+              <div className="hg-build-item" key={b.title} style={{ "--accent": b.color }}>
                 <span
                   className="hg-build-icon"
-                  style={{ background: `${b.color}22`, color: b.color }}
+                  style={{ background: `color-mix(in srgb, ${b.color} 13%, transparent)`, color: b.color }}
                 >
                   {b.icon}
                 </span>

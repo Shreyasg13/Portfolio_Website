@@ -60,5 +60,8 @@
   },
   "devDependencies": {
     "concurrently": "^7.1.0"
+  },
+  "overrides": {
+    "memfs": "3.6.0"
   }
 }

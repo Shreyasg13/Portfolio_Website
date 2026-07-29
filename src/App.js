@@ -18,6 +18,7 @@ import {
 import ScrollToTop from "./components/ScrollToTop";
 import "./style.css";
 import "./tokens.css";
+import "./ui/tokens.css";
 import "./glass.css";
 import "./grid.css";
 import "./type.css";
