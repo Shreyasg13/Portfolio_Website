@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import VideoAvatar from "./VideoAvatar";
+import idlePoster from "../Assets/avatar-states/idle.png";
 
 // A hero that renders nothing is far worse than a hero that renders a
 // cartoon — this catches render-time exceptions from VideoAvatar (video
@@ -37,8 +38,10 @@ function useSaveData() {
 //   prefers-reduced-motion -> static poster JPG only
 //   video/poster load error -> `fallback` (DigitalTwinAvatar SVG)
 //   save-data: on           -> static poster JPG only
+//   state === "idle"        -> static PNG (no motion until a real voice
+//                              query moves the avatar out of idle)
 //   otherwise                -> VideoAvatar
-function AvatarStage({ state, reduceMotion, fallback }) {
+function AvatarStage({ state, reduceMotion, fallback, getSpeechLevel, generatedClip }) {
   const [videoFailed, setVideoFailed] = useState(false);
   const saveData = useSaveData();
 
@@ -56,9 +59,23 @@ function AvatarStage({ state, reduceMotion, fallback }) {
     );
   }
 
+  // On load (and again any time a query finishes and the avatar settles
+  // back to idle), stay on a plain still frame — no video, no loop, no
+  // crossfade. VideoAvatar only ever mounts for listening/thinking/
+  // reasoning/speaking/complete, i.e. once a real voice query is driving
+  // the state.
+  if (state === "idle") {
+    return <img className="dt-avatar avatar-poster" src={idlePoster} alt="" aria-hidden="true" />;
+  }
+
   return (
     <AvatarErrorBoundary fallback={fallback}>
-      <VideoAvatar state={state} onError={() => setVideoFailed(true)} />
+      <VideoAvatar
+        state={state}
+        getSpeechLevel={getSpeechLevel}
+        generatedClip={generatedClip}
+        onError={() => setVideoFailed(true)}
+      />
     </AvatarErrorBoundary>
   );
 }

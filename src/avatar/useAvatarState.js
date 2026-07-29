@@ -3,6 +3,11 @@ import { useEffect, useRef, useState } from "react";
 const MIN_DWELL = 900;
 const SPEAK_THRESHOLD = 0.06;
 const CONSECUTIVE = 3;
+// How long each of the thinking/reasoning sub-phases holds before
+// alternating to the other — matches the cadence DigitalTwinAvatar's SVG
+// fallback already uses for its own "Searching Memory/Reasoning/..."
+// label rotation, so the two renderers feel consistent.
+const THINKING_PHASE_MS = 1400;
 
 // The app's listening/loading/speaking signals are already
 // event-driven and reliable (see HeroGlass.js's speak()/
@@ -13,10 +18,16 @@ const CONSECUTIVE = 3;
 // flicker into that loop, and a minimum dwell time is enforced on every
 // transition so the crossfade is never asked to fire faster than its
 // own 420ms transition can visually resolve.
-function deriveTarget({ listening, loading, speaking, completed }) {
+//
+// "loading" alone used to map to a single "thinking" state and never
+// actually used the "reasoning" clip at all — the full intended
+// sequence is idle -> listening -> thinking -> reasoning -> speaking ->
+// complete, so the loading phase now alternates between thinking and
+// reasoning rather than sitting on one clip the whole time.
+function deriveTarget({ listening, loading, speaking, completed }, loadingPhase) {
   if (speaking) return "speaking";
   if (listening) return "listening";
-  if (loading) return "thinking";
+  if (loading) return loadingPhase === 0 ? "thinking" : "reasoning";
   if (completed) return "complete";
   return "idle";
 }
@@ -36,10 +47,11 @@ function deriveTarget({ listening, loading, speaking, completed }) {
 const SPEAK_COMMIT_TIMEOUT = 400;
 
 function useAvatarState({ listening, loading, speaking, completed }, getAmplitude) {
-  const [state, setState] = useState(() => deriveTarget({ listening, loading, speaking, completed }));
+  const [state, setState] = useState(() => deriveTarget({ listening, loading, speaking, completed }, 0));
   const lastChangeRef = useRef(Date.now());
   const consecutiveRef = useRef(0);
   const speakingSinceRef = useRef(null);
+  const loadingSinceRef = useRef(null);
   const rafRef = useRef(null);
 
   useEffect(() => {
@@ -47,8 +59,17 @@ function useAvatarState({ listening, loading, speaking, completed }, getAmplitud
 
     function tick() {
       if (cancelled) return;
-      const target = deriveTarget({ listening, loading, speaking, completed });
       const now = Date.now();
+
+      let loadingPhase = 0;
+      if (loading) {
+        if (loadingSinceRef.current === null) loadingSinceRef.current = now;
+        loadingPhase = Math.floor((now - loadingSinceRef.current) / THINKING_PHASE_MS) % 2;
+      } else {
+        loadingSinceRef.current = null;
+      }
+
+      const target = deriveTarget({ listening, loading, speaking, completed }, loadingPhase);
       const dwellOk = now - lastChangeRef.current >= MIN_DWELL;
 
       let speakConfirmed = true;
