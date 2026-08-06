@@ -50,6 +50,18 @@ const TAGS = [
   "Distributed Infrastructure",
 ];
 
+// A flat, unchanging "Thinking…" bubble for the entire wait reads as
+// stalled/broken rather than as an AI actively working — especially once
+// a reply takes more than a couple seconds. useAvatarState already
+// alternates the avatar itself between "thinking" and "reasoning" every
+// THINKING_PHASE_MS while `loading` is true (see useAvatarState.js); this
+// mirrors that same alternation into the chat bubble's text instead of
+// introducing a second, unsynced timer, so the two stay visually in step.
+const THINKING_STATUS_LABELS = {
+  thinking: "Searching memory…",
+  reasoning: "Reasoning it through…",
+};
+
 const ASSISTANT_SUGGESTIONS = [
   { icon: <BsCheckCircleFill />, label: "What makes you a strong fit? (tell me the role you're hiring for)" },
   { icon: <Layers3 />, label: "Tell me about your leadership experience" },
@@ -827,7 +839,11 @@ function HeroGlass() {
                     )}
                   </div>
                 ))}
-                {loading && <div className="hg-msg hg-msg-assistant hg-typing">Thinking…</div>}
+                {loading && (
+                  <div className="hg-msg hg-msg-assistant hg-typing">
+                    {THINKING_STATUS_LABELS[avatarState] || "Thinking…"}
+                  </div>
+                )}
                 <div className={`hg-suggestions ${messages.length === 0 ? "hg-suggestions-first" : ""}`}>
                   {ASSISTANT_SUGGESTIONS.map((s) => (
                     <button
