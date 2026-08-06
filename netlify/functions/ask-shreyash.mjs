@@ -210,7 +210,8 @@ async function resolveAnswer(apiKey, question, history) {
       )
     );
   } catch (aggregateErr) {
-    lastError = aggregateErr.errors?.at(-1) ?? aggregateErr;
+    const errors = aggregateErr.errors;
+    lastError = errors && errors.length ? errors[errors.length - 1] : aggregateErr;
   }
 
   for (const model of sequentialModels) {
@@ -223,6 +224,25 @@ async function resolveAnswer(apiKey, question, history) {
   }
 
   throw lastError;
+}
+
+// Netlify Functions have a hard execution ceiling (10s free tier / 26s
+// paid — see lipsync-start.mjs for the same constraint documented there).
+// The race + sequential-fallback chain above is bounded by MODEL_TIMEOUT_MS
+// per attempt, but its worst case (both racers fail, then 1-2 more
+// sequential attempts, one possibly with a 429 retry) can still add up
+// past that ceiling — confirmed live: a real request took 31s and came
+// back as Netlify's own generic platform-kill error
+// (`{"errorType":"Error","errorMessage":"An unknown error has occurred"}`),
+// not the graceful JSON fallback this function returns on a normal
+// failure, because Netlify killed the process before that code ever ran.
+// This races resolveAnswer against a fixed budget so THIS function always
+// responds for itself, on time, with a real answer — never leaving it to
+// the platform's kill switch.
+const REQUEST_BUDGET_MS = 9000;
+
+function budgetTimeout(ms) {
+  return new Promise((resolve) => setTimeout(() => resolve({ timedOut: true }), ms));
 }
 
 export default async (req) => {
@@ -256,7 +276,23 @@ export default async (req) => {
   const trimmedQuestion = question.trim().slice(0, 2000);
 
   try {
-    const { answer } = await resolveAnswer(apiKey, trimmedQuestion, history);
+    const result = await Promise.race([
+      resolveAnswer(apiKey, trimmedQuestion, history),
+      budgetTimeout(REQUEST_BUDGET_MS),
+    ]);
+
+    if (result.timedOut) {
+      console.error("ask-shreyash: overall request budget exceeded", REQUEST_BUDGET_MS);
+      return Response.json(
+        {
+          answer:
+            "The AI models I use are responding slowly right now — please try again in a moment.",
+        },
+        { status: 502 }
+      );
+    }
+
+    const { answer } = result;
     const { text, proposal } = extractResumeProposal(answer);
     await logConversation(trimmedQuestion, answer);
     return Response.json({ answer: text, resumeProposal: proposal });
