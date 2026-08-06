@@ -181,7 +181,16 @@ function waitForVoices(synth, timeoutMs = 1000) {
 const LIPSYNC_MAX_CHARS = 300; // mirrors lipsync-start.mjs's own cap
 const LIPSYNC_POLL_INTERVAL_MS = 2000;
 const LIPSYNC_POLL_TIMEOUT_MS = 8000; // per-poll network timeout, not the overall deadline
-const LIPSYNC_MAX_WAIT_MS = 60000;
+// The assistant's text answer is already fully visible (added to `messages`
+// before speakWithLipSync is even called) well before any lip-synced clip
+// could realistically finish — so this is not "how long can generation
+// run", it's "how long is a visitor willing to watch the avatar's face
+// keep pantomiming thinking after it already gave its answer in text".
+// SadTalker generations that don't land inside this window still finish
+// server-side eventually, but by then the moment has passed — better to
+// drop to the canned speaking clip + real TTS voice (near-instant) than
+// leave the avatar visibly stuck mid-thought for up to a minute.
+const LIPSYNC_MAX_WAIT_MS = 12000;
 
 // Thrown only for a real, terminal "generation failed" from the server —
 // distinguishes that from a transient poll hiccup (network blip, single
@@ -213,6 +222,14 @@ async function pollLipSyncStatus(jobId) {
   }
   throw new Error("lipsync generation timed out");
 }
+
+// A valid, minimal, genuinely-silent WAV (44-byte header, zero sample
+// frames) — used only to "arm" the shared <audio> element below with a
+// real playback attempt. `muted=true` autoplay would only prove the
+// browser allows silent playback, not the real (unmuted) TTS/voice
+// playback this element goes on to do every other turn.
+const SILENT_WAV_SRC =
+  "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=";
 
 // Entrance animation for the hero's top-level panels — staggered by
 // `custom` (a small index-based delay) so the page feels assembled
@@ -246,7 +263,13 @@ function HeroGlass() {
   const utteranceRef = useRef(null);
   const keepAliveRef = useRef(null);
   const photoSlotRef = useRef(null);
-  const { attach: attachSpeechAnalyser, getLevel: getSpeechLevel } = useSpeechAmplitude();
+  // One <audio> element, created and played (silently) exactly once, right
+  // inside the first real user gesture — see unlockMobileAudio() below for
+  // why this exists and why speak() reuses this same element on every turn
+  // instead of `new Audio(url)`.
+  const sharedAudioElRef = useRef(null);
+  const audioUnlockedRef = useRef(false);
+  const { attach: attachSpeechAnalyser, getLevel: getSpeechLevel, primeContext: primeAudioContext } = useSpeechAmplitude();
   const [justCompleted, setJustCompleted] = useState(false);
   const wasLoadingForAvatarRef = useRef(false);
   const [lipSyncPending, setLipSyncPending] = useState(false);
@@ -323,6 +346,38 @@ function HeroGlass() {
   }, [listening]);
 
   useEffect(() => () => stopSpeaking(), []);
+
+  // iOS Safari (and every other iOS browser — all WebKit under the hood)
+  // only allows a *new* <audio>/AudioContext to start playing when the
+  // play()/resume() call itself is synchronous inside a real user gesture.
+  // Every path that speaks a reply (speak() / speakWithBrowserVoice()) only
+  // runs after `ask()`'s `await fetch(ask-shreyash)` for the AI's answer —
+  // by then the gesture is long gone, so on iOS the call silently does
+  // nothing (desktop's far more permissive autoplay policy is why this was
+  // never noticed there). ask() is always itself a direct click/submit
+  // handler, so this runs synchronously at its top, once per page load, to
+  // play a real (silent) clip through one persistent <audio> element and
+  // resume the shared AudioContext right inside that gesture. Playback
+  // permission then carries forward on that SAME element/context for every
+  // later async-triggered call — see speak() below, which reuses
+  // sharedAudioElRef instead of constructing a new Audio() per turn.
+  function unlockMobileAudio() {
+    if (audioUnlockedRef.current) return;
+    audioUnlockedRef.current = true;
+    primeAudioContext();
+    const el = sharedAudioElRef.current || (sharedAudioElRef.current = new Audio());
+    el.src = SILENT_WAV_SRC;
+    el.play().catch(() => {});
+    // Same problem, same fix, for the SpeechSynthesis fallback path: iOS
+    // only allows speechSynthesis.speak() without a fresh gesture once one
+    // utterance has already been spoken from inside a real one.
+    const synth = window.speechSynthesis;
+    if (synth) {
+      const warmup = new SpeechSynthesisUtterance(" ");
+      warmup.volume = 0;
+      synth.speak(warmup);
+    }
+  }
 
   function stopSpeaking() {
     // Invalidate any in-flight lipsync generation/poll/playback so a new
@@ -408,7 +463,13 @@ function HeroGlass() {
       const blob = await res.blob();
       if (!blob.size) throw new Error("tts returned empty audio");
       const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
+      // Reuse the one <audio> element unlockMobileAudio() already played
+      // (silently) inside a real gesture — swapping its src and calling
+      // play() again keeps that same iOS playback permission, whereas a
+      // fresh `new Audio(url)` here would be an entirely new, un-gestured
+      // element and iOS would silently refuse to play it.
+      const audio = sharedAudioElRef.current || (sharedAudioElRef.current = new Audio());
+      audio.src = url;
       audioRef.current = audio;
       attachSpeechAnalyser(audio);
       let started = false;
@@ -517,6 +578,7 @@ function HeroGlass() {
 
   async function ask(question) {
     if (!question.trim() || loading) return;
+    unlockMobileAudio();
     stopSpeaking();
     setMessages((m) => [...m, { role: "user", content: question }]);
     setInput("");
@@ -539,9 +601,13 @@ function HeroGlass() {
       ]);
       speakWithLipSync(answer);
     } catch {
+      // Generic canned text, not a real personalized answer — spending up
+      // to LIPSYNC_MAX_WAIT_MS pantomiming "thinking" over a network round
+      // trip to Replicate for this is wasted budget and wasted time; go
+      // straight to the fast canned-clip + TTS path instead.
       const answer = localReply(question);
       setMessages((m) => [...m, { role: "assistant", content: answer, offline: true }]);
-      speakWithLipSync(answer);
+      speak(answer);
     } finally {
       setLoading(false);
     }
