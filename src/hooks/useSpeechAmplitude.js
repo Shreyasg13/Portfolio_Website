@@ -28,6 +28,18 @@ function ensureContext() {
   dataArray = new Uint8Array(analyser.frequencyBinCount);
 }
 
+// Exposed separately from attach() so a caller can resume the shared
+// AudioContext synchronously inside a real user gesture (see
+// HeroGlass.js's unlockMobileAudio) even before any <audio> element
+// exists to attach to yet — iOS Safari creates every new AudioContext
+// already suspended unless resume() happens inside that gesture's call
+// stack, and attach() only ever runs later, after ask()'s `await
+// fetch(...)` for the AI's answer has already left that gesture behind.
+function primeContext() {
+  ensureContext();
+  if (audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+}
+
 function attach(audioEl) {
   ensureContext();
   if (!audioCtx || !audioEl) return;
@@ -55,7 +67,7 @@ function getLevel() {
 }
 
 function useSpeechAmplitude() {
-  return { attach, getLevel };
+  return { attach, getLevel, primeContext };
 }
 
 export default useSpeechAmplitude;
