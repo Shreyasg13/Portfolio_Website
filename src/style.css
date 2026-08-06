@@ -3000,6 +3000,16 @@ body {
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
+.hg-status-bar-idle {
+  color: #4caf50;
+}
+
+.hg-status-bar-idle .hg-status-dot {
+  background: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.7);
+  animation: live-dot-pulse 2s ease-in-out infinite;
+}
+
 .hg-status-bar-listening .hg-status-dot,
 .hg-status-bar-thinking .hg-status-dot {
   background: #4fa8e0;
@@ -3356,13 +3366,6 @@ body {
   flex-shrink: 0;
 }
 
-.hg-build-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 14px 18px;
-}
-
 .hg-build-panel {
   margin-top: 24px;
 }
@@ -3376,39 +3379,150 @@ body {
   margin-bottom: 8px;
 }
 
-.hg-build-grid-wide {
-  grid-template-columns: repeat(3, 1fr);
+/* Single-column click-to-expand list, replacing the old always-expanded
+   tile grid — see WhatIBuild.js for why (a flat tile grid says "here's a
+   list of skills"; a challenge → solution → result narrative, one open
+   at a time, says "here's what I actually built"). A stacked list also
+   sidesteps the classic accordion-in-a-grid problem: expanding one card
+   in a 3-column grid grows that whole grid ROW, leaving dead whitespace
+   under its shorter row-mates. */
+.hg-build-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px 14px;
 }
 
-@media (max-width: 700px) {
-  .hg-build-grid-wide {
-    grid-template-columns: 1fr 1fr;
-  }
+.hg-build-row {
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: border-color 0.25s ease, background 0.25s ease;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+/* Staggered entrance once the section scrolls into view (Reveal.js toggles
+   .reveal-visible on this section's wrapper) — one row after another
+   rather than the whole list popping in at once. */
+.reveal-visible .hg-build-row {
+  animation: hg-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.reveal-visible .hg-build-row:nth-child(1) { animation-delay: 0.04s; }
+.reveal-visible .hg-build-row:nth-child(2) { animation-delay: 0.1s; }
+.reveal-visible .hg-build-row:nth-child(3) { animation-delay: 0.16s; }
+.reveal-visible .hg-build-row:nth-child(4) { animation-delay: 0.22s; }
+.reveal-visible .hg-build-row:nth-child(5) { animation-delay: 0.28s; }
+.reveal-visible .hg-build-row:nth-child(6) { animation-delay: 0.34s; }
+
+.hg-build-row-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  border-radius: 12px;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.hg-build-row-head:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.hg-build-row-head-open {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.hg-build-row:has(.hg-build-row-head-open) {
+  border-color: color-mix(in oklab, var(--accent, #e0452a) 40%, transparent);
+  background: linear-gradient(140deg, rgba(56, 82, 114, 0.28), rgba(10, 20, 34, 0.34));
 }
 
 .hg-build-icon {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 9px;
   font-size: 1.05em;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.hg-build-row-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
 }
 
 .hg-build-title {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 0.72em;
+  font-size: 0.78em;
   color: white;
-  margin-bottom: 4px;
 }
 
-.hg-build-desc {
-  font-size: 0.72em;
-  line-height: 1.5;
+.hg-build-hook {
+  font-size: 0.74em;
+  line-height: 1.4;
   color: var(--text-dim);
+}
+
+.hg-build-chevron {
+  flex-shrink: 0;
+  color: var(--text-dim);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.hg-build-row-head-open .hg-build-chevron {
+  transform: rotate(180deg);
+  color: var(--accent, #e0452a);
+}
+
+/* Smooth height animation without measuring pixel heights in JS — an
+   inner 0fr/1fr grid track collapses/expands the wrapper, and the actual
+   content is clipped via overflow:hidden on the child underneath it. */
+.hg-build-expand {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+
+.hg-build-row-head-open + .hg-build-expand {
+  grid-template-rows: 1fr;
+}
+
+.hg-build-expand-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.hg-build-expand p {
+  padding: 0 14px 12px 60px;
+  font-size: 0.76em;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.hg-build-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.92em;
+  color: var(--accent, #e0452a);
+  margin-right: 4px;
+}
+
+.hg-build-result {
+  font-weight: 600;
+  color: #d5e4f4 !important;
 }
 
 @media (max-width: 1150px) {
@@ -4032,30 +4146,7 @@ body {
 .hg-photo-slot { width: calc(100% + 72px); max-width: none; height: 350px; margin: -40px -36px 0; padding: 0; border-radius: 22px; }
 .hg-center::after { content: ""; position: absolute; align-self: flex-end; width: 70%; height: 14px; border-radius: 50%; background: rgba(39, 128, 255, 0.43); filter: blur(14px); z-index: -1; }
 
-.hg-build-panel { position: relative; z-index: 2; align-self: stretch; margin-top: 24px; min-height: 305px; }
-.hg-build-grid-wide { grid-template-columns: 1fr 1fr; gap: 12px; padding: 14px; }
-.hg-build-item {
-  min-height: 112px;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(159, 203, 246, 0.16);
-  background: linear-gradient(140deg, rgba(43, 67, 96, 0.32), rgba(8, 17, 29, 0.4));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.11), 0 10px 24px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
-  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
-}
-.hg-build-item:hover {
-  transform: translateY(-3px);
-  /* Per-card accent (set inline via --accent from BUILD_DELIVER's hue
-     tokens) instead of one hardcoded orange for every card regardless
-     of domain — six cards, six colors, so hue actually carries meaning. */
-  border-color: color-mix(in oklab, var(--accent, #e0452a) 45%, transparent);
-  background: linear-gradient(140deg, rgba(56, 82, 114, 0.38), rgba(10, 20, 34, 0.46));
-}
-.hg-build-icon { width: 25px; height: 25px; border-radius: 7px; font-size: .82em; margin-bottom: 7px; }
-.hg-build-title { font-size: .62em; }
-.hg-build-desc { font-size: .53em; line-height: 1.35; }
+.hg-build-panel { position: relative; z-index: 2; min-height: 0; }
 
 .ls-row { grid-template-columns: minmax(0, 1fr) 274px; gap: 18px; margin-top: 14px; }
 .ls-heading { font-size: .66em; }
@@ -4154,9 +4245,7 @@ body {
   z-index: 1;
 }
 
-.hg-topstats,
-.hb-stat,
-.hg-build-item {
+.hb-stat {
   background: linear-gradient(140deg, rgba(43, 67, 96, 0.34), rgba(8, 17, 29, 0.42));
   border-color: rgba(159, 203, 246, 0.19);
   border-image: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(122, 183, 246, 0.14) 45%, rgba(255, 255, 255, 0.03)) 1;
