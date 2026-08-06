@@ -139,6 +139,92 @@ async function callModel(model, apiKey, question, history = []) {
   }
 }
 
+class ModelAttemptError extends Error {
+  constructor(model, status, body) {
+    super(`model ${model} failed: ${status} ${body}`);
+    this.model = model;
+    this.status = status;
+    this.body = body;
+  }
+}
+
+// One model, one full attempt (including the existing 429-retry) — pulled
+// out of the old for-loop's body so both the sequential fallback below AND
+// the parallel race in the handler can share the exact same per-model
+// behavior (including the 429 retry) instead of duplicating it.
+async function attemptModel(model, apiKey, question, history) {
+  let response = await callModel(model, apiKey, question, history);
+
+  if (response.status === 429) {
+    // Free-tier models share upstream rate limits — one short retry
+    // resolves most transient hits before giving up on this model.
+    await new Promise((r) => setTimeout(r, 1500));
+    response = await callModel(model, apiKey, question, history);
+  }
+
+  if (!response.ok) {
+    throw new ModelAttemptError(model, response.status, (await response.text()).slice(0, 300));
+  }
+
+  const data = await response.json();
+  const answer = data?.choices?.[0]?.message?.content?.trim();
+  if (!answer) {
+    throw new ModelAttemptError(model, response.status, "empty completion");
+  }
+  return { model, answer };
+}
+
+function logAttemptFailure(err) {
+  if (err instanceof ModelAttemptError) {
+    console.error("ask-shreyash model attempt failed", err.model, err.status, err.body);
+  } else {
+    console.error("ask-shreyash model attempt failed", err);
+  }
+}
+
+// Racing the first two (smallest/fastest) free models concurrently instead
+// of trying them one at a time is the actual fix for the latency users hit
+// in production: sequential attempts with a per-attempt timeout still SUM
+// every failed/slow attempt's timeout before reaching a working model —
+// live testing showed 17-30s replies even after that timeout was added,
+// consistent with 2-3 sequential free-tier attempts each genuinely eating
+// most of their budget under a busy shared queue. Racing bounds total wait
+// to whichever of the two responds first, not their sum. Only falls
+// through to the remaining models sequentially (as before, same 429/retry
+// behavior) if BOTH racers fail — same free-tier cost profile as before in
+// the common case, just parallel instead of serial.
+const PARALLEL_MODEL_COUNT = 2;
+
+async function resolveAnswer(apiKey, question, history) {
+  const parallelModels = MODELS.slice(0, PARALLEL_MODEL_COUNT);
+  const sequentialModels = MODELS.slice(PARALLEL_MODEL_COUNT);
+  let lastError = null;
+
+  try {
+    return await Promise.any(
+      parallelModels.map((model) =>
+        attemptModel(model, apiKey, question, history).catch((err) => {
+          logAttemptFailure(err);
+          throw err;
+        })
+      )
+    );
+  } catch (aggregateErr) {
+    lastError = aggregateErr.errors?.at(-1) ?? aggregateErr;
+  }
+
+  for (const model of sequentialModels) {
+    try {
+      return await attemptModel(model, apiKey, question, history);
+    } catch (err) {
+      logAttemptFailure(err);
+      lastError = err;
+    }
+  }
+
+  throw lastError;
+}
+
 export default async (req) => {
   if (req.method !== "POST") {
     return new Response("Method Not Allowed", { status: 405 });
@@ -169,48 +255,19 @@ export default async (req) => {
 
   const trimmedQuestion = question.trim().slice(0, 2000);
 
-  let lastError = null;
-
-  for (const model of MODELS) {
-    try {
-      let response = await callModel(model, apiKey, trimmedQuestion, history);
-
-      if (response.status === 429) {
-        // Free-tier models share upstream rate limits — one short retry
-        // resolves most transient hits before falling through to the
-        // next model in the list.
-        await new Promise((r) => setTimeout(r, 1500));
-        response = await callModel(model, apiKey, trimmedQuestion, history);
-      }
-
-      if (!response.ok) {
-        lastError = { status: response.status, body: (await response.text()).slice(0, 300) };
-        console.error("OpenRouter error", model, lastError.status, lastError.body);
-        continue;
-      }
-
-      const data = await response.json();
-      const answer = data?.choices?.[0]?.message?.content?.trim();
-      if (!answer) {
-        lastError = { status: response.status, body: "empty completion" };
-        continue;
-      }
-
-      const { text, proposal } = extractResumeProposal(answer);
-      await logConversation(trimmedQuestion, answer);
-      return Response.json({ answer: text, resumeProposal: proposal });
-    } catch (err) {
-      console.error("ask-shreyash model attempt failed", model, err);
-      lastError = { status: 0, body: String(err) };
-    }
+  try {
+    const { answer } = await resolveAnswer(apiKey, trimmedQuestion, history);
+    const { text, proposal } = extractResumeProposal(answer);
+    await logConversation(trimmedQuestion, answer);
+    return Response.json({ answer: text, resumeProposal: proposal });
+  } catch (lastError) {
+    console.error("ask-shreyash: all models exhausted", lastError);
+    return Response.json(
+      {
+        answer:
+          "All the free AI models I use are rate-limited right now — please try again in a minute.",
+      },
+      { status: 502 }
+    );
   }
-
-  console.error("ask-shreyash: all models exhausted", lastError);
-  return Response.json(
-    {
-      answer:
-        "All the free AI models I use are rate-limited right now — please try again in a minute.",
-    },
-    { status: 502 }
-  );
 };
