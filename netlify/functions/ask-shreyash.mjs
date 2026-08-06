@@ -97,28 +97,46 @@ function extractResumeProposal(answer) {
   return { text, proposal: null };
 }
 
+// Free-tier models on OpenRouter share a rate-limited upstream queue and
+// can return a real 200 OK 15-30s+ later under load — that's not a
+// failure the existing 429/!ok handling below catches at all, so a slow
+// (but eventually successful) model was blocking the whole request for as
+// long as it felt like taking, with no fallback to a faster model in the
+// list. Each attempt now gets its own budget; a model that blows through
+// it is aborted and treated exactly like any other failed attempt, so the
+// loop moves on to the next (faster, or eventually the guaranteed paid)
+// model instead of just waiting.
+const MODEL_TIMEOUT_MS = 6000;
+
 async function callModel(model, apiKey, question, history = []) {
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": "https://shreyashportfolio.netlify.app",
-      "X-Title": "Ask Shreyash",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: MAX_TOKENS,
-      messages: [
-        { role: "system", content: systemPrompt() },
-        ...history
-          .filter((message) => message && ["user", "assistant"].includes(message.role) && typeof message.content === "string")
-          .slice(-6),
-        { role: "user", content: question },
-      ],
-    }),
-  });
-  return response;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), MODEL_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://shreyashportfolio.netlify.app",
+        "X-Title": "Ask Shreyash",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: MAX_TOKENS,
+        messages: [
+          { role: "system", content: systemPrompt() },
+          ...history
+            .filter((message) => message && ["user", "assistant"].includes(message.role) && typeof message.content === "string")
+            .slice(-6),
+          { role: "user", content: question },
+        ],
+      }),
+      signal: controller.signal,
+    });
+    return response;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export default async (req) => {
