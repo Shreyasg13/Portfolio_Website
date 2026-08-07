@@ -13,9 +13,11 @@ import RadialWaveform from "../../audio/RadialWaveform";
 import {
   BsCircleFill,
   BsArrowRight,
+  BsGraphUp,
   BsCheckCircleFill,
   BsGearFill,
   BsFileEarmarkTextFill,
+  BsDiagram3Fill,
   BsSend,
   BsMicFill,
   BsStopFill,
@@ -23,7 +25,9 @@ import {
   BsVolumeMuteFill,
   BsThreeDotsVertical,
 } from "react-icons/bs";
-import { Layers3, Rocket } from "lucide-react";
+import { AiFillCloud } from "react-icons/ai";
+import { GiBrain } from "react-icons/gi";
+import { BookOpen, Layers3, MessagesSquare, Rocket, ShieldCheck } from "lucide-react";
 
 // Phase 8: both are the heavy additions from Phases 6/7 (three.js/R3F/drei,
 // and react-markdown+syntax-highlighter+mermaid respectively) — lazy so
@@ -36,11 +40,15 @@ const AssistantMessage = lazy(() => import("./AssistantMessage"));
 
 const AVATAR_RENDER_ENABLED = true;
 
-// Trimmed from 7 to the 4 most differentiating — a wall of small pills
-// was one more first-viewport object competing for attention; the ones
-// cut (MCP, Backend Systems, Cloud & DevOps) are already implied by or
-// covered under the ones kept.
-const TAGS = ["AI Platforms", "LLM Infrastructure", "Identity & Security", "Distributed Infrastructure"];
+const TAGS = [
+  "AI Platforms",
+  "MCP",
+  "LLM Infrastructure",
+  "Identity & Security",
+  "Backend Systems",
+  "Cloud & DevOps",
+  "Distributed Infrastructure",
+];
 
 // A flat, unchanging "Thinking…" bubble for the entire wait reads as
 // stalled/broken rather than as an AI actively working — especially once
@@ -61,6 +69,26 @@ const ASSISTANT_SUGGESTIONS = [
   { icon: <Rocket />, label: "What's your most impactful project?" },
   { icon: <BsFileEarmarkTextFill />, label: "Do you need visa sponsorship?" },
   { icon: <BsSend />, label: "Can you email me your resume?" },
+];
+
+const TOP_STATS = [
+  { icon: <Rocket />, color: "#e0452a", num: "5+", lab: "Years Experience" },
+  { icon: <MessagesSquare />, color: "#ff7a5c", num: "1.2M+", lab: "AI Conversations / Month" },
+  { icon: <Layers3 />, color: "#4caf50", num: "10+", lab: "Production Platforms" },
+  { icon: <BookOpen />, color: "#e0a02a", num: "2", lab: "Springer Publications" },
+  { icon: <ShieldCheck />, color: "#4fa8e0", num: "Zero", lab: "CVEs (Security First)" },
+];
+
+// Colors reference src/ui/tokens.css's categorical hue map (imported
+// globally in App.js) instead of duplicating hex values here — one
+// source of truth for "what color means what domain" across the site.
+const BUILD_DELIVER = [
+  { icon: <GiBrain />, color: "var(--h-ai)", title: "AI Platform Engineering", desc: "Agentic AI, MCP, A2A, multi-model orchestration, RAG, tools & integrations" },
+  { icon: <BsDiagram3Fill />, color: "var(--h-infra)", title: "LLM Infrastructure", desc: "Self-hosted vLLM, Qwen3-32B, DeepSeek-R1, Bedrock fallback, scaling & cost optimization" },
+  { icon: <BsCheckCircleFill />, color: "var(--h-security)", title: "Identity & Security", desc: "Multi-tenant IdP, SAML 2.0, OIDC, OAuth2, RBAC, MFA, zero-trust security" },
+  { icon: <BsGearFill />, color: "var(--h-backend)", title: "Backend & APIs", desc: "High-scale APIs, event-driven systems, auth, payments, webhooks & real-time" },
+  { icon: <BsGraphUp />, color: "var(--h-data)", title: "Data & Intelligence", desc: "Pipelines, vector stores, analytics, forecasting, anomaly detection" },
+  { icon: <AiFillCloud />, color: "var(--h-cloud)", title: "Cloud & DevOps", desc: "AWS/GCP/Azure, K8s, CI/CD, IaC, monitoring & reliability" },
 ];
 
 function localReply(question) {
@@ -242,8 +270,6 @@ function HeroGlass() {
   const bottomRef = useRef(null);
   const recognitionRef = useRef(null);
   const menuRef = useRef(null);
-  const assistantPanelRef = useRef(null);
-  const assistantInputRef = useRef(null);
   const voicesRef = useRef([]);
   const audioRef = useRef(null);
   const utteranceRef = useRef(null);
@@ -296,20 +322,6 @@ function HeroGlass() {
     { listening, loading: loading || lipSyncPending, speaking, completed: justCompleted },
     getSpeechLevel
   );
-
-  // Single, unmistakable "what is the assistant doing right now" signal —
-  // one status bar, one place, always visible, instead of the previous
-  // scattered/implicit signals (a static "Online" dot, a tiny waveform only
-  // next to the last message, a chat bubble that said "Thinking…" while the
-  // avatar itself might already show something else). A visitor should be
-  // able to tell listening/thinking/speaking apart without guessing.
-  const heroStatus = listening ? "listening" : speaking ? "speaking" : loading || lipSyncPending ? "thinking" : "idle";
-  const HERO_STATUS_COPY = {
-    idle: "Online — ask about my engineering work",
-    listening: "Listening…",
-    thinking: THINKING_STATUS_LABELS[avatarState] || "Thinking…",
-    speaking: "Speaking…",
-  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -636,16 +648,6 @@ function HeroGlass() {
     updateMessage(index, { resumeSendStatus: "cancelled" });
   }
 
-  // The hero's second CTA used to duplicate the top nav's own "Resume"
-  // link — replaced with this instead, so the hero's two calls to action
-  // are "see the work" and "ask about the work" rather than two ways to
-  // get the same PDF. Scrolls the existing assistant panel into view and
-  // focuses its input instead of navigating away from the page.
-  function focusAssistant() {
-    assistantPanelRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    assistantInputRef.current?.focus();
-  }
-
   function toggleVoiceInput() {
     if (listening) {
       recognitionRef.current?.stop();
@@ -669,15 +671,28 @@ function HeroGlass() {
   }
 
   return (
-    // hg-hero-focused: while Spark is speaking, it should be the one
-    // dominant animated region on the page — everything else (capability
-    // cards, the name/description column) quiets down rather than
-    // continuing to compete for attention at full visual weight. See the
-    // .hg-hero-focused rules in style.css.
-    <div className={`hg-hero ${speaking ? "hg-hero-focused" : ""}`}>
+    <div className="hg-hero">
       <Suspense fallback={null}>
         <AmbientParticles reduceMotion={reduceMotion} />
       </Suspense>
+      <div className="hg-topbar">
+        <div className="hg-topstats">
+          {TOP_STATS.map((s) => (
+            <div className="hg-topstat" key={s.lab}>
+              <span className="hg-topstat-icon" style={{ color: s.color }}>
+                {s.icon}
+              </span>
+              <div>
+                <div className="hg-topstat-num" style={{ color: s.color }}>
+                  {s.num}
+                </div>
+                <div className="hg-topstat-lab">{s.lab}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="hg-grid">
         <motion.div
           className="hg-left"
@@ -711,9 +726,9 @@ function HeroGlass() {
             <Link className="hero-btn" to="/project">
               View My Work <BsArrowRight />
             </Link>
-            <button type="button" className="hg-btn-outline" onClick={focusAssistant}>
-              Ask About My Work <BsArrowRight />
-            </button>
+            <Link className="hg-btn-outline" to="/resume">
+              Download Resume
+            </Link>
           </div>
         </motion.div>
 
@@ -724,10 +739,10 @@ function HeroGlass() {
           animate="visible"
           custom={2}
         >
-          <div className="hg-panel hg-glass" ref={assistantPanelRef}>
+          <div className="hg-panel hg-glass">
             <div className="hg-panel-header">
               <img src={assistantAvatar} alt="" className="hg-avatar" />
-              Ask About Shreyash
+              Shreyash AI Assistant
               <div className="hg-header-actions">
                 <button
                   type="button"
@@ -764,24 +779,13 @@ function HeroGlass() {
                     </div>
                   )}
                 </div>
+                <span className="hd-live-dot" /> Online
               </div>
-            </div>
-            <div className={`hg-status-bar hg-status-bar-${heroStatus}`}>
-              <span className="hg-status-dot" />
-              <span className="hg-status-label">{HERO_STATUS_COPY[heroStatus]}</span>
-              {heroStatus === "speaking" && (
-                <>
-                  <Waveform active bars={16} />
-                  <button type="button" className="hg-status-pause" onClick={stopSpeaking}>
-                    Pause
-                  </button>
-                </>
-              )}
             </div>
             <div className="hg-panel-body">
               <div className="hg-chat-scroll" aria-live="polite" aria-busy={loading}>
                 {messages.length === 0 &&
-                  <div className="hg-greeting">Don't just read my résumé — ask me anything about how I design distributed systems, ship production AI, or lead engineering teams.</div>}
+                  <div className="hg-greeting">Hi, I’m Shreyash’s AI assistant. Ask the questions that matter most for screening — fit, leadership, technical depth, impact, or logistics.</div>}
                 {messages.map((m, i) => (
                   <div key={i} className={`hg-msg hg-msg-${m.role}`}>
                     {m.role === "assistant" ? (
@@ -865,7 +869,6 @@ function HeroGlass() {
               >
                 <input
                   type="text"
-                  ref={assistantInputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask anything…"
@@ -936,7 +939,7 @@ function HeroGlass() {
                   }
                 />
               )}
-              {!reduceMotion && !speaking && (
+              {!reduceMotion && (
                 <motion.div
                   className="hg-photo-sweep"
                   aria-hidden="true"
@@ -945,6 +948,35 @@ function HeroGlass() {
                 />
               )}
             </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="hg-panel hg-glass hg-build-panel"
+          variants={panelVariants}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          custom={3}
+        >
+          <div className="hg-panel-header">
+            What I Build &amp; Deliver
+            <Link to="/project" className="hg-view-all">
+              View All <BsArrowRight />
+            </Link>
+          </div>
+          <div className="hg-build-grid hg-build-grid-wide">
+            {BUILD_DELIVER.map((b) => (
+              <div className="hg-build-item" key={b.title} style={{ "--accent": b.color }}>
+                <span
+                  className="hg-build-icon"
+                  style={{ background: `color-mix(in srgb, ${b.color} 13%, transparent)`, color: b.color }}
+                >
+                  {b.icon}
+                </span>
+                <div className="hg-build-title">{b.title}</div>
+                <div className="hg-build-desc">{b.desc}</div>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>

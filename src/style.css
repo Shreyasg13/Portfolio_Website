@@ -2430,27 +2430,53 @@ body {
     0 0 32px rgba(122, 183, 246, 0.16);
 }
 
+.hg-topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.hg-topstats {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 14px;
+  padding: 14px 22px;
+}
+
+.hg-topstat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.hg-topstat-icon {
+  font-size: 1.3em;
+  flex-shrink: 0;
+}
+
+.hg-topstat-num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2em;
+}
+
+.hg-topstat-lab {
+  font-size: 0.65em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .hg-grid {
   display: grid;
   grid-template-columns: 1fr 300px 340px;
   gap: 24px;
   align-items: start;
-}
-
-/* Motion hierarchy: while Spark is speaking it should be the one dominant
-   animated/attention-grabbing region — the name/description column quiets
-   down (reduced opacity, no competing brightness) rather than continuing
-   to visually compete at full weight. Returns to normal the moment
-   speaking ends. .hg-center/.hg-right are deliberately NOT dimmed here —
-   they're the active foreground. */
-.hg-hero-focused .hg-left {
-  opacity: 0.55;
-  filter: saturate(0.7);
-  transition: opacity 0.4s ease, filter 0.4s ease;
-}
-
-.hg-left {
-  transition: opacity 0.4s ease, filter 0.4s ease;
 }
 
 @keyframes hg-rise {
@@ -2974,75 +3000,6 @@ body {
   position: relative;
 }
 
-/* One unmistakable "what is the assistant doing" signal — see
-   HERO_STATUS_COPY in HeroGlass.js. Neutral/blue while idle/listening/
-   thinking; only the active "speaking" state gets the brand orange, so
-   orange reads as "this is happening right now" rather than being spread
-   across every interactive element on the page. */
-.hg-status-bar {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 18px;
-  border-bottom: 1px solid var(--glass-border);
-  font-size: 0.78em;
-  font-weight: 600;
-  color: var(--text-muted);
-  transition: color 0.3s ease;
-}
-
-.hg-status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--text-dim);
-  flex-shrink: 0;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
-}
-
-.hg-status-bar-listening .hg-status-dot,
-.hg-status-bar-thinking .hg-status-dot {
-  background: #4fa8e0;
-  box-shadow: 0 0 8px rgba(79, 168, 224, 0.7);
-  animation: live-dot-pulse 1.4s ease-in-out infinite;
-}
-
-.hg-status-bar-listening {
-  color: #4fa8e0;
-}
-
-.hg-status-bar-speaking {
-  color: var(--imp-text-color);
-}
-
-.hg-status-bar-speaking .hg-status-dot {
-  background: var(--imp-text-color);
-  box-shadow: 0 0 8px rgba(224, 69, 42, 0.7);
-  animation: live-dot-pulse 1.1s ease-in-out infinite;
-}
-
-.hg-status-bar .hg-waveform {
-  margin-left: 2px;
-}
-
-.hg-status-pause {
-  margin-left: auto;
-  font-size: 0.85em;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: 100px;
-  padding: 4px 14px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.hg-status-pause:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
-}
-
 .hg-menu-dropdown {
   position: absolute;
   top: 32px;
@@ -3367,15 +3324,6 @@ body {
   margin-top: 24px;
 }
 
-/* Now rendered as its own section between the hero and the Live Systems
-   dashboard (see Home.js) instead of as a 4th hero grid column — needs
-   its own vertical rhythm instead of the grid-row spacing it used to
-   inherit for free. */
-.hg-build-panel-standalone {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
 .hg-build-grid-wide {
   grid-template-columns: repeat(3, 1fr);
 }
@@ -3406,8 +3354,8 @@ body {
 }
 
 .hg-build-desc {
-  font-size: 0.72em;
-  line-height: 1.5;
+  font-size: 0.62em;
+  line-height: 1.4;
   color: var(--text-dim);
 }
 
@@ -3439,42 +3387,21 @@ body {
   .hg-name {
     font-size: 2.2em;
   }
+  .hg-topstats {
+    gap: 12px;
+    padding: 12px;
+  }
 }
 
 /* --------- */
 /* Live Systems + Activity Feed */
 /* --------- */
-
-/* Frames the carousel + feed below as one narrative section ("this is
-   evidence of the engineering work, not a generic monitoring widget")
-   instead of two unlabeled panels that read as a SaaS dashboard bolted
-   onto a portfolio. */
-.ls-section-header {
-  margin-top: 48px;
-  margin-bottom: 4px;
-}
-
-.ls-section-title {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.6em;
-  color: white;
-  margin-bottom: 6px;
-}
-
-.ls-section-subhead {
-  font-size: 0.95em;
-  line-height: 1.6;
-  color: var(--text-muted);
-  max-width: 520px;
-}
-
 .ls-row {
   display: grid;
   grid-template-columns: 1fr 320px;
   gap: 24px;
   align-items: start;
-  margin-top: 16px;
+  margin-top: 30px;
 }
 
 .ls-section {
@@ -3993,12 +3920,15 @@ body {
 
 .hg-hero { position: relative; padding: 4px 0 24px; }
 .hg-hero::before { content: ""; position: absolute; z-index: 0; top: 106px; right: 3%; width: 57%; height: 2px; background: linear-gradient(90deg, transparent, rgba(96, 154, 255, 0.2), rgba(242, 179, 255, 0.92), rgba(83, 167, 255, 0.62), transparent); box-shadow: 0 0 8px #73b5ff, 0 0 26px rgba(96, 154, 255, 0.7), 0 0 50px rgba(150, 102, 255, 0.42); transform: skewY(-2deg); pointer-events: none; }
+.hg-topbar { position: absolute; z-index: 4; right: 0; top: 0; margin: 0; }
+.hg-topstats { gap: 16px; padding: 11px 16px; border-radius: 13px; background: rgba(8, 18, 30, 0.68); backdrop-filter: blur(24px); }
+.hg-topstat { gap: 7px; }
+.hg-topstat-icon { font-size: 1em; }
+.hg-topstat-num { font-size: .92em; }
+.hg-topstat-lab { font-size: .53em; max-width: 52px; white-space: normal; line-height: 1.22; }
 
 .hg-grid {
-  /* Was 4 tracks (left / chat / avatar / capability cards) — the 4th
-     (capability cards) moved out to its own section below the hero (see
-     WhatIBuild.js), so it's no longer sharing the first viewport at all. */
-  grid-template-columns: minmax(280px, 1.2fr) minmax(240px, .9fr) minmax(230px, .86fr);
+  grid-template-columns: minmax(250px, 1.08fr) minmax(230px, .86fr) minmax(220px, .82fr) minmax(270px, 1.02fr);
   gap: 16px;
   align-items: end;
   padding-top: 56px;

@@ -3,7 +3,6 @@ import { useReducedMotion } from "framer-motion";
 import { Container } from "react-bootstrap";
 import Particle from "../Particle";
 import HeroGlass from "./HeroGlass";
-import WhatIBuild from "./WhatIBuild";
 import LiveSystems from "./LiveSystems";
 import ActivityFeed from "./ActivityFeed";
 import HomeBottom from "./HomeBottom";
@@ -50,14 +49,6 @@ function Home() {
           <HeroGlass />
 
           <Reveal>
-            <WhatIBuild />
-          </Reveal>
-
-          <Reveal>
-            <div className="ls-section-header">
-              <h2 className="ls-section-title">Engineering in Production</h2>
-              <p className="ls-section-subhead">Not slideware — the platforms and activity behind them, live.</p>
-            </div>
             <div className="ls-row">
               <LiveSystems />
               <ActivityFeed />
