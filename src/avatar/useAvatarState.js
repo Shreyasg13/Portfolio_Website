@@ -44,7 +44,14 @@ function deriveTarget({ listening, loading, speaking, completed }, loadingPhase)
 // SPEAK_COMMIT_TIMEOUT is the escape hatch: real amplitude still
 // confirms quickly when it's available, but its absence can't block the
 // transition indefinitely.
-const SPEAK_COMMIT_TIMEOUT = 400;
+//
+// Was 400ms — measured (scratch simulation, not committed) as a
+// guaranteed 400ms lag between the browser voice actually starting to
+// talk and the avatar visually showing "speaking" on that fallback path
+// (amplitude is always 0 there, so this timeout is the ONLY thing that
+// ever confirms it). 150ms still comfortably filters a single stray
+// frame right at playback start without being a perceptible delay.
+const SPEAK_COMMIT_TIMEOUT = 150;
 
 function useAvatarState({ listening, loading, speaking, completed }, getAmplitude) {
   const [state, setState] = useState(() => deriveTarget({ listening, loading, speaking, completed }, 0));
@@ -70,7 +77,6 @@ function useAvatarState({ listening, loading, speaking, completed }, getAmplitud
       }
 
       const target = deriveTarget({ listening, loading, speaking, completed }, loadingPhase);
-      const dwellOk = now - lastChangeRef.current >= MIN_DWELL;
 
       let speakConfirmed = true;
       if (target === "speaking") {
@@ -86,6 +92,22 @@ function useAvatarState({ listening, loading, speaking, completed }, getAmplitud
 
       setState((current) => {
         if (target === current) return current;
+        // MIN_DWELL exists to stop rapid re-triggering of the crossfade
+        // faster than it can visually resolve — it was never meant to
+        // hold the avatar in "speaking" after the real audio has already
+        // stopped. `current` read here (not the outer `state` closure,
+        // which is stale inside this rAF loop — the effect only re-runs
+        // on prop changes, not on every tick's setState) is the actual
+        // last-committed state, so a short reply (audio done in well
+        // under MIN_DWELL) left the avatar visibly still "talking" for
+        // the rest of that dwell window with no sound coming out —
+        // measured at up to ~500ms on a short reply (scratch simulation,
+        // not committed). Leaving "speaking" is exempted from the dwell
+        // gate entirely: by definition `speaking` only just went false
+        // because the real <audio> element actually stopped, so there's
+        // nothing left to protect against re-triggering.
+        const leavingSpeaking = current === "speaking" && target !== "speaking";
+        const dwellOk = leavingSpeaking || now - lastChangeRef.current >= MIN_DWELL;
         if (!dwellOk) return current;
         if (target === "speaking" && !speakConfirmed) return current;
         lastChangeRef.current = now;
