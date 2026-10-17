@@ -5,6 +5,7 @@ import Techstack from "./Techstack";
 import Aboutcard from "./AboutCard";
 import laptopImg from "../../Assets/about.png";
 import Toolstack from "./Toolstack";
+import StackTable from "./StackTable";
 import ExpertisePillars from "./ExpertisePillars";
 import ExperienceTimeline from "./ExperienceTimeline";
 import Reveal from "../Reveal";
@@ -26,6 +27,11 @@ function About() {
           <strong className="purple">Tools</strong> I Use
         </h1>
         <Toolstack />
+
+        <h1 className="project-heading">
+          Stack by <strong className="purple">Area</strong>
+        </h1>
+        <StackTable />
 
         <Reveal>
           <ExperienceTimeline />

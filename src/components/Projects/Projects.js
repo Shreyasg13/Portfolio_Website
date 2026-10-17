@@ -15,9 +15,9 @@ import codeEditor3 from "../../Assets/Projects/codeEditor3.png";
 const projects = [
   {
     imgPath: codeEditor3,
-    title: "Governed Multi-Tenant AI Platform",
+    title: "AI Platform — Inference & GPU Autoscaling",
     description:
-      "Principal Architect (2026–Present). Self-hosted vLLM: Qwen3-32B INT4 AWQ + Qwen3-VL vision + DeepSeek-R1 on GPU spot fleets (EKS Auto Mode, Karpenter, KEDA). AWS Bedrock fallback. Serves 4 verticals (healthcare triage, financial advisor risk, workflow orchestration, data-quality anomaly detection) via single ALB endpoint. Milvus multi-turn RAG, two-tier Valkey caching, Langfuse cost/quality tracking, OTEL→Jaeger tracing, Istio mTLS, Cognito M2M OAuth2, PHI masking, CloudTrail compliance.",
+      "Architecture and design input on EngineersMind's internal AI platform (2026): vLLM model serving, GPU node autoscaling with Karpenter and KEDA on EKS, FP8 and INT4 AWQ quantization trade-offs, Milvus retrieval, and a console with live request progress and time-to-first-token tracking.",
     link: "https://github.com/Shreyasg13",
     isBlog: false,
   },
@@ -25,7 +25,7 @@ const projects = [
     imgPath: editor,
     title: "Multi-Tenant IdP (Auth0 Replacement)",
     description:
-      "Principal Architect (May 2026–Present). Complete multi-tenant Identity Provider in Go/Echo across 8 phases: JWT, SAML 2.0+JIT provisioning, fine-grained RBAC, tenant isolation, MFA, SSO. AI agent security registry with cryptographic agent IDs, role-claim injection, lifecycle tracking & anomaly detection. React/Vite admin UI as single binary. Sub-5ms at 10K concurrent (k6). Distroless Docker. Zero CVEs.",
+      "Lead engineer (May–Aug 2026). Standalone multi-tenant identity provider in Go/Echo replacing Auth0: authentication engine, SAML SSO, admin interface and API, RBAC, and the production AWS deployment pipeline. AI agent security phase: agent registration, machine-to-machine auth, per-agent audit tracking and a risk-analysis endpoint.",
     link: "https://github.com/Shreyasg13",
     isBlog: false,
   },
@@ -33,7 +33,7 @@ const projects = [
     imgPath: chatify,
     title: "PDFfillr.ai — Agentic AI Platform (MCP & A2A)",
     description:
-      "Lead Platform Architect (Jan 2024–Present). Production MCP + A2A Protocol connecting Classification, Extraction, Mapping & Validation agents. Multi-cloud Terraform (AWS/GCP/Azure), LangGraph HITL, RHFL+vLLM fine-tuning (90%→97% accuracy), OTel+Prometheus+Grafana, ~50% compute cost cut. SDKs on PyPI & npm. 15 days → 5 minutes. OpenAPI 3.1. Mentored 4 engineers, PR acceptance +30%.",
+      "Backend engineer (Oct 2025–Jul 2026). Backend services for an AI-driven PDF automation product: cloud storage, OAuth token handling, the pdf-autofillr Python SDK, a Claude-based in-app assistant, Docker/GPU deployment for local LLMs (Llama, Mistral), LangChain workflows and Langfuse tracing.",
     link: "https://pdffillr.ai/documentation",
     isBlog: false,
   },
@@ -41,15 +41,15 @@ const projects = [
     imgPath: leaf,
     title: "Revi AI — Agentic Intelligence Center & Auth Platform",
     description:
-      "Engineering Lead (Sept 2024–Present). LangGraph agent graph with HITL escalation deployed across TRCM Investor Relations, Fitness & Healthcare verticals. 1.2M conversations/month, p95<350ms. RAG cut hallucinations 42%. Multi-tenant Auth0/Okta+Cognito at ≤3ms, zero CVEs. Edge JWT on Cloudflare Workers. 18K webhook events/hr. Monolith→6 microservices (EKS), 2× peak traffic, zero downtime. Led 21 engineers.",
+      "Sep 2024–Sep 2026, the longest-running project (1,200+ commits). AI-driven client-communication automation built from the ground up: automated reply pipelines, EventBridge sync, real-time notifications, a Faiss knowledge-base agent, SageMaker workloads, a multi-agent evaluation framework, and Stripe subscriptions.",
     link: "https://github.com/Shreyasg13",
     isBlog: false,
   },
   {
     imgPath: bitsOfCode,
-    title: "Scale AI LLM Engine — Enterprise Platform Contributions",
+    title: "LLM Engine Fork — Monitoring & Batch Scheduling",
     description:
-      "Direct OSS contribution to Scale AI's production LLM Engine. Enterprise Prometheus metrics (61 tests), priority-based batch scheduler with exponential backoff (24 tests), CPU-only mock executor for zero-GPU CI (19 tests). 85/85 tests · 100% coverage · 50× faster scheduling (5s→0.1s) · 1,617 lines prod code · 37s CI runtime. Python async-first. EKS/Minikube/Docker Compose.",
+      "Fork of Scale AI's open-source LLM Engine with added Prometheus metrics, a priority-based batch scheduler with exponential backoff, and a CPU-only mock executor for GPU-free CI. Personal open-source work, not affiliated with Scale AI.",
     link: "https://github.com/Shreyasg13/llm-engine",
     isBlog: false,
   },
@@ -57,7 +57,7 @@ const projects = [
     imgPath: algo,
     title: "Multi-Agent Trading System — Consensus AI Architecture",
     description:
-      "7 specialized AI agents (Quantitative Strategist, Value Investor, Risk Manager, Global Macro Specialist + 3 more) with proprietary V(n) = α·I(n) - β·C(n) + γ·Q(n) - δ·T(n) consensus formula. 15 securities / 10-year backtest (2016–2025), 2,500+ data points/symbol. 10,000-path Monte Carlo simulation. Flask dashboard with real-time signals. Python · NumPy · Pandas · SciPy.",
+      "7 specialized AI agents (Quantitative Strategist, Value Investor, Risk Manager, Global Macro Specialist + 3 more) with a V(n) = α·I(n) - β·C(n) + γ·Q(n) - δ·T(n) consensus formula. 15 securities / 10-year backtest (2016–2025), 2,500+ data points/symbol. 10,000-path Monte Carlo simulation. Flask dashboard with real-time signals. Python · NumPy · Pandas · SciPy.",
     link: "https://github.com/Shreyasg13/multi-agent-trading-system",
     isBlog: false,
   },

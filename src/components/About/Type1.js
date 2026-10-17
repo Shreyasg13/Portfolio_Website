@@ -6,11 +6,11 @@ function Type1() {
     <Typewriter
       options={{
         strings: [
-          "Platform AI Architect — 5+ Years",
-          "Principal Architect — Multi-Tenant AI Platform & pdffillr.ai",
-          "Self-Hosted vLLM Inference (Qwen3-32B · DeepSeek-R1)",
-          "Cloud & Scalable Infrastructure Expert",
-          "M.S. Computer Science, NYU",
+          "Technical Lead, AI Platform Engineering · EngineersMind",
+          "LLM Inference · RAG · MCP Agent Frameworks",
+          "AI Agent Identity, Security & Observability",
+          "Independent Research: AI Evaluation",
+          "M.S. Computer Engineering, NYU",
         ],
         autoStart: true,
         loop: true,

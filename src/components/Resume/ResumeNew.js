@@ -24,10 +24,10 @@ function ResumeNew() {
           <div style={{ textAlign: "center" }}>
             <h2 style={{ color: "white", paddingBottom: "10px" }}>
               Shreyash Gondane —{" "}
-              <span style={{ color: "#e0452a" }}>Platform AI Architect</span>
+              <span style={{ color: "#e0452a" }}>Technical Lead, AI Platform Engineering</span>
             </h2>
             <p style={{ color: "#c2c2d2", fontSize: "0.95em" }}>
-              5+ yrs · 3,000+ commits · 700+ PRs · vLLM · MCP · Auth & Identity · Multi-Cloud
+              EngineersMind · LLM inference · MCP agents · AI agent security · Observability
             </p>
           </div>
         </Row>

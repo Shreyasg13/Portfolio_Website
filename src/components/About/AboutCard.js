@@ -17,18 +17,18 @@ function AboutCard() {
             </div>
             I build infrastructure — the code, systems, and{" "}
             <span className="purple">LLM/AI platforms</span> that other engineers build on top
-            of. <b>Platform AI Architect</b> with <b>5+ years</b> of hands-on technical work (
-            <b>3,000+ commits · 700+ PRs · 10+ production repos</b>), backed by experience{" "}
-            <b>leading and managing engineering teams</b>.
+            of. <b>Technical Lead, AI Platform Engineering</b> at <b>EngineersMind</b> (full-time since June 2023), leading a
+            team of engineers with formal performance reviews.
             <br />
             <br />
-            As Principal Architect, I built a{" "}
-            <span className="purple">governed multi-tenant AI platform</span> with self-hosted{" "}
-            <span className="purple">vLLM (Qwen3-32B · DeepSeek-R1)</span> on GPU spot fleets, Bedrock fallback, Milvus RAG, and Langfuse LLM observability.
-            I built a complete{" "}
-            <span className="purple">multi-tenant IdP in Go/Echo</span> (zero CVEs, ≤5ms, 10K concurrent), and shipped{" "}
-            <span className="purple">MCP + A2A agentic infrastructure</span> and LangGraph HITL systems serving{" "}
-            <span className="purple">1.2M conversations/month</span> — while leading a team of 21 (4 direct reports).
+            My work spans{" "}
+            <span className="purple">LLM inference and serving</span> (vLLM, GPU autoscaling, FP8/INT4 quantization),{" "}
+            <span className="purple">RAG and vector stores</span>,{" "}
+            <span className="purple">MCP-based agent frameworks</span> with audited tool calls, a{" "}
+            <span className="purple">multi-tenant identity provider in Go/Echo</span> with AI agent registration and
+            machine-to-machine auth, and observability for LLM systems (Langfuse, Datadog, Grafana, Jaeger).
+            In my own time I do independent research on AI evaluation at{" "}
+            <a href="https://shreyashgondane.com" target="_blank" rel="noreferrer" className="purple">shreyashgondane.com</a>.
             <br />
             <br />
             Beyond engineering:

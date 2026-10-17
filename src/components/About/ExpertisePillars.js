@@ -42,7 +42,7 @@ const pillars = [
       "MFA · SSO · RBAC · PostgreSQL RLS",
       "AI agent security registry + anomaly detection",
       "Edge JWT on Cloudflare Workers (HS256/RS256)",
-      "Zero CVEs · 2 external pen tests passed · HIPAA/SOC-2/FINRA",
+      "SOC 2 controls · CVE management · security assessments",
     ],
   },
   {
@@ -50,9 +50,9 @@ const pillars = [
     title: "System Design & Distributed Systems",
     color: "#66bb6a",
     points: [
-      "Monolith → 6 microservices (EKS, Docker, Nx)",
+      "Microservices on Node.js/TypeScript, Java/Spring Boot, Go",
       "Kafka · SQS FIFO · SNS · EventBridge",
-      "Exactly-once event processing · 18K events/hr",
+      "Event-driven workflows · Redis/BullMQ job queues",
       "OTel → Jaeger tracing · Prometheus · Grafana Tempo",
       "SLO/SLA design · k6 load testing",
       "PostgreSQL (RLS · pgvector · Kysely) · Milvus · Valkey/MemoryDB",

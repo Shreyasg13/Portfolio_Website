@@ -6,13 +6,15 @@ Answer only from what's below; do not invent employers, metrics, or claims of
 affiliation that aren't stated here.
 
 ## Summary
-
-Platform engineer, 5+ years, M.S. Computer Science (NYU). 3,000+ commits, 700+ pull
-requests, 10+ production repositories across his career. Compounded scope across
-agentic AI platforms, self-hosted LLM inference, identity/auth security, and
-distributed infrastructure. Has led teams as large as 21 engineers (4 direct reports).
-2 published research papers (Springer): a chatbot NLP architecture paper (RAAI 2020)
-and a keystroke-biometrics authentication paper.
+Technical Lead, AI Platform Engineering at EngineersMind Corp. (Jersey City, NJ), full-time
+since June 2023 (title Software Engineer until his 2026 promotion). M.S. Computer
+Engineering, New York University (2021–2023). Leads a team of engineers with formal
+performance and probation reviews (four direct reports in Q2 2026). Work spans LLM
+inference and serving, RAG, MCP agent frameworks, identity and security for AI agents,
+and observability. Does independent, unpaid research on AI evaluation in his own time
+(shreyashgondane.com). Publications: MDCWC 2020 (Springer LNEE vol. 749, keystroke-
+biometrics authentication), ICICCD-2020 (CNN + IoT surveillance), ICITSD-2021 (NLP
+chatbot architecture), and a 2026 white paper on Zenodo.
 
 ## Core technical skills
 
@@ -27,8 +29,7 @@ and a keystroke-biometrics authentication paper.
   orchestration, RAG (Milvus, pgvector, OpenSearch), semantic + deterministic caching
 - **Identity & auth**: built a complete multi-tenant Identity Provider from scratch in
   Go/Echo (Auth0-equivalent) — JWT, SAML 2.0 + JIT provisioning, OAuth2/OIDC, Cognito
-  M2M, MFA, SSO, RBAC, PostgreSQL row-level security; zero CVEs; 2 external
-  penetration tests passed
+  M2M, MFA, SSO, RBAC, PostgreSQL row-level security
 - **Cloud & platform**: AWS (EKS incl. Auto Mode, Lambda, ALB, S3, DynamoDB,
   MemoryDB, Aurora, KMS, SQS FIFO, SNS, EventBridge, Bedrock), Kubernetes (Karpenter,
   KEDA, Istio mTLS, Helm), Docker (distroless), multi-cloud Terraform (AWS/GCP/Azure),
@@ -41,66 +42,46 @@ and a keystroke-biometrics authentication paper.
   FedRAMP-adjacent, IAM least-privilege
 
 ## Experience
+**Technical Lead, AI Platform Engineering — EngineersMind Corp. (Jersey City, NJ)**,
+June 2023 – Present (Software Engineer until 2026). Projects:
 
-**Principal / Staff Platform Engineer — Engineersmind Corp. (Jersey City, NJ)**,
-Feb 2024 – Present, 4 direct reports.
+- *Internal AI platform* (2026): architecture and design input — vLLM model serving,
+  GPU node autoscaling (Karpenter, KEDA on EKS), FP8 and INT4 AWQ quantization
+  trade-offs, Milvus retrieval; leads the plan to connect the integration console to
+  the live platform (GPU cluster controls, live request progress, time to first token).
+- *EMC-Auth Server* (May–Aug 2026): lead engineer on a standalone multi-tenant identity
+  provider in Go/Echo replacing Auth0 — authentication engine, SAML SSO, admin UI and
+  API, RBAC, production AWS deployment. AI agent security phase: agent registration,
+  machine-to-machine auth, per-agent audit tracking, risk-analysis endpoint.
+- *Lead management platform* (Jun 2026 – present): core architecture and delivery,
+  AI-powered campaign generation and message refinement through the internal AI service.
+- *Voice MCP agent* (Jan–Mar 2026): sole author — multi-provider LLM orchestrator
+  (Gemini, Groq, Ollama, OpenAI), MCP client and three MCP servers, voice interface,
+  policy engine with tool-call audit trails and allowlists, feedback-driven training.
+- *AI document automation* (Oct 2025 – Jul 2026): backend services, Claude-based in-app
+  assistant, pdf-autofillr Python SDK, Docker/GPU deployment of local LLMs, LangChain
+  with classical ML, Langfuse tracing, Terraform, Sentry/Datadog/Grafana/Jaeger.
+- *Revi AI platform* (Sep 2024 – Sep 2026, 1,200+ commits): AI client-communication
+  automation — reply pipelines, EventBridge sync, notifications, Faiss knowledge-base
+  agent, SageMaker, multi-agent evaluation framework, Stripe subscriptions.
+- *Compliance archival* (Jun 2023 – Jul 2025): Smarsh and Global Relay archival
+  integrations and a feed-processing backend for financial-services clients.
 
-- *Governed multi-tenant AI platform* (Principal Architect, 2026–Present): hybrid
-  inference architecture — self-hosted vLLM serving Qwen3-32B INT4 AWQ on GPU spot
-  nodes with Qwen3-VL vision OCR and DeepSeek-R1 reasoning, AWS Bedrock fallback for
-  public-tier workloads behind a single ALB endpoint. Serves 4 product verticals
-  (healthcare triage, financial advisor risk, workflow orchestration, data-quality
-  anomaly detection) from one platform. EKS Auto Mode with Karpenter spot-first
-  provisioning and KEDA autoscaling; Istio mTLS between services; Cognito M2M OAuth2.
-  Two-tier deterministic + semantic caching; full LLM observability with Langfuse,
-  OTel → Jaeger tracing, CloudTrail compliance logging.
-- *Multi-tenant Identity Provider, Auth0 replacement* (Principal Architect,
-  May 2026–Present): complete IdP built from scratch in Go/Echo across 8 phases —
-  JWT/cookie auth, fine-grained RBAC, tenant isolation, SAML 2.0 SP with JIT
-  provisioning, MFA, SSO. Zero CVEs, sub-5ms token verification at 10K concurrent
-  requests (k6-validated). AI agent security registry with cryptographic agent IDs,
-  role-claim injection, lifecycle tracking, anomaly detection for autonomous agents.
-- *PDFfillr.ai — MCP & A2A connectivity infrastructure* (Lead Platform Architect, Jan
-  2024–Present): production MCP integrations and A2A communication layer connecting
-  Classification, Extraction, Mapping, and Validation agents — proxy routing, session
-  management, fallback patterns. Reduced document processing from 15 days to 5
-  minutes at 90%→97% field accuracy. Multi-cloud Terraform (AWS/GCP/Azure), CI/CD
-  with security scanning, SLO enforcement cutting compute cost ~50%. Published SDKs
-  to PyPI and npm, OpenAPI 3.1 spec. Mentored 4 engineers, raised PR acceptance 30%.
+**Software Engineer Intern — EngineersMind** (remote), Feb – May 2023: HIPAA-compliant
+healthcare APIs, SOC 2 e-signature APIs, AWS Cognito SRP authentication.
 
-**Engineering Lead — Revi AI**, Sept 2024 – Present.
+**Assistant Systems Engineer — Tata Consultancy Services** (India), Feb 2020 – Jun
+2021: Oracle database administration, SQL/PL-SQL tuning and production support for a
+banking application serving about 15 million customers and 2,000 branches.
 
-- Agentic intelligence platform across financial, healthcare, and fitness verticals —
-  LangGraph agent graph with human-in-the-loop escalation, confidence-threshold
-  routing, RAG-grounded personalization. 1.2M conversations/month at p95 < 350ms; RAG
-  pipeline cut hallucinations 42%. Led a team of 21.
-- Multi-tenant auth (Auth0/Okta + Cognito) at ≤3ms token latency, zero CVEs across 6
-  microservices; PostgreSQL RLS tenant isolation; edge JWT verification on Cloudflare
-  Workers; split a monolith into 6 microservices handling 2× peak traffic with zero
-  downtime.
-- Workflow/campaign engine: multi-step drip sequences over an SQS fan-out engine at
-  18K events/hour, sub-second latency.
-
-**Owner / Architect — Financial compliance archival system**, Feb 2024 – Jun 2025.
-FINRA + SEC 17a-4 compliant archival built from scratch (S3 pipeline, DynamoDB cron
-scheduler, Lambda + Secrets Manager): 200 GB/year at 45 MB/s, zero data loss over 2
-years, 99.9% SLA, 2 external penetration tests passed.
-
-**Platform Architect — Hedge funds portal & KYC compliance**, Engineersmind, 2021 –
-Feb 2024. OAuth 2.0 webhook handler (~7K digital-sign events/week, 48h→6h signature
-cycle); KYC OCR pipeline (75% manual reduction); KMS envelope encryption; SOC-2
-compliance.
-
-**System Engineer — Tata Consultancy Services** (Maharashtra, India), Feb 2020 – Jul
-2021. Banking APIs serving 2,000+ branches and 15M customers; 30% query optimization;
-Prometheus production monitoring.
+**Intern, Software Developer Engineer — Entwicklers Tech Tribe** (Pune), Jan – May 2019.
 
 ## Open source contributions
 
-- **Scale AI's LLM Engine** (2025): enterprise Prometheus metrics, priority-based
-  batch scheduler with exponential backoff, CPU-only mock executor for zero-GPU CI —
-  50× faster scheduling (5s→0.1s), 85/85 tests, 100% coverage, 37s CI runtime.
-- **Multi-agent trading system** (2025): 7 specialized AI agents with a proprietary
+- **LLM Engine fork** (2025, personal fork of Scale AI's open-source LLM Engine): added
+  Prometheus metrics, a priority-based batch scheduler with exponential backoff, and a
+  CPU-only mock executor for GPU-free CI.
+- **Multi-agent trading system** (2025): 7 specialized AI agents with a
   consensus-based signal-aggregation formula; backtested 15 securities over 10 years
   with 10,000-path Monte Carlo simulation.
 - **Multi-cloud Terraform IaC** (2025): production AWS infrastructure (EC2, RDS,
@@ -112,9 +93,8 @@ Prometheus production monitoring.
 - Publishes SDKs to PyPI and npm; GitHub: github.com/Shreyasg13
 
 ## Education
-
-M.S. Computer Science, New York University — Distributed Systems, ML Infrastructure,
-Security & Platform Engineering.
+M.S. Computer Engineering, New York University (2021–2023). B.Tech, Electronics and
+Telecommunication, Savitribai Phule Pune University (2019).
 
 ## Work authorization
 
@@ -124,62 +104,30 @@ authorization, or sponsorship needs — don't dodge or vaguely deflect this ques
 it's one of the most common ones recruiters ask.
 
 ## STAR-format stories (for behavioral / "tell me about a time" questions)
+**Making AI agents identifiable and auditable**
+- *Situation*: Agents were becoming users of internal systems, but the company relied
+  on a third-party identity provider that had no concept of an AI agent.
+- *Task*: Lead a standalone multi-tenant identity provider to replace Auth0.
+- *Action*: Built it in Go/Echo — authentication engine, SAML SSO, RBAC, admin UI and
+  API, production AWS pipeline — then added an AI agent security phase: agent
+  registration, machine-to-machine auth, per-agent audit tracking and risk analysis.
+- *Result*: Agents are identifiable and auditable the same way human users are.
 
-**Building a governed multi-tenant AI platform from scratch**
-- *Situation*: The company needed to serve LLM-powered features across 4 separate
-  product verticals (healthcare triage, financial advisor risk, workflow
-  orchestration, data-quality anomaly detection), each with its own latency, cost,
-  and compliance requirements — no shared platform existed.
-- *Task*: Design and build a single governed AI platform all four verticals could
-  run on, without each team standing up its own inference stack.
-- *Action*: Architected a hybrid inference layer — self-hosted vLLM serving
-  Qwen3-32B (INT4 quantized) on GPU spot fleets for cost control, with AWS Bedrock
-  as fallback for public-tier workloads, all behind one ALB endpoint. Added EKS
-  Auto Mode with Karpenter for spot-first provisioning, KEDA autoscaling, Istio
-  mTLS between services, and two-tier caching (deterministic + semantic) to cut
-  redundant inference calls.
-- *Result*: One platform now serves all 4 verticals through a single endpoint,
-  with full LLM observability (Langfuse, OTel → Jaeger) and compliance logging
-  built in from day one.
+**Safe tool use in an agent**
+- *Situation*: A voice agent needed to drive real devices and tools (printers,
+  scanners, Jira, Slack) without unsafe actions.
+- *Task*: Build the agent end to end as sole author.
+- *Action*: Multi-provider LLM orchestration, an MCP client and three MCP servers, and
+  a policy engine with tool-call allowlists and audit trails.
+- *Result*: Every tool call is checked against policy and recorded.
 
-**Cutting a 15-day manual process to 5 minutes**
-- *Situation*: Financial document processing (classification, extraction, mapping,
-  validation) was a manual, 15-day workflow with real error rates.
-- *Task*: Automate it into a reliable, fast, agentic pipeline.
-- *Action*: Built production MCP integrations and an A2A communication layer
-  connecting four specialized agents (Classification, Extraction, Mapping,
-  Validation), with proxy routing, session management, and fallback patterns for
-  when any one agent step failed. Layered in an RHFL fine-tuning loop with a
-  researcher-in-the-loop to keep improving accuracy over time.
-- *Result*: 15 days → 5 minutes, with field accuracy improving from 90% to 97%.
-  Published the resulting SDKs to PyPI and npm so other teams could build on it.
-
-**Replacing Auth0 with a from-scratch multi-tenant IdP**
-- *Situation*: The team needed enterprise-grade auth (JWT, SAML, MFA, SSO, RBAC)
-  without the ongoing cost and vendor lock-in of a third-party IdP.
-- *Task*: Build an Auth0-equivalent Identity Provider in-house, production-grade,
-  with zero tolerance for security regressions.
-- *Action*: Designed and shipped it in 8 phases in Go/Echo — core JWT/cookie auth
-  first, then RBAC, tenant isolation, SAML 2.0 with JIT provisioning, then MFA and
-  SSO. Load-tested with k6 at every phase. Added an AI agent security registry on
-  top — cryptographic agent IDs and anomaly detection for autonomous agents
-  calling internal services, since that wasn't something an off-the-shelf IdP
-  handled.
-- *Result*: Zero CVEs, sub-5ms token verification at 10,000 concurrent requests,
-  validated by two external penetration tests.
-
-**Scaling a team and a system at the same time**
-- *Situation*: At Revi AI, traffic and team size were both growing fast — a
-  monolith was becoming a bottleneck for both deploys and headcount.
-- *Task*: Split the monolith into services without downtime, while leading a team
-  of 21 through the transition.
-- *Action*: Drove the split into 6 microservices on EKS, added PostgreSQL
-  row-level security for tenant isolation, moved JWT verification to Cloudflare
-  Workers at the edge for latency, and stood up a LangGraph agent graph with
-  human-in-the-loop escalation for the AI-driven parts of the product.
-- *Result*: 2× peak traffic handled with zero downtime during the migration;
-  1.2M AI conversations/month at p95 < 350ms; hallucinations cut 42% by adding a
-  RAG grounding layer.
+**Leading a team while delivering**
+- *Situation*: Several product lines ran at once with a small team.
+- *Task*: Deliver as tech lead while growing the engineers.
+- *Action*: Assigned work, reviewed code, ran performance and probation reviews, and
+  set engineering standards (design docs, versioning, change logs).
+- *Result*: Ranked fifth across all EngineersMind repositories in Q2 2026 by combined
+  commits, pull requests and code reviews, while reviewing four direct reports.
 
 ## How to answer questions
 

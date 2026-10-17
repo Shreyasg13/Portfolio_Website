@@ -3,59 +3,44 @@ import { Container } from "react-bootstrap";
 
 const timeline = [
   {
-    period: "2026 – Present",
-    role: "Principal Platform Engineer",
-    company: "Engineersmind Corp. — Jersey City, NJ",
+    period: "Jun 2023 – Present",
+    role: "Technical Lead, AI Platform Engineering (Software Engineer until 2026)",
+    company: "EngineersMind Corp. — Jersey City, NJ",
     color: "#e0452a",
     items: [
-      { name: "Governed Multi-Tenant AI Platform", desc: "vLLM (Qwen3-32B, DeepSeek-R1), EKS Auto Mode, Karpenter, KEDA, Istio mTLS, Milvus RAG, 4 verticals" },
-      { name: "Multi-Tenant IdP", desc: "Go/Echo — 8 phases, SAML 2.0+JIT, AI agent registry, zero CVEs, sub-5ms at 10K concurrent" },
+      { name: "AI platform (2026)", desc: "Architecture and design input on the internal AI platform: vLLM serving, GPU autoscaling (Karpenter, KEDA on EKS), FP8/INT4 quantization, live request and time-to-first-token tracking" },
+      { name: "EMC-Auth Server (May–Aug 2026)", desc: "Lead engineer: multi-tenant identity provider in Go/Echo replacing Auth0 — SAML SSO, RBAC, AI agent registration, machine-to-machine auth, per-agent audit trails" },
+      { name: "Voice MCP agent (Jan–Mar 2026)", desc: "Sole author: multi-provider LLM orchestrator, MCP client + 3 MCP servers, voice interface, tool-call audit trails and allowlists" },
+      { name: "AI document automation (Oct 2025–Jul 2026)", desc: "Backend services, Claude-based in-app assistant, pdf-autofillr Python SDK, local LLM deployment, Langfuse tracing" },
+      { name: "Revi AI platform (Sep 2024–Sep 2026)", desc: "AI client-communication automation: reply pipelines, EventBridge sync, Faiss knowledge-base agent, SageMaker, multi-agent eval framework, Stripe billing" },
+      { name: "Compliance archival (Jun 2023–Jul 2025)", desc: "Smarsh and Global Relay archival integrations for financial-services clients; feed-processing backend" },
     ],
   },
   {
-    period: "Sept 2024 – Present",
-    role: "Engineering Lead",
-    company: "Revi AI",
-    color: "#4fc3f7",
-    items: [
-      { name: "Agentic Intelligence Center", desc: "LangGraph HITL across 3 verticals — 1.2M conversations/month, p95 < 350ms, RAG cut hallucinations 42%" },
-      { name: "Auth & API Infrastructure", desc: "Auth0/Okta/Cognito at ≤3ms, zero CVEs — monolith → 6 microservices, 18K events/hr, led team of 21" },
-    ],
-  },
-  {
-    period: "Jan 2024 – Present",
-    role: "Lead Platform Architect",
-    company: "PDFfillr.ai — Engineersmind",
-    color: "#ff7043",
-    items: [
-      { name: "MCP & A2A Platform", desc: "Production MCP + A2A Protocol — 15 days → 5 minutes, 90%→97% accuracy, multi-cloud Terraform, ~50% compute cost cut" },
-    ],
-  },
-  {
-    period: "Feb 2024 – Jun 2025",
-    role: "Owner / Architect",
-    company: "Global Relay + Smarsh-SMTP — Engineersmind",
-    color: "#66bb6a",
-    items: [
-      { name: "Financial Compliance Archival", desc: "FINRA + SEC 17a-4 — 200 GB/year at 45 MB/s, zero data loss, 99.9% SLA, 2 pen tests passed" },
-    ],
-  },
-  {
-    period: "2021 – Feb 2024",
-    role: "Platform Architect",
-    company: "Engineersmind — Hedge Funds Portal & KYC",
+    period: "Feb 2023 – May 2023",
+    role: "Software Engineer Intern",
+    company: "EngineersMind — remote",
     color: "#ffb74d",
     items: [
-      { name: "Compliance & Security Platform", desc: "OAuth 2.0 webhooks (~7K sign events/week), KYC OCR (75% manual reduction), KMS encryption, SOC-2" },
+      { name: "Secure APIs", desc: "HIPAA-compliant healthcare APIs, SOC 2 e-signature APIs, AWS Cognito SRP authentication" },
     ],
   },
   {
-    period: "Feb 2020 – Jul 2021",
-    role: "System Engineer",
-    company: "Tata Consultancy Services — MH, India",
+    period: "Jun 2021 – Jun 2023",
+    role: "M.S. Computer Engineering",
+    company: "New York University",
+    color: "#a855f7",
+    items: [
+      { name: "Graduate study", desc: "Computing systems, cloud and data-center computing, network security, applied matrix theory" },
+    ],
+  },
+  {
+    period: "Feb 2020 – Jun 2021",
+    role: "Assistant Systems Engineer",
+    company: "Tata Consultancy Services — India",
     color: "#a0a0a0",
     items: [
-      { name: "Banking APIs at Scale", desc: "2,000+ branches, 15M customers — 30% query optimization, Prometheus production monitoring" },
+      { name: "Banking platform", desc: "Oracle database administration, SQL tuning and production support for a banking application (15M customers, 2,000 branches)" },
     ],
   },
 ];

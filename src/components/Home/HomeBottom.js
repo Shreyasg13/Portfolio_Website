@@ -49,11 +49,11 @@ const TECH = [
 ];
 
 const STATS = [
-  { icon: <Rocket />, color: "#a855f7", num: "3,000+", lab: "Commits" },
-  { icon: <GitPullRequest />, color: "#4fa8e0", num: "700+", lab: "PRs Merged" },
-  { icon: <Layers3 />, color: "#e0a02a", num: "10+", lab: "Production Repos" },
-  { icon: <BookOpen />, color: "#4caf50", num: "2", lab: "Springer AI Publications" },
-  { icon: <UsersRound />, color: "#e0452a", num: "21", lab: "Engineers Led · 4 Direct Reports" },
+  { icon: <Rocket />, color: "#a855f7", num: "15+", lab: "Repositories" },
+  { icon: <GitPullRequest />, color: "#4fa8e0", num: "OSS", lab: "Merged Upstream (MCP Go SDK)" },
+  { icon: <Layers3 />, color: "#e0a02a", num: "3+", lab: "Years at EngineersMind" },
+  { icon: <BookOpen />, color: "#4caf50", num: "4", lab: "Publications" },
+  { icon: <UsersRound />, color: "#e0452a", num: "Lead", lab: "Team Lead · Performance Reviews" },
 ];
 
 function HomeBottom() {
@@ -112,8 +112,8 @@ function HomeBottom() {
           <div className="hb-badge hg-glass">
             <BsFillCloudFill className="hb-badge-icon" />
             <div>
-              <div className="hb-badge-title">Multi-Cloud Architect</div>
-              <div className="hb-badge-sub">AWS · GCP · Azure</div>
+              <div className="hb-badge-title">Cloud AI Platforms</div>
+              <div className="hb-badge-sub">AWS · Azure</div>
             </div>
           </div>
           <div className="hb-badge hg-glass">
