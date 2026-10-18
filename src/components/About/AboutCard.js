@@ -17,7 +17,7 @@ function AboutCard() {
             </div>
             I build infrastructure — the code, systems, and{" "}
             <span className="purple">LLM/AI platforms</span> that other engineers build on top
-            of. <b>Technical Lead, AI Platform Engineering</b> at <b>EngineersMind</b> (full-time since June 2023), leading a
+            of. <b>Software Engineer, AI Platform Engineering</b> at <b>EngineersMind</b> (full-time since June 2023), leading a
             team of engineers with formal performance reviews.
             <br />
             <br />

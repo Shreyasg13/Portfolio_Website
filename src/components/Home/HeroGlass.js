@@ -11,12 +11,10 @@ import useParallax from "../../hooks/useParallax";
 import useSpeechAmplitude from "../../hooks/useSpeechAmplitude";
 import RadialWaveform from "../../audio/RadialWaveform";
 import {
-  BsCircleFill,
   BsArrowRight,
   BsGraphUp,
   BsCheckCircleFill,
   BsGearFill,
-  BsFileEarmarkTextFill,
   BsDiagram3Fill,
   BsSend,
   BsMicFill,
@@ -63,11 +61,10 @@ const THINKING_STATUS_LABELS = {
 };
 
 const ASSISTANT_SUGGESTIONS = [
-  { icon: <BsCheckCircleFill />, label: "What makes you a strong fit? (tell me the role you're hiring for)" },
+  { icon: <BsCheckCircleFill />, label: "What kind of work fits your background?" },
   { icon: <Layers3 />, label: "Tell me about your leadership experience" },
   { icon: <BsGearFill />, label: "What's your core technical expertise?" },
   { icon: <Rocket />, label: "What's your most impactful project?" },
-  { icon: <BsFileEarmarkTextFill />, label: "Do you need visa sponsorship?" },
   { icon: <BsSend />, label: "Can you email me your resume?" },
 ];
 
@@ -94,10 +91,10 @@ const BUILD_DELIVER = [
 function localReply(question) {
   const query = question.toLowerCase();
   if (query.includes("fit") || query.includes("role")) {
-    return "I bring 5+ years building production AI platforms \u2014 agentic AI/MCP, self-hosted LLM inference, identity security, and distributed systems \u2014 plus technical leadership of an engineering team with formal performance reviews. That mix of hands-on platform engineering and technical leadership carries across most senior/staff engineering and technical leadership roles. Let me know the specific role or JD you're hiring for and I can speak to fit more precisely.";
+    return "I bring 5+ years building production AI platforms \u2014 agentic AI/MCP, self-hosted LLM inference, identity security, and distributed systems \u2014 plus technical leadership of an engineering team with formal performance reviews. Ask about a specific area and I can go deeper.";
   }
   if (query.includes("leadership") || query.includes("lead")) {
-    return "As Technical Lead, AI Platform Engineering at EngineersMind I lead a team of engineers: I assign work, review code, run performance and probation reviews, and own release management and engineering standards.";
+    return "At EngineersMind I lead a team of engineers: I assign work, review code, run performance and probation reviews, and own release management and engineering standards.";
   }
   if (query.includes("technical") || query.includes("expertise") || query.includes("stack")) {
     return "My core stack is Python, Go, and TypeScript, with deep experience in self-hosted LLM serving (vLLM, Qwen3, DeepSeek-R1), agentic AI (MCP, A2A, LangGraph), identity/auth systems built from scratch, and cloud-native infrastructure on AWS/Kubernetes.";
@@ -106,7 +103,7 @@ function localReply(question) {
     return "One I'm proud of is a multi-tenant identity provider in Go/Echo that replaced Auth0, including an AI agent security phase: agent registration, machine-to-machine auth and per-agent audit trails, so agents are identifiable and auditable like human users.";
   }
   if (query.includes("visa") || query.includes("sponsor")) {
-    return "Yes \u2014 I'm currently on an H1B visa and would need employer sponsorship (an H1B transfer) to take on a new role. Happy to discuss details.";
+    return "For work-authorization questions, please email me directly and I'll answer personally.";
   }
   return "Thanks for asking. I build secure, production-ready AI platforms spanning LLM infrastructure, orchestration, identity, APIs, and cloud reliability. Ask about my fit for the role, leadership experience, technical expertise, or sponsorship needs.";
 }
@@ -701,15 +698,12 @@ function HeroGlass() {
           animate="visible"
           custom={0}
         >
-          <span className="hg-open-pill">
-            <BsCircleFill className="hg-open-dot" /> Open to Opportunities
-          </span>
           <h1 className="hg-name">
             Shreyash
             <br />
             <span>Gondane</span>
           </h1>
-          <p className="hg-title">Technical Lead, AI Platform Engineering — EngineersMind</p>
+          <p className="hg-title">Software Engineer, AI Platform Engineering — EngineersMind</p>
           <p className="hg-desc">
             I design, build and scale production AI platforms:
             LLM inference, retrieval, MCP agent frameworks, and secure identity

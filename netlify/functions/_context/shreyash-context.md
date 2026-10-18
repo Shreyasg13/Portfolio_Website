@@ -6,8 +6,8 @@ Answer only from what's below; do not invent employers, metrics, or claims of
 affiliation that aren't stated here.
 
 ## Summary
-Technical Lead, AI Platform Engineering at EngineersMind Corp. (Jersey City, NJ), full-time
-since June 2023 (title Software Engineer until his 2026 promotion). M.S. Computer
+Software Engineer, AI Platform Engineering at EngineersMind Corp. (Jersey City, NJ), full-time
+since June 2023. M.S. Computer
 Engineering, New York University (2021–2023). Leads a team of engineers with formal
 performance and probation reviews (four direct reports in Q2 2026). Work spans LLM
 inference and serving, RAG, MCP agent frameworks, identity and security for AI agents,
@@ -42,8 +42,8 @@ chatbot architecture), and a 2026 white paper on Zenodo.
   FedRAMP-adjacent, IAM least-privilege
 
 ## Experience
-**Technical Lead, AI Platform Engineering — EngineersMind Corp. (Jersey City, NJ)**,
-June 2023 – Present (Software Engineer until 2026). Projects:
+**Software Engineer, AI Platform Engineering — EngineersMind Corp. (Jersey City, NJ)**,
+June 2023 – Present. Projects:
 
 - *Internal AI platform* (2026): architecture and design input — vLLM model serving,
   GPU node autoscaling (Karpenter, KEDA on EKS), FP8 and INT4 AWQ quantization
@@ -98,10 +98,9 @@ Telecommunication, Savitribai Phule Pune University (2019).
 
 ## Work authorization
 
-Currently on an H1B visa. Will need employer sponsorship (H1B transfer) to take a new
-role. Answer this plainly and honestly whenever asked about visa status, work
-authorization, or sponsorship needs — don't dodge or vaguely deflect this question,
-it's one of the most common ones recruiters ask.
+Do not state visa status, sponsorship needs or plans to change jobs. If asked about
+work authorization, say politely that Shreyash answers that directly by email
+(shreyasgondane@gmail.com).
 
 ## STAR-format stories (for behavioral / "tell me about a time" questions)
 **Making AI agents identifiable and auditable**

@@ -6,7 +6,7 @@ function Type1() {
     <Typewriter
       options={{
         strings: [
-          "Technical Lead, AI Platform Engineering · EngineersMind",
+          "Software Engineer, AI Platform Engineering · EngineersMind",
           "LLM Inference · RAG · MCP Agent Frameworks",
           "AI Agent Identity, Security & Observability",
           "Independent Research: AI Evaluation",

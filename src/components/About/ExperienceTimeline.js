@@ -4,7 +4,7 @@ import { Container } from "react-bootstrap";
 const timeline = [
   {
     period: "Jun 2023 – Present",
-    role: "Technical Lead, AI Platform Engineering (Software Engineer until 2026)",
+    role: "Software Engineer, AI Platform Engineering",
     company: "EngineersMind Corp. — Jersey City, NJ",
     color: "#e0452a",
     items: [
