@@ -58,7 +58,7 @@ const projects = [
     title: "Multi-Agent Trading System — Consensus AI Architecture",
     description:
       "7 specialized AI agents (Quantitative Strategist, Value Investor, Risk Manager, Global Macro Specialist + 3 more) with a V(n) = α·I(n) - β·C(n) + γ·Q(n) - δ·T(n) consensus formula. 15 securities / 10-year backtest (2016–2025), 2,500+ data points/symbol. 10,000-path Monte Carlo simulation. Flask dashboard with real-time signals. Python · NumPy · Pandas · SciPy.",
-    link: "https://github.com/Shreyasg13/multi-agent-trading-system",
+    link: "https://github.com/Shreyasg13",
     isBlog: false,
   },
   {
